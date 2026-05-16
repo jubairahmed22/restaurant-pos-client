@@ -312,7 +312,7 @@ export default function FoodTablePage() {
                         </Button>
                     </form>
                 </div>
-asdfas
+
                 {/* =========================
           RIGHT SIDE
       ========================= */}
