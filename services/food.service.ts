@@ -1,3 +1,5 @@
+// frontend/services/food.service.ts
+
 import api from './axios';
 
 export const FoodService = {
@@ -5,7 +7,7 @@ export const FoodService = {
     const response = await api.get(`/foods?${params}`);
     return response.data;
   },
-  
+
   getFoodBySlug: async (slug: string) => {
     const response = await api.get(`/foods/slug/${slug}`);
     return response.data;
@@ -13,13 +15,26 @@ export const FoodService = {
 
   createFood: async (formData: FormData) => {
     const response = await api.post('/foods', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
     });
+
+    return response.data;
+  },
+
+  updateFood: async (id: string, formData: FormData) => {
+    const response = await api.put(`/foods/${id}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+
     return response.data;
   },
 
   deleteFood: async (id: string) => {
     const response = await api.delete(`/foods/${id}`);
     return response.data;
-  }
+  },
 };
