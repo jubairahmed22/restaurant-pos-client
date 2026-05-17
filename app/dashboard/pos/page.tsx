@@ -145,7 +145,7 @@ export default function FoodTablePage() {
       <div className="col-span-12 xl:col-span-4">
         <CheckoutPanel
           cart={cart}
-          subtotal={subtotal}
+          subtotal={subtotal} 
           tax={tax}
           total={total}
           paymentMethod={paymentMethod}
