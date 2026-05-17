@@ -8,6 +8,8 @@ import {
 } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import logo from '../assest/los-pollos.png';
+import { log } from 'console';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -28,7 +30,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
   return (
-    <div className="min-h-screen font-inter bg-[#F8F9FD] flex flex-col selection:bg-indigo-100 selection:text-indigo-700">
+    <div className="min-h-screen content font-inter bg-[#F8F9FD] flex flex-col selection:bg-indigo-100 selection:text-indigo-700">
       
       {/* 1. HEADER AREA */}
       <header className="h-16 bg-[#6366F1] flex items-center justify-between px-4 md:px-6 sticky top-0 z-[60] shadow-md shadow-indigo-200/20">
@@ -42,20 +44,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </button>
 
           <div className="flex items-center gap-2 cursor-pointer" onClick={() => router.push('/dashboard')}>
-            <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center shadow-lg shadow-orange-500/30">
-              <span className="text-white font-black text-xl italic">M</span>
-            </div>
-            <span className="text-white font-black text-xl tracking-tighter italic hidden xs:block">Metor</span>
+            {/* <img className='w-20 h-20' src={logo.src} alt=''></img> */}
+            <p>Los Pollos Hermanos</p>
           </div>
 
-          {/* SEARCH BAR */}
-          <div className="relative hidden md:block group">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50 group-focus-within:text-white transition-colors" size={17} />
-            <input 
-              placeholder="Start typing..." 
-              className="bg-white/10 text-white text-sm pl-10 pr-4 py-2 rounded-xl border border-white/5 w-64 lg:w-80 placeholder:text-white/40 outline-none focus:bg-white/20 focus:border-white/20 transition-all"
-            />
-          </div>
+    
         </div>
 
         {/* HEADER ACTIONS */}
@@ -71,9 +64,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
 
           <div className="flex items-center gap-3 pl-4 border-l border-white/10">
-            <div className="text-right hidden sm:block">
-              <p className="text-[10px] font-black leading-none uppercase tracking-widest text-white/90">Doris Lietz</p>
-              <p className="text-[9px] font-bold text-white/50 mt-1 uppercase">Admin Account</p>
+            <div className="text-right hidden sm:block content">
+              <p className="text-[10px] leading-none uppercase tracking-widest content">Doris Lietz</p>
+              <p className="text-[9px] font-bold content mt-1 uppercase">Admin Account</p>
             </div>
             <div className="w-9 h-9 rounded-full border-2 border-white/20 p-0.5 shadow-inner">
                <img src="https://ui-avatars.com/api/?name=Doris+Lietz&bg=white&color=6366F1" className="w-full h-full rounded-full object-cover" alt="Admin" />
@@ -144,7 +137,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         {/* 3. MAIN CONTENT AREA */}
         <main className="flex-1 overflow-y-auto bg-[#ebedf6] custom-scrollbar relative">
-          <div className="p-4 md:p-8 max-w-[1200px] mx-auto animate-in fade-in duration-500">
+          <div className="p-4 md:p-8 max-w-[1600px] mx-auto animate-in fade-in duration-500">
             {children}
           </div>
         </main>

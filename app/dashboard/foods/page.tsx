@@ -21,10 +21,11 @@ import {
     DialogTitle,
 } from '@/components/ui/Dialog';
 
-import { Input, Label, Textarea } from '@/components/ui/Form';
+import { Input, Label, Select, Textarea } from '@/components/ui/Form';
 import { UploadCloud } from 'lucide-react';
 import DataTable from '@/components/ui/DataTable';
 import { Button } from '@/components/ui/Button';
+import { ListButton } from '@/components/ui/ListButton';
 
 /* =========================
    PAGE
@@ -236,7 +237,7 @@ export default function FoodTablePage() {
                 {/* =========================
           LEFT CREATE PANEL (FULL RESTORED)
       ========================= */}
-                <div className="col-span-12 lg:col-span-4 bg-white p-5  border border-slate-100">
+                <div className="col-span-12 lg:col-span-4 rounded bg-white p-5  border border-slate-100">
 
                     <h2 className="text-sm font-black uppercase mb-4">
                         Add Food
@@ -319,34 +320,33 @@ export default function FoodTablePage() {
                 <div className="col-span-12 lg:col-span-8 space-y-4">
 
                     {/* CATEGORY FILTERS */}
-                    <div className="flex flex-wrap gap-2 bg-white p-3  border border-slate-100">
+                    <div className="w-full bg-white border-b rounded border-slate-100 overflow-x-auto no-scrollbar">
+  <div className="flex items-center gap-4 px-4 py-2 min-w-max">
+    
+    {/* "All" Button */}
+    <ListButton
+      label="All"
+      isActive={category === ''}
+      onClick={() => updateURL({ category: '', page: '1' })}
+    />
 
-                        <Button
-                            onClick={() => updateURL({ category: '', page: '1' })}
-                            className={`px-3 py-1.5 rounded-full border border-slate-100 text-sm ${category === '' ? 'bg-black text-white' : ''
-                                }`}
-                        >
-                            All
-                        </Button>
-
-                        {categoryRes?.data?.map((cat: any) => (
-                            <Button
-                                key={cat._id}
-                                onClick={() =>
-                                    updateURL({
-                                        category: cat._id,
-                                        page: '1',
-                                    })
-                                }
-                                className={`px-3 py-1.5 rounded-full border border-slate-100 text-sm ${category === cat._id
-                                    ? 'bg-orange-600 text-white'
-                                    : ''
-                                    }`}
-                            >
-                                {cat.title}
-                            </Button>
-                        ))}
-                    </div>
+    {/* Dynamic Categories from Backend */}
+    {categoryRes?.data?.map((cat: any) => (
+      <ListButton
+        key={cat._id}
+        label={cat.title}
+        isActive={category === cat._id}
+        onClick={() =>
+          updateURL({
+            category: cat._id,
+            page: '1',
+          })
+        }
+      />
+    ))}
+    
+  </div>
+</div>
 
                     {/* TABLE */}
                     <DataTable
@@ -373,7 +373,7 @@ export default function FoodTablePage() {
     EDIT MODAL
 ========================= */}
                 <Dialog open={editModal} onOpenChange={setEditModal}>
-                    <DialogContent className="bg-slate-900 text-white max-w-xl">
+                    <DialogContent >
                         <DialogHeader>
                             <DialogTitle>Edit Food</DialogTitle>
                         </DialogHeader>
@@ -392,9 +392,8 @@ export default function FoodTablePage() {
                             <Input {...register('price')} />
 
                             {/* CATEGORY (ADDED) */}
-                            <select
-                                className="w-full border border-slate-100 border border-slate-100-slate-700 bg-slate-800 text-white rounded-lg px-3 py-2 text-sm focus:outline-none"
-                                {...register('category')}
+                            <Select
+                                
                             >
                                 <option value="">Select Category</option>
                                 {categoryRes?.data?.map((cat: any) => (
@@ -402,7 +401,7 @@ export default function FoodTablePage() {
                                         {cat.title}
                                     </option>
                                 ))}
-                            </select>
+                            </Select>
 
                             {/* IMAGE UPLOADER */}
                             <label className="block border border-slate-100 p-3 rounded-lg text-center cursor-pointer">

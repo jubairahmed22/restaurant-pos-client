@@ -55,7 +55,7 @@ export default function DataTable<T extends { _id: string }>({
   isActionLoading = false,
 }: DataTableProps<T>) {
   return (
-    <div className="w-full bg-white rounded-xl border border-slate-200/70 shadow-sm overflow-hidden">
+    <div className="w-full bg-white rounded border border-slate-200/70 shadow-sm overflow-hidden">
       
       <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-white">
         <h2 className="text-xs font-black tracking-wider text-slate-800 uppercase">

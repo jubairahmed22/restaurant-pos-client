@@ -1,13 +1,13 @@
 // components/ui/Button.tsx
 export const Button = ({ variant = 'primary', icon: Icon, children, ...props }: any) => {
   const styles: any = {
-    primary: 'bg-indigo-600 text-white border-transparent hover:bg-indigo-700',
-    outline: 'bg-white text-slate-600 border-slate-300 hover:bg-slate-50',
-    danger: 'bg-rose-500 text-white border-transparent hover:bg-rose-600',
+    primary: 'bg-indigo-500 text-sm text-white border-transparent hover:bg-indigo-700',
+    outline: 'bg-white text-sm text-slate-600 border-slate-300 hover:bg-slate-50',
+    danger: 'bg-rose-500 text-sm text-white border-transparent hover:bg-rose-600',
   };
 
   return (
-    <button {...props} className={`flex items-center justify-center gap-2 px-6 py-2.5 rounded-lg font-bold transition-all border ${styles[variant]} disabled:opacity-50`}>
+    <button {...props} className={`flex items-center justify-center gap-2 px-6 py-2 rounded-lg font-semibold text-[12px] transition-all border ${styles[variant]} disabled:opacity-50`}>
       {Icon && <Icon size={18} />}
       {children}
     </button>

@@ -93,7 +93,7 @@ export const DialogHeader = ({
   const { setOpen } = useDialog();
 
   return (
-    <div className="p-6 border-b border-slate-100 flex justify-between items-center">
+    <div className="pb-6 border-b border-slate-100 flex justify-between items-center">
       {children}
 
       {/* optional close button support */}

@@ -55,6 +55,12 @@ p {
   font-weight: 500; /* medium */
 }
 
+.content p {
+  font-size: 0.875rem;
+  color: #ffffff;
+  font-weight: 500;
+}
+
 span {
   font-size: 0.75rem; /* text-xs */
   font-weight: 600; /* semi-bold */
