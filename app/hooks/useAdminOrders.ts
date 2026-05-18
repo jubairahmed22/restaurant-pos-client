@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
+import { OrderService } from '@/services/order.service';
 
-import { OrderService } from '@/services/OrderService';
 
 // ─────────────────────────────────────────────────────────────
 // TYPES (MATCH YOUR BACKEND)
