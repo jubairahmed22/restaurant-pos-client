@@ -3,7 +3,7 @@
 import React from 'react';
 import {
   ShoppingBag, ChevronLeft, ChevronRight,
-  Search, Loader2, RefreshCw,asdf
+  Search, Loader2, RefreshCw,
 } from 'lucide-react';
 import { useAdminOrders } from '@/app/hooks/useAdminOrders';
 
