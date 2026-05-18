@@ -29,6 +29,24 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
+ const handleLogout = () => {
+    // 1. Clear authentication data from storage mechanisms
+    localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
+    
+    // Clear any user profile details stored locally if applicable
+    localStorage.removeItem('user'); 
+
+    // 2. Clear authentication cookies if your app uses them
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
+    // 3. Close mobile sidebar overlay if it happens to be open
+    setIsSidebarOpen(false);
+
+    // 4. Redirect user securely to login view route
+    router.push('/login');
+  };
+
   return (
     <div className="min-h-screen content font-inter bg-[#F8F9FD] flex flex-col selection:bg-indigo-100 selection:text-indigo-700">
       
@@ -124,9 +142,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </nav>
 
           {/* Sidebar Footer (Logout) */}
-          <div className="p-4 border-t border-slate-50 bg-slate-50/30">
+         <div className="p-4 border-t border-slate-50 bg-slate-50/30">
             <button 
-              onClick={() => { /* add logout logic here */ }}
+              onClick={handleLogout}
               className="flex items-center gap-3 w-full px-4 py-3.5 text-slate-400 hover:text-rose-500 rounded-2xl hover:bg-rose-50 transition-all group"
             >
               <LogOut size={19} className="group-hover:rotate-12 transition-transform" />

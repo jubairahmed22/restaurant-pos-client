@@ -1,23 +1,28 @@
-import api from './axios';
+import api from '@/services/axios';
+
+export interface CreateOrderPayload {
+  items: {
+    food: string;
+    title: string;
+    price: number;
+    quantity: number;
+  }[];
+  subtotal: number;
+  deliveryCharge: number;
+  total: number;
+  shippingAddress: string;
+}
 
 export const OrderService = {
-  createOrder: async (orderData: any) => {
+  /** POST /orders — place a cash order */
+  createOrder: async (orderData: CreateOrderPayload) => {
     const response = await api.post('/orders', orderData);
-    return response.data;
+    return response.data; // { success: true, data: Order }
   },
 
-  createPaymentIntent: async (orderId: string) => {
-    const response = await api.post('/orders/payment-intent', { orderId });
-    return response.data;
-  },
-
-  confirmPayment: async (orderId: string, paymentIntentId: string) => {
-    const response = await api.post('/orders/confirm-payment', { orderId, paymentIntentId });
-    return response.data;
-  },
-
+  /** GET /orders — current user's order history */
   getMyOrders: async () => {
     const response = await api.get('/orders');
     return response.data;
-  }
+  },
 };

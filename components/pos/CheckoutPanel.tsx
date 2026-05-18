@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { ShoppingCart } from 'lucide-react';
+import { useQueryClient } from '@tanstack/react-query';
 
 import OrderItem from './OrderItem';
 import ConfirmOrderModal from './ConfirmOrderModal';
@@ -10,54 +11,50 @@ import { OrderService } from './OrderService';
 export default function CheckoutPanel({
   cart,
   subtotal,
-  tax,           // treated as deliveryCharge
+  tax,
   total,
   setCart,
   increaseQty,
   decreaseQty,
   removeItem,
 }: any) {
-  const [modalOpen, setModalOpen] = useState(false);
+  const queryClient   = useQueryClient();
+  const [modalOpen, setModalOpen]       = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Opens the confirmation modal (validates cart first)
   const handleOpenModal = () => {
-    if (cart.length === 0) {
-      alert('Your cart is empty!');
-      return;
-    }
+    if (cart.length === 0) { alert('Your cart is empty!'); return; }
     setModalOpen(true);
   };
 
-  // Called when user clicks "Confirm Order" inside the modal
   const handleConfirmOrder = async () => {
     setIsSubmitting(true);
 
     const formattedItems = cart.map((item: any) => ({
-      food: item._id,
-      title: item.title || item.name,
-      price: item.price,
-      quantity: item.quantity,
+      food:     item._id,
+      title:    item.title || item.name,
+      price:    item.price,
+      // resolve quantity regardless of field name used in your cart store
+      quantity: item.quantity ?? item.qty ?? item.count ?? 1,
     }));
 
     const orderPayload = {
-      items: formattedItems,
+      items:          formattedItems,
       subtotal,
       deliveryCharge: tax,
       total,
-      shippingAddress: '123 Main Street, Dine-In Table 4', // Replace with dynamic value as needed
+      shippingAddress: '123 Main Street, Dine-In Table 4',
     };
 
     try {
       const result = await OrderService.createOrder(orderPayload);
 
-      if (!result.success) {
-        throw new Error(result.error || 'Failed to create order');
-      }
+      if (!result.success) throw new Error(result.error || 'Failed to create order');
 
-      const createdOrder = result.data;
+      // ── Immediately refresh the admin orders table ──
+      await queryClient.invalidateQueries({ queryKey: ['admin-orders'] });
 
-      alert(`✅ Order Placed! ID: ${createdOrder.orderId}\nPay cash on delivery.`);
+      alert(`✅ Order Placed! ID: ${result.data.orderId}\nPay cash on delivery.`);
       setCart([]);
       setModalOpen(false);
     } catch (error: any) {
@@ -70,7 +67,6 @@ export default function CheckoutPanel({
 
   return (
     <>
-      {/* ── Confirmation Modal ── */}
       <ConfirmOrderModal
         isOpen={modalOpen}
         cart={cart}
@@ -83,7 +79,6 @@ export default function CheckoutPanel({
         onClose={() => !isSubmitting && setModalOpen(false)}
       />
 
-      {/* ── Panel ── */}
       <div className="bg-white border border-slate-100 rounded-3xl p-5 sticky top-5">
 
         {/* HEADER */}
@@ -128,7 +123,7 @@ export default function CheckoutPanel({
           </div>
         </div>
 
-        {/* PAYMENT BADGE — Cash only */}
+        {/* PAYMENT BADGE */}
         <div className="mt-5">
           <h3 className="font-black mb-2">Payment Method</h3>
           <div className="flex items-center gap-2 px-4 py-3 bg-indigo-50 border border-indigo-200 rounded-xl">
@@ -146,7 +141,6 @@ export default function CheckoutPanel({
           >
             Cancel
           </button>
-
           <button
             onClick={handleOpenModal}
             disabled={isSubmitting || cart.length === 0}

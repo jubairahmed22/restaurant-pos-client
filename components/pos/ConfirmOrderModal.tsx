@@ -1,14 +1,19 @@
 'use client';
 
-import React, { useRef } from 'react';
-import { X, Printer, CheckCircle } from 'lucide-react';
+import React from 'react';
+import {
+  X, Printer, CircleCheck, Banknote, Loader2,
+  MapPin, Clock3, ReceiptText,
+} from 'lucide-react';
 
 interface CartItem {
   _id: string;
   title?: string;
   name?: string;
   price: number;
-  quantity: number;
+  quantity?: number;
+  qty?: number;
+  count?: number;
 }
 
 interface ConfirmOrderModalProps {
@@ -23,164 +28,242 @@ interface ConfirmOrderModalProps {
   onClose: () => void;
 }
 
-export default function ConfirmOrderModal({
-  isOpen,
-  cart,
-  subtotal,
-  deliveryCharge,
-  total,
-  shippingAddress,
-  isSubmitting,
-  onConfirm,
-  onClose,
-}: ConfirmOrderModalProps) {
-  const receiptRef = useRef<HTMLDivElement>(null);
+function getQty(item: CartItem): number {
+  return item.quantity ?? item.qty ?? item.count ?? 1;
+}
 
+export default function ConfirmOrderModal({
+  isOpen, cart, subtotal, deliveryCharge, total,
+  shippingAddress, isSubmitting, onConfirm, onClose,
+}: ConfirmOrderModalProps) {
   if (!isOpen) return null;
 
-  const handlePrint = () => {
-    const content = receiptRef.current;
-    if (!content) return;
-
-    const printWindow = window.open('', '_blank', 'width=400,height=600');
-    if (!printWindow) return;
-
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>Order Receipt</title>
-          <style>
-            body { font-family: 'Courier New', monospace; padding: 20px; font-size: 13px; }
-            h2 { text-align: center; margin-bottom: 4px; }
-            .center { text-align: center; }
-            .divider { border-top: 1px dashed #000; margin: 10px 0; }
-            .row { display: flex; justify-content: space-between; margin: 4px 0; }
-            .total-row { font-weight: bold; font-size: 15px; }
-            .footer { margin-top: 16px; text-align: center; font-size: 11px; color: #555; }
-          </style>
-        </head>
-        <body>
-          ${content.innerHTML}
-        </body>
-      </html>
-    `);
-
-    printWindow.document.close();
-    printWindow.focus();
-    printWindow.print();
-    printWindow.close();
-  };
-
-  const now = new Date();
+  const now     = new Date();
+  const orderId = `#${Math.floor(100000 + Math.random() * 900000)}`;
   const dateStr = now.toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' });
   const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
-  return (
-    /* Backdrop */
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-300">
+  const handlePrint = () => {
+    const itemRows = cart.map(item => {
+      const qty       = getQty(item);
+      const name      = item.title || item.name || 'Item';
+      const lineTotal = item.price * qty;
+      return `
+        <tr>
+          <td class="item-name">
+            ${name}
+            <div class="qty-line">${qty} × $${item.price.toFixed(2)}</div>
+          </td>
+          <td class="item-total">$${lineTotal.toFixed(2)}</td>
+        </tr>`;
+    }).join('');
 
-        {/* Modal Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b">
-          <div>
-            <p className="text-xs font-black text-indigo-500 uppercase tracking-wider">Review Order</p>
-            <h2 className="text-xl font-black">Confirm Your Order</h2>
-          </div>
+    const html = `<!DOCTYPE html>
+<html>
+<head>
+  <title>POS Receipt</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:monospace;width:80mm;background:#fff;color:#000;padding:10px;}
+    .center{text-align:center;}
+    .restaurant{font-size:20px;font-weight:bold;margin-bottom:4px;text-transform:uppercase;}
+    .small{font-size:11px;line-height:1.5;}
+    .bold{font-weight:bold;}
+    .divider{border-top:1px dashed #000;margin:10px 0;}
+    table{width:100%;border-collapse:collapse;}
+    td{font-size:12px;vertical-align:top;padding:4px 0;}
+    .item-name{width:75%;padding-right:6px;}
+    .item-total{width:25%;text-align:right;font-weight:bold;}
+    .qty-line{font-size:11px;margin-top:2px;}
+    .summary-row{display:flex;justify-content:space-between;font-size:12px;margin:3px 0;}
+    .total{font-size:16px;font-weight:bold;margin-top:6px;}
+    .footer{margin-top:16px;text-align:center;font-size:11px;line-height:1.7;}
+    @media print{body{width:80mm;}@page{margin:0;}}
+  </style>
+</head>
+<body>
+  <div class="center">
+    <div class="restaurant">Restaurant Name</div>
+    <div class="small">123 Food Street, City Center</div>
+    <div class="small">Phone: +1 234 567 890</div>
+  </div>
+  <div class="divider"></div>
+  <div class="small">
+    <div><span class="bold">Order:</span> ${orderId}</div>
+    <div><span class="bold">Date:</span> ${dateStr}</div>
+    <div><span class="bold">Time:</span> ${timeStr}</div>
+    <div><span class="bold">Payment:</span> Cash On Delivery</div>
+  </div>
+  <div class="divider"></div>
+  <div class="small bold">Delivery Address:</div>
+  <div class="small">${shippingAddress}</div>
+  <div class="divider"></div>
+  <table>${itemRows}</table>
+  <div class="divider"></div>
+  <div class="summary-row"><span>Subtotal</span><span>$${subtotal.toFixed(2)}</span></div>
+  <div class="summary-row"><span>Delivery Charge</span><span>$${deliveryCharge.toFixed(2)}</span></div>
+  <div class="summary-row total"><span>TOTAL</span><span>$${total.toFixed(2)}</span></div>
+  <div class="divider"></div>
+  <div class="footer">
+    <div>Thank You For Your Order</div>
+    <div>Please Visit Again ❤️</div>
+  </div>
+  <script>
+    window.onload = function() {
+      window.print();
+      window.onafterprint = function() { window.close(); };
+    };
+  </script>
+</body>
+</html>`;
+
+    const w = window.open('', '_blank', 'width=420,height=700');
+    if (!w) { alert('Please allow popups to print receipt.'); return; }
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+      <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200">
+
+        {/* HEADER */}
+        <div className="relative overflow-hidden bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-5 text-white">
           <button
             onClick={onClose}
             disabled={isSubmitting}
-            className="p-2 rounded-xl hover:bg-slate-100 transition-colors disabled:opacity-50"
+            className="absolute top-4 right-4 w-8 h-8 rounded-xl bg-white/15 hover:bg-white/25 flex items-center justify-center transition"
           >
-            <X size={18} className="text-slate-500" />
+            <X size={15} />
           </button>
-        </div>
-
-        {/* Receipt Preview — this is what gets printed */}
-        <div className="px-6 py-4 max-h-[60vh] overflow-y-auto">
-          <div ref={receiptRef}>
-            {/* Receipt Top */}
-            <h2 className="text-center font-black text-lg">🍽️ Restaurant Name</h2>
-            <p className="text-center text-xs text-slate-500 mb-1">{dateStr} · {timeStr}</p>
-            <p className="text-center text-xs text-slate-400 mb-3">{shippingAddress}</p>
-
-            <div className="divider border-t border-dashed border-slate-300 my-3" />
-
-            {/* Items */}
-            <div className="space-y-2">
-              {cart.map((item) => (
-                <div key={item._id} className="row flex justify-between text-sm">
-                  <span className="text-slate-700">
-                    <span className="font-bold">{item.quantity}×</span>{' '}
-                    {item.title || item.name}
-                  </span>
-                  <span className="font-medium">${(item.price * item.quantity).toFixed(2)}</span>
-                </div>
-              ))}
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-2xl bg-white/15 flex items-center justify-center backdrop-blur">
+              <ReceiptText size={24} />
             </div>
-
-            <div className="divider border-t border-dashed border-slate-300 my-3" />
-
-            {/* Totals */}
-            <div className="space-y-1 text-sm">
-              <div className="flex justify-between text-slate-600">
-                <span>Subtotal</span>
-                <span>${subtotal.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between text-slate-600">
-                <span>Tax / Delivery</span>
-                <span>${deliveryCharge.toFixed(2)}</span>
-              </div>
-              <div className="flex justify-between font-black text-base mt-1 text-emerald-700">
-                <span>Total</span>
-                <span>${total.toFixed(2)}</span>
-              </div>
+            <div>
+              <p className="text-xs uppercase tracking-[0.25em] text-indigo-100 font-semibold">
+                Restaurant POS
+              </p>
+              <h2 className="text-xl font-bold mt-1">Confirm Order</h2>
             </div>
-
-            <div className="divider border-t border-dashed border-slate-300 my-3" />
-
-            <div className="flex justify-between text-sm text-slate-500">
-              <span>Payment</span>
-              <span className="font-bold uppercase text-slate-700">Cash on Delivery</span>
-            </div>
-
-            <p className="text-center text-xs text-slate-400 mt-4">
-              Thank you for your order! 🙏
-            </p>
           </div>
         </div>
 
-        {/* Modal Actions */}
-        <div className="px-6 py-4 border-t bg-slate-50 flex gap-3">
-          {/* Print Button */}
-          <button
-            onClick={handlePrint}
-            disabled={isSubmitting}
-            className="flex items-center gap-2 px-4 py-3 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 font-bold text-sm transition-colors disabled:opacity-50"
-          >
-            <Printer size={16} />
-            Print Receipt
-          </button>
+        {/* RECEIPT */}
+        <div className="p-5 bg-slate-50">
+          <div className="bg-white rounded-2xl border border-dashed border-slate-300 p-5 shadow-sm">
 
-          {/* Confirm Button */}
-          <button
-            onClick={onConfirm}
-            disabled={isSubmitting}
-            className="flex-1 flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 text-white font-black rounded-xl py-3 transition-colors"
-          >
-            {isSubmitting ? (
-              <>
-                <span className="animate-spin inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full" />
-                Placing Order...
-              </>
-            ) : (
-              <>
-                <CheckCircle size={16} />
-                Confirm Order
-              </>
-            )}
-          </button>
+            <div className="text-center">
+              <h3 className="text-lg font-black tracking-wide text-slate-900 uppercase">
+                Restaurant Name
+              </h3>
+              <p className="text-xs text-slate-400 mt-1">Premium Food & Fast Delivery</p>
+            </div>
+
+            <div className="border-t border-dashed border-slate-300 my-4" />
+
+            <div className="space-y-2 text-sm">
+              <div className="flex items-center justify-between">
+                <span className="text-slate-500">Order ID</span>
+                <span className="font-bold text-slate-900">{orderId}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-1.5 text-slate-500">
+                  <Clock3 size={13} /> Date & Time
+                </div>
+                <span className="font-medium text-slate-700">{dateStr} · {timeStr}</span>
+              </div>
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-center gap-1.5 text-slate-500 shrink-0">
+                  <MapPin size={13} /> Address
+                </div>
+                <span className="text-right text-slate-700 text-xs leading-relaxed max-w-[220px]">
+                  {shippingAddress}
+                </span>
+              </div>
+            </div>
+
+            <div className="border-t border-dashed border-slate-300 my-4" />
+
+            {/* ITEMS */}
+            <div className="space-y-3">
+              {cart.map(item => {
+                const qty       = getQty(item);
+                const name      = item.title || item.name || 'Item';
+                const lineTotal = item.price * qty;
+                return (
+                  <div key={item._id} className="flex justify-between items-start gap-3">
+                    <div className="flex-1">
+                      <p className="text-sm font-semibold text-slate-800">{name}</p>
+                      <p className="text-xs text-slate-400 mt-0.5">
+                        {qty} × ${item.price.toFixed(2)}
+                      </p>
+                    </div>
+                    <p className="text-sm font-bold text-slate-900 whitespace-nowrap">
+                      ${lineTotal.toFixed(2)}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="border-t border-dashed border-slate-300 my-4" />
+
+            {/* TOTALS */}
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span className="text-slate-500">Subtotal</span>
+                <span className="font-medium text-slate-700">${subtotal.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-slate-500">Delivery Charge</span>
+                <span className="font-medium text-slate-700">${deliveryCharge.toFixed(2)}</span>
+              </div>
+              <div className="pt-3 mt-3 border-t border-dashed border-slate-300 flex justify-between items-center">
+                <span className="text-lg font-black text-slate-900">TOTAL</span>
+                <span className="text-2xl font-black text-emerald-600">${total.toFixed(2)}</span>
+              </div>
+            </div>
+
+            <div className="border-t border-dashed border-slate-300 my-4" />
+
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-slate-500">Payment Method</span>
+              <div className="flex items-center gap-2 bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-xl border border-emerald-200">
+                <Banknote size={14} />
+                <span className="text-xs font-bold uppercase tracking-wide">Cash</span>
+              </div>
+            </div>
+
+            <div className="mt-5 text-center">
+              <p className="text-xs text-slate-400">Thank you for your order ❤️</p>
+            </div>
+          </div>
+
+          {/* BUTTONS */}
+          <div className="flex gap-3 mt-5">
+            <button
+              onClick={handlePrint}
+              disabled={isSubmitting}
+              className="h-12 px-5 rounded-2xl border border-slate-200 bg-white hover:bg-slate-100 transition flex items-center justify-center gap-2 text-sm font-semibold text-slate-700"
+            >
+              <Printer size={16} />
+              Print
+            </button>
+            <button
+              onClick={onConfirm}
+              disabled={isSubmitting}
+              className="flex-1 h-12 rounded-2xl bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 transition flex items-center justify-center gap-2 text-sm font-bold text-white shadow-lg shadow-indigo-200"
+            >
+              {isSubmitting ? (
+                <><Loader2 size={16} className="animate-spin" /> Placing Order...</>
+              ) : (
+                <><CircleCheck size={16} /> Confirm Order</>
+              )}
+            </button>
+          </div>
         </div>
-
       </div>
     </div>
   );
