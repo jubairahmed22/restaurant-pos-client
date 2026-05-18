@@ -120,7 +120,7 @@ export default function DataTable<T extends { _id: string }>({
               data.map((item, rowIndex) => (
                 <tr
                   key={item._id || rowIndex}
-                  className="hover:bg-slate-50/30 transition-colors group"
+                  className="hover:bg-slate-50/30 transition-colors group text-black"
                 >
                   {columns.map((col, colIdx) => (
                     <td

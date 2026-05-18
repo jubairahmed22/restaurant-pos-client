@@ -1,12 +1,18 @@
+'use client';
+
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import api from '@/services/axios';
 import toast from 'react-hot-toast';
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+import { OrderService } from '@/services/OrderService';
+
+// ─────────────────────────────────────────────────────────────
+// TYPES (MATCH YOUR BACKEND)
+// ─────────────────────────────────────────────────────────────
 
 export interface OrderItem {
   _id: string;
+  food: string;        // ObjectId
   title: string;
   price: number;
   quantity: number;
@@ -15,16 +21,29 @@ export interface OrderItem {
 export interface Order {
   _id: string;
   orderId: string;
-  user?: { name: string; email: string };
+
+  user: string; // ObjectId (NOT populated)
+
+  fullName: string;
+  email?: string;
+  phone: string;
+
   items: OrderItem[];
-  total: number;
+
   subtotal: number;
   deliveryCharge: number;
-  orderStatus: 'placed' | 'preparing' | 'dispatched' | 'delivered' | 'cancelled';
-  paymentStatus: 'pending' | 'paid' | 'failed';
+  total: number;
+
   paymentMethod: string;
+  paymentStatus: 'pending' | 'paid' | 'failed';
+  orderStatus: 'placed' | 'preparing' | 'dispatched' | 'delivered' | 'cancelled';
+
   shippingAddress: string;
+
   createdAt: string;
+  updatedAt: string;
+
+  __v?: number;
 }
 
 export interface Pagination {
@@ -42,98 +61,163 @@ export interface OrderFilters {
   search: string;
 }
 
-const LIMIT = 10;
-// Poll every 15 seconds so new POS orders appear automatically
-const REFETCH_INTERVAL = 15_000;
+// ─────────────────────────────────────────────────────────────
 
-// ─── Hook ─────────────────────────────────────────────────────────────────────
+const LIMIT = 10;
+const REFETCH_INTERVAL = 15000;
+
+// ─────────────────────────────────────────────────────────────
+// HOOK
+// ─────────────────────────────────────────────────────────────
 
 export function useAdminOrders() {
   const queryClient = useQueryClient();
 
-  const [page, setPage]         = useState(1);
+  const [page, setPage] = useState(1);
+
   const [searchInput, setSearchInput] = useState('');
-  const [filters, setFilters]   = useState<OrderFilters>({
+
+  const [filters, setFilters] = useState<OrderFilters>({
     orderStatus: '',
     paymentStatus: '',
     search: '',
   });
 
-  // Build params object sent to the backend
-  const params: Record<string, string | number> = { page, limit: LIMIT };
-  if (filters.orderStatus)   params.orderStatus   = filters.orderStatus;
-  if (filters.paymentStatus) params.paymentStatus = filters.paymentStatus;
-  if (filters.search)        params.search        = filters.search;
+  // ─────────────────────────────────────────────────────────────
+  // BUILD QUERY PARAMS
+  // ─────────────────────────────────────────────────────────────
 
-  // ── Query ──────────────────────────────────────────────────────────────────
+  const params: Record<string, string | number> = {
+    page,
+    limit: LIMIT,
+  };
+
+  if (filters.orderStatus) params.orderStatus = filters.orderStatus;
+  if (filters.paymentStatus) params.paymentStatus = filters.paymentStatus;
+  if (filters.search) params.search = filters.search;
+
+  // ─────────────────────────────────────────────────────────────
+  // GET ORDERS (ADMIN)
+  // ─────────────────────────────────────────────────────────────
+
   const {
     data: res,
     isLoading,
     isFetching,
-    dataUpdatedAt,
     refetch,
+    dataUpdatedAt,
   } = useQuery({
     queryKey: ['admin-orders', page, filters],
     queryFn: async () => {
-      const response = await api.get('/orders/admin', { params });
-      return response.data as { success: boolean; pagination: Pagination; data: Order[] };
+      return await OrderService.getAllOrdersAdmin({
+        page,
+        limit: LIMIT,
+        search: filters.search,
+        orderStatus: filters.orderStatus,
+        paymentStatus: filters.paymentStatus,
+      });
     },
-    placeholderData: (prev) => prev,       // keep stale data while fetching
-    refetchInterval: REFETCH_INTERVAL,     // auto-poll every 15 s
-    refetchIntervalInBackground: false,    // pause polling when tab is hidden
+
+    placeholderData: (prev) => prev,
+    refetchInterval: REFETCH_INTERVAL,
+    refetchIntervalInBackground: false,
   });
 
-  // ── Status update mutation ─────────────────────────────────────────────────
+  // ─────────────────────────────────────────────────────────────
+  // UPDATE ORDER STATUS
+  // ─────────────────────────────────────────────────────────────
+
   const updateStatus = useMutation({
-    mutationFn: ({ id, orderStatus }: { id: string; orderStatus: string }) =>
-      api.put(`/orders/${id}/status`, { orderStatus }),
+    mutationFn: ({
+      id,
+      orderStatus,
+      paymentStatus,
+    }: {
+      id: string;
+      orderStatus?: Order['orderStatus'];
+      paymentStatus?: Order['paymentStatus'];
+    }) =>
+      OrderService.updateOrderStatus(id, {
+        orderStatus,
+        paymentStatus,
+      }),
+
     onSuccess: () => {
-      // Invalidate so the table refreshes immediately after a status change
       queryClient.invalidateQueries({ queryKey: ['admin-orders'] });
-      toast.success('Order status updated');
+      toast.success('Order updated successfully');
     },
-    onError: () => toast.error('Failed to update status'),
+
+    onError: () => {
+      toast.error('Failed to update order');
+    },
   });
 
-  // ── Filter helpers ─────────────────────────────────────────────────────────
+  // ─────────────────────────────────────────────────────────────
+  // FILTER HELPERS
+  // ─────────────────────────────────────────────────────────────
+
   const applySearch = () => {
-    setFilters(f => ({ ...f, search: searchInput.trim() }));
+    setFilters((prev) => ({
+      ...prev,
+      search: searchInput.trim(),
+    }));
     setPage(1);
   };
 
-  const applyFilter = (key: keyof OrderFilters, value: string) => {
-    setFilters(f => ({ ...f, [key]: value }));
+  const applyFilter = (
+    key: keyof OrderFilters,
+    value: string
+  ) => {
+    setFilters((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
     setPage(1);
   };
 
   const clearFilters = () => {
-    setFilters({ orderStatus: '', paymentStatus: '', search: '' });
+    setFilters({
+      orderStatus: '',
+      paymentStatus: '',
+      search: '',
+    });
     setSearchInput('');
     setPage(1);
   };
 
   const hasActiveFilters =
-    filters.orderStatus || filters.paymentStatus || filters.search;
+    !!filters.orderStatus ||
+    !!filters.paymentStatus ||
+    !!filters.search;
+
+  // ─────────────────────────────────────────────────────────────
+  // RETURN
+  // ─────────────────────────────────────────────────────────────
 
   return {
     // data
-    orders:     res?.data ?? [],
+    orders: res?.data ?? [],
     pagination: res?.pagination,
+
     // states
     isLoading,
     isFetching,
+    refetch,
     dataUpdatedAt,
-    // filter state
+
+    // filters
     filters,
     searchInput,
     setSearchInput,
     hasActiveFilters,
+
     // actions
     setPage,
     applySearch,
     applyFilter,
     clearFilters,
-    refetch,
+
+    // mutation
     updateStatus,
   };
 }

@@ -2,9 +2,12 @@
 
 import React from 'react';
 import {
-  X, Printer, CircleCheck, Banknote, Loader2,
-  MapPin, Clock3, ReceiptText,
+  X, Printer, CircleCheck, Banknote,
+  Loader2, MapPin, Clock3, ReceiptText, User, Phone,
 } from 'lucide-react';
+import type { CustomerInfo } from './CheckoutPanel';
+
+// ─── Types ────────────────────────────────────────────────────────────────────
 
 interface CartItem {
   _id: string;
@@ -22,19 +25,24 @@ interface ConfirmOrderModalProps {
   subtotal: number;
   deliveryCharge: number;
   total: number;
+  customer: CustomerInfo;
   shippingAddress: string;
   isSubmitting: boolean;
   onConfirm: () => void;
   onClose: () => void;
 }
 
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
 function getQty(item: CartItem): number {
   return item.quantity ?? item.qty ?? item.count ?? 1;
 }
 
+// ─── Component ────────────────────────────────────────────────────────────────
+
 export default function ConfirmOrderModal({
   isOpen, cart, subtotal, deliveryCharge, total,
-  shippingAddress, isSubmitting, onConfirm, onClose,
+  customer, shippingAddress, isSubmitting, onConfirm, onClose,
 }: ConfirmOrderModalProps) {
   if (!isOpen) return null;
 
@@ -43,6 +51,7 @@ export default function ConfirmOrderModal({
   const dateStr = now.toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' });
   const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 
+  // ── Print ──────────────────────────────────────────────────────────────────
   const handlePrint = () => {
     const itemRows = cart.map(item => {
       const qty       = getQty(item);
@@ -58,6 +67,13 @@ export default function ConfirmOrderModal({
         </tr>`;
     }).join('');
 
+    // Customer rows (only show non-empty fields)
+    const customerRows = [
+      customer.fullName.trim() ? `<div><span class="bold">Name:</span> ${customer.fullName.trim()}</div>` : '',
+      customer.phone.trim()    ? `<div><span class="bold">Phone:</span> ${customer.phone.trim()}</div>`   : '',
+      customer.address.trim()  ? `<div><span class="bold">Address:</span> ${customer.address.trim()}</div>` : '',
+    ].filter(Boolean).join('');
+
     const html = `<!DOCTYPE html>
 <html>
 <head>
@@ -67,14 +83,14 @@ export default function ConfirmOrderModal({
     body{font-family:monospace;width:80mm;background:#fff;color:#000;padding:10px;}
     .center{text-align:center;}
     .restaurant{font-size:20px;font-weight:bold;margin-bottom:4px;text-transform:uppercase;}
-    .small{font-size:11px;line-height:1.5;}
+    .small{font-size:11px;line-height:1.7;}
     .bold{font-weight:bold;}
     .divider{border-top:1px dashed #000;margin:10px 0;}
     table{width:100%;border-collapse:collapse;}
     td{font-size:12px;vertical-align:top;padding:4px 0;}
     .item-name{width:75%;padding-right:6px;}
     .item-total{width:25%;text-align:right;font-weight:bold;}
-    .qty-line{font-size:11px;margin-top:2px;}
+    .qty-line{font-size:11px;margin-top:2px;color:#555;}
     .summary-row{display:flex;justify-content:space-between;font-size:12px;margin:3px 0;}
     .total{font-size:16px;font-weight:bold;margin-top:6px;}
     .footer{margin-top:16px;text-align:center;font-size:11px;line-height:1.7;}
@@ -94,9 +110,7 @@ export default function ConfirmOrderModal({
     <div><span class="bold">Time:</span> ${timeStr}</div>
     <div><span class="bold">Payment:</span> Cash On Delivery</div>
   </div>
-  <div class="divider"></div>
-  <div class="small bold">Delivery Address:</div>
-  <div class="small">${shippingAddress}</div>
+  ${customerRows ? `<div class="divider"></div><div class="small">${customerRows}</div>` : ''}
   <div class="divider"></div>
   <table>${itemRows}</table>
   <div class="divider"></div>
@@ -124,16 +138,17 @@ export default function ConfirmOrderModal({
     w.document.close();
   };
 
+  // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
       <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200">
 
-        {/* HEADER */}
+        {/* GRADIENT HEADER */}
         <div className="relative overflow-hidden bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-5 text-white">
           <button
             onClick={onClose}
             disabled={isSubmitting}
-            className="absolute top-4 right-4 w-8 h-8 rounded-xl bg-white/15 hover:bg-white/25 flex items-center justify-center transition"
+            className="absolute top-4 right-4 w-8 h-8 rounded-xl bg-white/15 hover:bg-white/25 flex items-center justify-center transition disabled:opacity-50"
           >
             <X size={15} />
           </button>
@@ -145,15 +160,16 @@ export default function ConfirmOrderModal({
               <p className="text-xs uppercase tracking-[0.25em] text-indigo-100 font-semibold">
                 Restaurant POS
               </p>
-              <h2 className="text-xl font-bold mt-1">Confirm Order</h2>
+              <h2 className="text-xl font-bold mt-0.5">Confirm Order</h2>
             </div>
           </div>
         </div>
 
-        {/* RECEIPT */}
-        <div className="p-5 bg-slate-50">
+        {/* SCROLLABLE RECEIPT BODY */}
+        <div className="p-5 bg-slate-50 max-h-[70vh] overflow-y-auto">
           <div className="bg-white rounded-2xl border border-dashed border-slate-300 p-5 shadow-sm">
 
+            {/* Restaurant name */}
             <div className="text-center">
               <h3 className="text-lg font-black tracking-wide text-slate-900 uppercase">
                 Restaurant Name
@@ -163,6 +179,7 @@ export default function ConfirmOrderModal({
 
             <div className="border-t border-dashed border-slate-300 my-4" />
 
+            {/* Order meta */}
             <div className="space-y-2 text-sm">
               <div className="flex items-center justify-between">
                 <span className="text-slate-500">Order ID</span>
@@ -174,19 +191,62 @@ export default function ConfirmOrderModal({
                 </div>
                 <span className="font-medium text-slate-700">{dateStr} · {timeStr}</span>
               </div>
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex items-center gap-1.5 text-slate-500 shrink-0">
-                  <MapPin size={13} /> Address
-                </div>
-                <span className="text-right text-slate-700 text-xs leading-relaxed max-w-[220px]">
-                  {shippingAddress}
-                </span>
-              </div>
             </div>
+
+            {/* Customer info — only render rows that have data */}
+            {(customer.fullName || customer.phone || customer.address) && (
+              <>
+                <div className="border-t border-dashed border-slate-300 my-4" />
+                <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">
+                  Customer
+                </p>
+                <div className="space-y-2 text-sm">
+                  {customer.fullName.trim() && (
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5 text-slate-500">
+                        <User size={13} /> Name
+                      </div>
+                      <span className="font-medium text-slate-700">{customer.fullName.trim()}</span>
+                    </div>
+                  )}
+                  {customer.phone.trim() && (
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5 text-slate-500">
+                        <Phone size={13} /> Phone
+                      </div>
+                      <span className="font-medium text-slate-700">{customer.phone.trim()}</span>
+                    </div>
+                  )}
+                  {customer.address.trim() && (
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-1.5 text-slate-500 shrink-0">
+                        <MapPin size={13} /> Address
+                      </div>
+                      <span className="text-right text-slate-700 text-xs leading-relaxed max-w-[200px]">
+                        {customer.address.trim()}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+
+            {/* No customer info — show fallback */}
+            {!customer.fullName && !customer.phone && !customer.address && (
+              <>
+                <div className="border-t border-dashed border-slate-300 my-4" />
+                <div className="flex items-center justify-between text-sm">
+                  <div className="flex items-center gap-1.5 text-slate-500">
+                    <MapPin size={13} /> Location
+                  </div>
+                  <span className="font-medium text-slate-700">Dine-In / Walk-In</span>
+                </div>
+              </>
+            )}
 
             <div className="border-t border-dashed border-slate-300 my-4" />
 
-            {/* ITEMS */}
+            {/* Items */}
             <div className="space-y-3">
               {cart.map(item => {
                 const qty       = getQty(item);
@@ -210,7 +270,7 @@ export default function ConfirmOrderModal({
 
             <div className="border-t border-dashed border-slate-300 my-4" />
 
-            {/* TOTALS */}
+            {/* Totals */}
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-slate-500">Subtotal</span>
@@ -220,7 +280,7 @@ export default function ConfirmOrderModal({
                 <span className="text-slate-500">Delivery Charge</span>
                 <span className="font-medium text-slate-700">${deliveryCharge.toFixed(2)}</span>
               </div>
-              <div className="pt-3 mt-3 border-t border-dashed border-slate-300 flex justify-between items-center">
+              <div className="pt-3 mt-1 border-t border-dashed border-slate-300 flex justify-between items-center">
                 <span className="text-lg font-black text-slate-900">TOTAL</span>
                 <span className="text-2xl font-black text-emerald-600">${total.toFixed(2)}</span>
               </div>
@@ -228,6 +288,7 @@ export default function ConfirmOrderModal({
 
             <div className="border-t border-dashed border-slate-300 my-4" />
 
+            {/* Payment */}
             <div className="flex justify-between items-center">
               <span className="text-sm text-slate-500">Payment Method</span>
               <div className="flex items-center gap-2 bg-emerald-50 text-emerald-700 px-3 py-1.5 rounded-xl border border-emerald-200">
@@ -236,17 +297,17 @@ export default function ConfirmOrderModal({
               </div>
             </div>
 
-            <div className="mt-5 text-center">
-              <p className="text-xs text-slate-400">Thank you for your order ❤️</p>
-            </div>
+            <p className="text-center text-xs text-slate-400 mt-5">
+              Thank you for your order ❤️
+            </p>
           </div>
 
-          {/* BUTTONS */}
-          <div className="flex gap-3 mt-5">
+          {/* ACTION BUTTONS */}
+          <div className="flex gap-3 mt-4">
             <button
               onClick={handlePrint}
               disabled={isSubmitting}
-              className="h-12 px-5 rounded-2xl border border-slate-200 bg-white hover:bg-slate-100 transition flex items-center justify-center gap-2 text-sm font-semibold text-slate-700"
+              className="h-12 px-5 rounded-2xl border border-slate-200 bg-white hover:bg-slate-100 transition flex items-center justify-center gap-2 text-sm font-semibold text-slate-700 disabled:opacity-50"
             >
               <Printer size={16} />
               Print
@@ -264,6 +325,7 @@ export default function ConfirmOrderModal({
             </button>
           </div>
         </div>
+
       </div>
     </div>
   );
