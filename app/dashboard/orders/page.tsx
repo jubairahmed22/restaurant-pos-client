@@ -270,7 +270,7 @@ export default function AdminOrderManagement() {
     orders, pagination, isLoading,
     setPage, updateStatus, deleteOrder,
     filters,
-    setSearchInput: hookSetSearch,
+    setSearchInput: hookSetSearch, 
     applySearch, applyFilter, applyQuickFilter, applyDateRange, clearFilters,
   } = useAdminOrders();
 

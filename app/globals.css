@@ -1,78 +1,89 @@
-@import url('https://rsms.me/inter/inter.css');
+/* MUST BE FIRST */
+@import url('https://fonts.googleapis.com/css2?family=Calistoga&family=Inter:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
-:root {
-  --background: #f8f9fd; /* Light grayish-blue background from design */
-  --foreground: #1e2661; /* Deep navy used for primary text */
-  --font-inter: 'Inter', sans-serif;
-  
-  /* Brand Colors from Reference */
-  --metor-indigo: #6366f1; /* */
-  --metor-slate: #94a3b8;
-}
+/* THEME DEFINITIONS */
+@theme {
+  --font-inter: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-calistoga: "Calistoga", serif;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-inter);
-  --font-inter: var(--font-inter);
+
+  --color-background: #f8f9fd;
+  --color-foreground: #1e2661;
+  --color-metor-indigo: #6366f1;
+  --color-metor-slate: #94a3b8;
+
+  --font-weight-extrabold: 800;
 }
 
-/* Global Typography Design based on Metor Dashboard */
+/* BASE LAYERS */
+@layer base {
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-inter);
+  }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-inter);
-  -webkit-font-smoothing: antialiased;
+  h1,
+  h2,
+  h3,
+  .font-display {
+    font-family: var(--font-calistoga);
+  }
 }
 
-h1 {
-  font-weight: 900; /* Black weight */
-  font-size: 1.5rem;
-  letter-spacing: -0.025em;
-  color: #1e2661;
-  text-transform: uppercase; /* */
+/* CUSTOM UTILITIES */
+@layer utilities {
+  .text-brand {
+    @apply text-metor-indigo font-extrabold;
+  }
 }
 
-h2 {
-  font-weight: 800; /* ExtraBold */
-  font-size: 0.75rem;
-  letter-spacing: 0.1em;
-  color: #1e2661;
-  text-transform: uppercase; /* Used for section headers */
+/* ─────────────────────────────────────────────────────────────
+   Add this to your globals.css (or equivalent)
+   It provides the staggered card entrance used in FoodGrid
+───────────────────────────────────────────────────────────── */
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-h3 {
-  font-weight: 900;
-  font-size: 1rem;
-  color: #1e2661; /* */
+.animate-fade-in-up {
+  animation: fade-in-up 0.35s ease-out both;
 }
 
-p {
-  font-size: 0.875rem; /* text-sm */
-  color: #64748b; /* slate-500 */
-  font-weight: 500; /* medium */
-}
+/* ─────────────────────────────────────────────────────────────
+   If you're using Tailwind v3, add this to tailwind.config.js:
 
-.content p {
-  font-size: 0.875rem;
-  color: #ffffff;
-  font-weight: 500;
-}
+   theme: {
+     extend: {
+       animation: {
+         'fade-in-up': 'fade-in-up 0.35s ease-out both',
+       },
+       keyframes: {
+         'fade-in-up': {
+           from: { opacity: '0', transform: 'translateY(16px)' },
+           to:   { opacity: '1', transform: 'translateY(0)' },
+         },
+       },
+       screens: {
+         xs: '480px',   // optional: enables grid-cols-2 at 480px
+       },
+     },
+   },
 
-span {
-  font-size: 0.75rem; /* text-xs */
-  font-weight: 600; /* semi-bold */
-}
+   Then you can replace ".animate-fade-in-up" class usage
+   with Tailwind's "animate-fade-in-up" utility directly.
+───────────────────────────────────────────────────────────── */
 
-/* Primary Link/Action Span */
-.text-brand {
-  color: var(--metor-indigo);
-  font-weight: 800;
-}
-
-/* Scrollbar styling for that clean dashboard look */
+/* Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
 }

@@ -46,7 +46,7 @@ export default function ConfirmOrderModal({
 }: ConfirmOrderModalProps) {
   if (!isOpen) return null;
 
-  const now     = new Date();
+  const now = new Date();
   const orderId = `#${Math.floor(100000 + Math.random() * 900000)}`;
   const dateStr = now.toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' });
   const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
@@ -54,8 +54,8 @@ export default function ConfirmOrderModal({
   // ── Print ──────────────────────────────────────────────────────────────────
   const handlePrint = () => {
     const itemRows = cart.map(item => {
-      const qty       = getQty(item);
-      const name      = item.title || item.name || 'Item';
+      const qty = getQty(item);
+      const name = item.title || item.name || 'Item';
       const lineTotal = item.price * qty;
       return `
         <tr>
@@ -70,8 +70,8 @@ export default function ConfirmOrderModal({
     // Customer rows (only show non-empty fields)
     const customerRows = [
       customer.fullName.trim() ? `<div><span class="bold">Name:</span> ${customer.fullName.trim()}</div>` : '',
-      customer.phone.trim()    ? `<div><span class="bold">Phone:</span> ${customer.phone.trim()}</div>`   : '',
-      customer.address.trim()  ? `<div><span class="bold">Address:</span> ${customer.address.trim()}</div>` : '',
+      customer.phone.trim() ? `<div><span class="bold">Phone:</span> ${customer.phone.trim()}</div>` : '',
+      customer.address.trim() ? `<div><span class="bold">Address:</span> ${customer.address.trim()}</div>` : '',
     ].filter(Boolean).join('');
 
     const html = `<!DOCTYPE html>
@@ -249,8 +249,8 @@ export default function ConfirmOrderModal({
             {/* Items */}
             <div className="space-y-3">
               {cart.map(item => {
-                const qty       = getQty(item);
-                const name      = item.title || item.name || 'Item';
+                const qty = getQty(item);
+                const name = item.title || item.name || 'Item';
                 const lineTotal = item.price * qty;
                 return (
                   <div key={item._id} className="flex justify-between items-start gap-3">

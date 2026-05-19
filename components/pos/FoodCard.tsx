@@ -5,7 +5,7 @@ import { Plus } from 'lucide-react';
 
 export default function FoodCard({ item, onAdd }: any) {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 bg-white/70 rounded p-3">
 
       {/* ── IMAGE CARD ── */}
       <div className="relative rounded-3xl overflow-hidden aspect-square bg-slate-100 group">
@@ -48,7 +48,7 @@ export default function FoodCard({ item, onAdd }: any) {
               self-start
               bg-white text-slate-800
               text-sm font-semibold
-              px-3 py-1 rounded-full
+              px-3 py-1 rounded-full text-[12px]
               shadow-sm
               mb-1
             "
@@ -59,8 +59,8 @@ export default function FoodCard({ item, onAdd }: any) {
           {/* Title */}
           <h3
             className="
-              text-white font-extrabold
-              text-2xl leading-tight
+              text-white content font-extrabold
+              text-md leading-tight
             "
           >
             {item.title}
@@ -70,7 +70,7 @@ export default function FoodCard({ item, onAdd }: any) {
 
       {/* ── DESCRIPTION below card ── */}
       {item.description && (
-        <p className="text-sm text-slate-500 px-1 leading-snug">
+        <p className='text-black font-semibold text-[12px]'>
           {item.description}
         </p>
       )}

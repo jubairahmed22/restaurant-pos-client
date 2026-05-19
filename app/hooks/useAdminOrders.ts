@@ -277,6 +277,27 @@ export function useAdminOrders() {
   // RETURN
   // ─────────────────────────────────────────────
 
+    // ─────────────────────────────────────────────
+  // DELETE ORDER
+  // ─────────────────────────────────────────────
+
+  const deleteOrder = useMutation({
+    mutationFn: (id: string) =>
+      OrderService.deleteOrder(id),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['admin-orders'],
+      });
+
+      toast.success('Order deleted successfully');
+    },
+
+    onError: () => {
+      toast.error('Failed to delete order');
+    },
+  });
+
   return {
     // data
     orders: res?.data ?? [],
@@ -304,7 +325,7 @@ export function useAdminOrders() {
     applyQuickFilter,
     applyDateRange,
     clearFilters,
-
+deleteOrder,
     // mutation
     updateStatus,
   };
