@@ -387,7 +387,7 @@ export default function AdminOrderManagement() {
     },
     {
       header: 'Total', accessorKey: 'total',
-      cell: (item: Order) => <span className="font-bold text-orange-500">৳{item.total.toLocaleString()}</span>,
+      cell: (item: Order) => <span className="font-bold text-orange-500">AUD {item.total.toLocaleString()}</span>,
     },
     {
       header: 'Payment', accessorKey: 'paymentStatus',
@@ -438,34 +438,65 @@ export default function AdminOrderManagement() {
   return (
     <div className="space-y-4">
 
-      {/* ─── FILTER BAR ─────────────────────────────────────────────── */}
-      <div className="flex flex-wrap gap-2 items-center bg-white border border-slate-200 rounded-xl p-3">
+     {/* ─── FILTER BAR ─────────────────────────────────────────────── */}
+<div className="flex flex-col gap-3">
 
-       <div>
+  <div className="bg-white border border-slate-200 rounded-xl p-3.5 flex flex-col gap-3">
+
+    {/* Top row: search + divider + dropdowns */}
+    <div className="flex flex-wrap items-center gap-2">
+
+      {/* Search */}
+      <div className="flex gap-1.5 flex-1 min-w-[220px]">
         <input
           value={searchInput}
           onChange={e => { setSearchInputLocal(e.target.value); hookSetSearch(e.target.value); }}
           onKeyDown={e => e.key === 'Enter' && applySearch()}
           placeholder="Search name, email, phone, order ID…"
-          className="border border-slate-200 px-3 py-2 text-sm rounded-lg min-w-[100px] flex-1 focus:outline-none focus:ring-2 focus:ring-blue-200"
+          className="flex-1 min-w-0 h-9 px-3 text-sm border border-slate-200 rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400"
         />
-        <Button onClick={applySearch} className="bg-gray-900 text-white px-4 py-2 text-sm rounded-lg hover:bg-gray-700 transition-colors">
+        <Button
+          onClick={applySearch}
+          className="h-9 px-4 text-sm font-medium bg-gray-900 text-white rounded-lg hover:bg-gray-700 transition-colors flex items-center gap-1.5 whitespace-nowrap"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
           Search
         </Button>
-       </div>
+      </div>
 
-       <div className='flex flex-row gap-5'>
-                <select value={filters.orderStatus}   onChange={e => applyFilter('orderStatus',   e.target.value)} className="border border-slate-200 px-2 py-2 text-sm rounded-lg bg-white focus:outline-none">
+      {/* Divider */}
+      <div className="w-px h-7 bg-slate-200 hidden sm:block" />
+
+      {/* Filters */}
+      <div className="flex flex-wrap items-center gap-1.5">
+        <select
+          value={filters.orderStatus}
+          onChange={e => applyFilter('orderStatus', e.target.value)}
+          className="h-9 pl-3 pr-7 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-200 appearance-none"
+          style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 8px center' }}
+        >
           <option value="">All status</option>
-          {ORDER_STATUSES.map(s   => <option key={s} value={s}>{s}</option>)}
+          {ORDER_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
         </select>
 
-        <select value={filters.paymentStatus} onChange={e => applyFilter('paymentStatus', e.target.value)} className="border border-slate-200 px-2 py-2 text-sm rounded-lg bg-white focus:outline-none">
+        <select
+          value={filters.paymentStatus}
+          onChange={e => applyFilter('paymentStatus', e.target.value)}
+          className="h-9 pl-3 pr-7 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-200 appearance-none"
+          style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 8px center' }}
+        >
           <option value="">All payment</option>
           {PAYMENT_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
         </select>
 
-        <select value={filters.quickFilter}   onChange={e => applyQuickFilter(e.target.value as QuickFilter)} className="border border-slate-200 px-2 py-2 text-sm rounded-lg bg-white focus:outline-none">
+        <select
+          value={filters.quickFilter}
+          onChange={e => applyQuickFilter(e.target.value as QuickFilter)}
+          className="h-9 pl-3 pr-7 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-200 appearance-none"
+          style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 8px center' }}
+        >
           <option value="">Quick filter</option>
           <option value="today">Today</option>
           <option value="yesterday">Yesterday</option>
@@ -473,20 +504,24 @@ export default function AdminOrderManagement() {
           <option value="last30days">Last 30 days</option>
         </select>
 
-        {/* ─── Single calendar range picker ──────────────────────── */}
+        {/* Calendar range picker */}
         <div className="relative" ref={calWrapRef}>
           <button
             type="button"
             onClick={() => setCalOpen(v => !v)}
-            className="flex items-center gap-2 border border-slate-200 px-3 py-2 text-sm rounded-lg bg-white hover:bg-slate-50 transition-colors whitespace-nowrap"
+            className={`h-9 px-3 text-sm border rounded-lg flex items-center gap-2 transition-colors whitespace-nowrap ${
+              calStart
+                ? 'border-blue-400 bg-blue-50 text-blue-700 font-medium'
+                : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-50'
+            }`}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
               <line x1="16" y1="2" x2="16" y2="6"/>
-              <line x1="8"  y1="2" x2="8"  y2="6"/>
-              <line x1="3"  y1="10" x2="21" y2="10"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
             </svg>
-            <span className={calStart ? 'text-blue-700 font-medium' : 'text-slate-500'}>{calLabel}</span>
+            <span>{calLabel}</span>
           </button>
 
           {calOpen && (
@@ -502,43 +537,45 @@ export default function AdminOrderManagement() {
           )}
         </div>
 
-        <button onClick={handleClearAll} className="border border-red-200 text-red-500 px-3 py-2 text-sm rounded-lg hover:bg-red-50 transition-colors">
+        <button
+          onClick={handleClearAll}
+          className="h-9 px-3 text-sm border border-red-200 text-red-500 rounded-lg hover:bg-red-50 transition-colors flex items-center gap-1.5 ml-auto"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
           Clear all
         </button>
-       </div>
       </div>
+    </div>
 
-      {/* ─── ACTIVE FILTER PILLS ────────────────────────────────────── */}
-      <ActiveFilterPills pills={activePills} />
+    {/* Active filter pills */}
+    <ActiveFilterPills pills={activePills} />
+  </div>
 
-      {/* ─── TABLE ──────────────────────────────────────────────────── */}
-      <DataTable<Order>
-        title="Admin Orders"
-        data={orders}
-        columns={columns}
-        page={pagination?.page || 1}
-        totalPages={pagination?.totalPages || 1}
-        setPage={setPage}
-        loading={isLoading}
-      />
+  {/* ─── TABLE ──────────────────────────────────────────────────── */}
+  <DataTable<Order>
+    title="Admin Orders"
+    data={orders}
+    columns={columns}
+    page={pagination?.page || 1}
+    totalPages={pagination?.totalPages || 1}
+    setPage={setPage}
+    loading={isLoading}
+  />
 
-      {/* ─── SUMMARY ────────────────────────────────────────────────── */}
-      <div className="border border-slate-200 rounded-xl p-4 flex flex-wrap gap-6 bg-white">
-        <div>
-          <p className="text-xs text-slate-400 mb-1">Orders (this page)</p>
-          <p className="text-xl font-bold">{orders.length}</p>
-        </div>
-        <div>
-          <p className="text-xs text-slate-400 mb-1">Revenue (this page)</p>
-          <p className="text-xl font-bold text-green-600">৳{totalRevenue.toLocaleString()}</p>
-        </div>
-        {pagination && (
-          <div>
-            <p className="text-xs text-slate-400 mb-1">Total orders (all pages)</p>
-            <p className="text-xl font-bold">{pagination.total}</p>
-          </div>
-        )}
-      </div>
+  {/* ─── SUMMARY STATS ──────────────────────────────────────────── */}
+  <div className="grid grid-cols-3 sm:grid-cols-3 gap-2.5">
+    <div></div>
+    <div></div>
+    <div className="bg-slate-50 rounded-xl p-3.5">
+      <p className="text-xs text-end text-slate-400 mb-1">Revenue (this page)</p>
+      <p className="text-2xl text-end font-semibold text-green-600">AUD {totalRevenue.toLocaleString()}</p>
+    </div>
+ 
+  </div>
+
+</div>
 
     </div>
   );
