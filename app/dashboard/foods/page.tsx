@@ -322,9 +322,6 @@ export default function FoodTablePage() {
 
   return (
     <div className="space-y-8">
-      <h3 className="text-xl font-bold">
-        Food Management
-      </h3>
 
       <div className="grid grid-cols-12 gap-6">
 
@@ -434,68 +431,60 @@ export default function FoodTablePage() {
            RIGHT SIDE
         ========================= */}
 
-        <div className="col-span-12 lg:col-span-8 space-y-4">
+       <div className="col-span-12 lg:col-span-8 min-h-screen max-h-screen overflow-y-auto space-y-4 pr-2">
+  {/* CATEGORY FILTERS */}
+  <div className="w-full bg-white border-b rounded border-slate-100 overflow-x-auto no-scrollbar sticky top-0 z-10">
+    <div className="flex items-center gap-4 px-4 py-2 min-w-max">
+      <ListButton
+        label="All"
+        isActive={category === ''}
+        onClick={() =>
+          updateURL({
+            category: '',
+            page: '1',
+          })
+        }
+      />
 
-          {/* CATEGORY FILTERS */}
+      {categoryRes?.data?.map((cat: any) => (
+        <ListButton
+          key={cat._id}
+          label={cat.title}
+          isActive={category === cat._id}
+          onClick={() =>
+            updateURL({
+              category: cat._id,
+              page: '1',
+            })
+          }
+        />
+      ))}
+    </div>
+  </div>
 
-          <div className="w-full bg-white border-b rounded border-slate-100 overflow-x-auto no-scrollbar">
-
-            <div className="flex items-center gap-4 px-4 py-2 min-w-max">
-
-              <ListButton
-                label="All"
-                isActive={category === ''}
-                onClick={() =>
-                  updateURL({
-                    category: '',
-                    page: '1',
-                  })
-                }
-              />
-
-              {categoryRes?.data?.map((cat: any) => (
-                <ListButton
-                  key={cat._id}
-                  label={cat.title}
-                  isActive={category === cat._id}
-                  onClick={() =>
-                    updateURL({
-                      category: cat._id,
-                      page: '1',
-                    })
-                  }
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* TABLE */}
-
-          <DataTable
-            title="Food Collection"
-            data={foodRes?.data || []}
-            columns={columns}
-            page={page}
-            totalPages={
-              foodRes?.pagination?.pages || 1
-            }
-            setPage={(p: number) =>
-              updateURL({
-                page: String(p),
-              })
-            }
-            search={search}
-            setSearch={(v: string) =>
-              updateURL({
-                search: v,
-                page: '1',
-              })
-            }
-            onEdit={handleEdit}
-            loading={isLoading}
-          />
-        </div>
-
+  {/* TABLE */}
+  <DataTable
+    title="Food Collection"
+    data={foodRes?.data || []}
+    columns={columns}
+    page={page}
+    totalPages={foodRes?.pagination?.pages || 1}
+    setPage={(p: number) =>
+      updateURL({
+        page: String(p),
+      })
+    }
+    search={search}
+    setSearch={(v: string) =>
+      updateURL({
+        search: v,
+        page: '1',
+      })
+    }
+    onEdit={handleEdit}
+    loading={isLoading}
+  />
+</div>
         {/* =========================
            EDIT MODAL
         ========================= */}
