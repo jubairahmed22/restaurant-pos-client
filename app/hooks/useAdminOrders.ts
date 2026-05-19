@@ -5,14 +5,13 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { OrderService } from '@/services/order.service';
 
-
-// ─────────────────────────────────────────────────────────────
-// TYPES (MATCH YOUR BACKEND)
-// ─────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────
+// TYPES
+// ─────────────────────────────────────────────
 
 export interface OrderItem {
   _id: string;
-  food: string;        // ObjectId
+  food: string;
   title: string;
   price: number;
   quantity: number;
@@ -22,7 +21,7 @@ export interface Order {
   _id: string;
   orderId: string;
 
-  user: string; // ObjectId (NOT populated)
+  user: string;
 
   fullName: string;
   email?: string;
@@ -36,15 +35,21 @@ export interface Order {
 
   paymentMethod: string;
   paymentStatus: 'pending' | 'paid' | 'failed';
-  orderStatus: 'placed' | 'preparing' | 'dispatched' | 'delivered' | 'cancelled';
+
+  orderStatus:
+    | 'placed'
+    | 'preparing'
+    | 'dispatched'
+    | 'delivered'
+    | 'cancelled';
 
   shippingAddress: string;
 
   createdAt: string;
   updatedAt: string;
-
-  __v?: number;
 }
+
+// ─────────────────────────────────────────────
 
 export interface Pagination {
   total: number;
@@ -55,50 +60,46 @@ export interface Pagination {
   hasPrevPage: boolean;
 }
 
+// ─────────────────────────────────────────────
+
 export interface OrderFilters {
   orderStatus: string;
   paymentStatus: string;
   search: string;
+
+  startDate: string;
+  endDate: string;
+
+  quickFilter: '' | 'today' | 'yesterday' | 'last7days' | 'last30days';
 }
 
-// ─────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────
 
 const LIMIT = 10;
 const REFETCH_INTERVAL = 15000;
 
-// ─────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────
 // HOOK
-// ─────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────
 
 export function useAdminOrders() {
   const queryClient = useQueryClient();
 
   const [page, setPage] = useState(1);
-
   const [searchInput, setSearchInput] = useState('');
 
   const [filters, setFilters] = useState<OrderFilters>({
     orderStatus: '',
     paymentStatus: '',
     search: '',
+    startDate: '',
+    endDate: '',
+    quickFilter: '',
   });
 
-  // ─────────────────────────────────────────────────────────────
-  // BUILD QUERY PARAMS
-  // ─────────────────────────────────────────────────────────────
-
-  const params: Record<string, string | number> = {
-    page,
-    limit: LIMIT,
-  };
-
-  if (filters.orderStatus) params.orderStatus = filters.orderStatus;
-  if (filters.paymentStatus) params.paymentStatus = filters.paymentStatus;
-  if (filters.search) params.search = filters.search;
-
-  // ─────────────────────────────────────────────────────────────
-  // GET ORDERS (ADMIN)
-  // ─────────────────────────────────────────────────────────────
+  // ─────────────────────────────────────────────
+  // QUERY
+  // ─────────────────────────────────────────────
 
   const {
     data: res,
@@ -108,13 +109,20 @@ export function useAdminOrders() {
     dataUpdatedAt,
   } = useQuery({
     queryKey: ['admin-orders', page, filters],
+
     queryFn: async () => {
       return await OrderService.getAllOrdersAdmin({
         page,
         limit: LIMIT,
+
         search: filters.search,
         orderStatus: filters.orderStatus,
         paymentStatus: filters.paymentStatus,
+
+        startDate: filters.startDate,
+        endDate: filters.endDate,
+
+        quickFilter: filters.quickFilter || undefined,
       });
     },
 
@@ -123,9 +131,9 @@ export function useAdminOrders() {
     refetchIntervalInBackground: false,
   });
 
-  // ─────────────────────────────────────────────────────────────
-  // UPDATE ORDER STATUS
-  // ─────────────────────────────────────────────────────────────
+  // ─────────────────────────────────────────────
+  // UPDATE STATUS
+  // ─────────────────────────────────────────────
 
   const updateStatus = useMutation({
     mutationFn: ({
@@ -152,9 +160,9 @@ export function useAdminOrders() {
     },
   });
 
-  // ─────────────────────────────────────────────────────────────
+  // ─────────────────────────────────────────────
   // FILTER HELPERS
-  // ─────────────────────────────────────────────────────────────
+  // ─────────────────────────────────────────────
 
   const applySearch = () => {
     setFilters((prev) => ({
@@ -164,10 +172,7 @@ export function useAdminOrders() {
     setPage(1);
   };
 
-  const applyFilter = (
-    key: keyof OrderFilters,
-    value: string
-  ) => {
+  const applyFilter = (key: keyof OrderFilters, value: string) => {
     setFilters((prev) => ({
       ...prev,
       [key]: value,
@@ -175,12 +180,87 @@ export function useAdminOrders() {
     setPage(1);
   };
 
+  // ─────────────────────────────────────────────
+  // QUICK FILTER LOGIC (FIXED)
+  // ─────────────────────────────────────────────
+
+  const applyQuickFilter = (value: OrderFilters['quickFilter']) => {
+    const now = new Date();
+
+    let startDate = '';
+    let endDate = '';
+
+    if (value === 'today') {
+      startDate = new Date(now.setHours(0, 0, 0, 0)).toISOString();
+      endDate = new Date().toISOString();
+    }
+
+    if (value === 'yesterday') {
+      const start = new Date();
+      start.setDate(start.getDate() - 1);
+      start.setHours(0, 0, 0, 0);
+
+      const end = new Date();
+      end.setDate(end.getDate() - 1);
+      end.setHours(23, 59, 59, 999);
+
+      startDate = start.toISOString();
+      endDate = end.toISOString();
+    }
+
+    if (value === 'last7days') {
+      const start = new Date();
+      start.setDate(start.getDate() - 7);
+      startDate = start.toISOString();
+      endDate = new Date().toISOString();
+    }
+
+    if (value === 'last30days') {
+      const start = new Date();
+      start.setDate(start.getDate() - 30);
+      startDate = start.toISOString();
+      endDate = new Date().toISOString();
+    }
+
+    setFilters((prev) => ({
+      ...prev,
+      quickFilter: value,
+      startDate,
+      endDate,
+    }));
+
+    setPage(1);
+  };
+
+  // ─────────────────────────────────────────────
+  // DATE RANGE
+  // ─────────────────────────────────────────────
+
+  const applyDateRange = (start: string, end: string) => {
+    setFilters((prev) => ({
+      ...prev,
+      startDate: start,
+      endDate: end,
+      quickFilter: '',
+    }));
+
+    setPage(1);
+  };
+
+  // ─────────────────────────────────────────────
+  // CLEAR FILTERS
+  // ─────────────────────────────────────────────
+
   const clearFilters = () => {
     setFilters({
       orderStatus: '',
       paymentStatus: '',
       search: '',
+      startDate: '',
+      endDate: '',
+      quickFilter: '',
     });
+
     setSearchInput('');
     setPage(1);
   };
@@ -188,16 +268,22 @@ export function useAdminOrders() {
   const hasActiveFilters =
     !!filters.orderStatus ||
     !!filters.paymentStatus ||
-    !!filters.search;
+    !!filters.search ||
+    !!filters.startDate ||
+    !!filters.endDate ||
+    !!filters.quickFilter;
 
-  // ─────────────────────────────────────────────────────────────
+  // ─────────────────────────────────────────────
   // RETURN
-  // ─────────────────────────────────────────────────────────────
+  // ─────────────────────────────────────────────
 
   return {
     // data
     orders: res?.data ?? [],
     pagination: res?.pagination,
+
+    // 🔥 NEW BACKEND TOTALS
+    totals: res?.summary ?? null,
 
     // states
     isLoading,
@@ -215,6 +301,8 @@ export function useAdminOrders() {
     setPage,
     applySearch,
     applyFilter,
+    applyQuickFilter,
+    applyDateRange,
     clearFilters,
 
     // mutation

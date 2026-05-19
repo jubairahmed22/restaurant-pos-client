@@ -21,10 +21,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     { label: 'ORDERS', icon: ShoppingBag, href: '/dashboard/orders' },
     { label: 'CATEGORIES', icon: FolderTree, href: '/dashboard/categories' },
     { label: 'FOOD ITEMS', icon: PlusCircle, href: '/dashboard/foods' },
-    { label: 'CUSTOMERS', icon: Users, href: '/dashboard/customers' },
+    // { label: 'CUSTOMERS', icon: Users, href: '/dashboard/customers' },
     { label: 'POS', icon: Utensils, href: '/dashboard/pos' },
-    { label: 'LOCATIONS', icon: MapPin, href: '/dashboard/locations' },
-    { label: 'STORE SETTINGS', icon: Settings, href: '/dashboard/settings' },
+    // { label: 'LOCATIONS', icon: MapPin, href: '/dashboard/locations' },
+    // { label: 'STORE SETTINGS', icon: Settings, href: '/dashboard/settings' },
   ];
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
