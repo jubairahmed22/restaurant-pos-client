@@ -69,9 +69,9 @@ export default function ConfirmOrderModal({
 
     // Customer rows (only show non-empty fields)
     const customerRows = [
-      customer.fullName.trim() ? `<div><span class="bold">Name:</span> ${customer.fullName.trim()}</div>` : '',
-      customer.phone.trim() ? `<div><span class="bold">Phone:</span> ${customer.phone.trim()}</div>` : '',
-      customer.address.trim() ? `<div><span class="bold">Address:</span> ${customer.address.trim()}</div>` : '',
+      customer.fullName.trim() ? `<div class="info-row"><span class="bold">Name:</span> ${customer.fullName.trim()}</div>` : '',
+      customer.phone.trim()    ? `<div class="info-row"><span class="bold">Phone:</span> ${customer.phone.trim()}</div>` : '',
+      customer.address.trim()  ? `<div class="info-row"><span class="bold">Address:</span> ${customer.address.trim()}</div>` : '',
     ].filter(Boolean).join('');
 
     const html = `<!DOCTYPE html>
@@ -79,59 +79,211 @@ export default function ConfirmOrderModal({
 <head>
   <title>POS Receipt</title>
   <style>
-    *{margin:0;padding:0;box-sizing:border-box;}
-    body{font-family:monospace;width:80mm;background:#fff;color:#000;padding:10px;}
-    .center{text-align:center;}
-    .restaurant{font-size:20px;font-weight:bold;margin-bottom:4px;text-transform:uppercase;}
-    .small{font-size:11px;line-height:1.7;}
-    .bold{font-weight:bold;}
-    .divider{border-top:1px dashed #000;margin:10px 0;}
-    table{width:100%;border-collapse:collapse;}
-    td{font-size:12px;vertical-align:top;padding:4px 0;}
-    .item-name{width:75%;padding-right:6px;}
-    .item-total{width:25%;text-align:right;font-weight:bold;}
-    .qty-line{font-size:11px;margin-top:2px;color:#555;}
-    .summary-row{display:flex;justify-content:space-between;font-size:12px;margin:3px 0;}
-    .total{font-size:16px;font-weight:bold;margin-top:6px;}
-    .footer{margin-top:16px;text-align:center;font-size:11px;line-height:1.7;}
-    @media print{body{width:80mm;}@page{margin:0;}}
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    @page {
+      size: A5 portrait;
+      margin: 10mm 12mm;
+    }
+
+    body {
+      font-family: 'Courier New', Courier, monospace;
+      background: #fff;
+      color: #000;
+      width: 100%;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .receipt {
+      width: 100%;
+      max-width: 148mm; /* A5 width */
+    }
+
+    .center { text-align: center; }
+
+    .restaurant-name {
+      font-size: 22px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 4px;
+    }
+
+    .small {
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .bold { font-weight: bold; }
+
+    .divider {
+      border: none;
+      border-top: 1px dashed #000;
+      margin: 10px 0;
+    }
+
+    .meta-table {
+      width: 100%;
+      font-size: 13px;
+    }
+    .meta-table td {
+      padding: 2px 0;
+      vertical-align: top;
+    }
+    .meta-table td:last-child {
+      text-align: right;
+      font-weight: bold;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+      color: #444;
+    }
+
+    .info-row {
+      font-size: 13px;
+      margin-bottom: 3px;
+    }
+
+    /* Items table */
+    table.items {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    table.items td {
+      font-size: 13px;
+      vertical-align: top;
+      padding: 5px 0;
+      border-bottom: 1px dotted #ccc;
+    }
+    table.items tr:last-child td {
+      border-bottom: none;
+    }
+    .item-name {
+      width: 75%;
+      padding-right: 8px;
+      font-weight: bold;
+    }
+    .item-total {
+      width: 25%;
+      text-align: right;
+      font-weight: bold;
+    }
+    .qty-line {
+      font-size: 11px;
+      font-weight: normal;
+      color: #555;
+      margin-top: 2px;
+    }
+
+    /* Summary */
+    .summary {
+      width: 100%;
+      font-size: 13px;
+    }
+    .summary td {
+      padding: 3px 0;
+    }
+    .summary td:last-child {
+      text-align: right;
+      font-weight: bold;
+    }
+    .summary .total-row td {
+      font-size: 18px;
+      font-weight: bold;
+      padding-top: 8px;
+    }
+
+    .payment-badge {
+      display: inline-block;
+      border: 1px solid #000;
+      border-radius: 4px;
+      padding: 3px 10px;
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      line-height: 2;
+      margin-top: 6px;
+    }
+
+    @media print {
+      body { -webkit-print-color-adjust: exact; }
+    }
   </style>
 </head>
 <body>
-  <div class="center">
-    <div class="restaurant">Restaurant Name</div>
-    <div class="small">123 Food Street, City Center</div>
-    <div class="small">Phone: +1 234 567 890</div>
+  <div class="receipt">
+
+    <!-- Header -->
+    <div class="center">
+      <div class="restaurant-name">Restaurant Name</div>
+      <div class="small">123 Food Street, City Center</div>
+      <div class="small">Phone: +1 234 567 890</div>
+    </div>
+
+    <hr class="divider" />
+
+    <!-- Order Meta -->
+    <table class="meta-table">
+      <tr><td><span class="bold">Order:</span></td><td>${orderId}</td></tr>
+      <tr><td><span class="bold">Date:</span></td><td>${dateStr}</td></tr>
+      <tr><td><span class="bold">Time:</span></td><td>${timeStr}</td></tr>
+      <tr><td><span class="bold">Payment:</span></td><td>Cash On Delivery</td></tr>
+    </table>
+
+    ${customerRows ? `
+    <hr class="divider" />
+    <div class="section-label">Customer Info</div>
+    <div>${customerRows}</div>
+    ` : ''}
+
+    <hr class="divider" />
+
+    <!-- Items -->
+    <div class="section-label">Order Items</div>
+    <table class="items">${itemRows}</table>
+
+    <hr class="divider" />
+
+    <!-- Totals -->
+    <table class="summary">
+      <tr><td>Subtotal</td><td>$${subtotal.toFixed(2)}</td></tr>
+      <tr><td>Delivery Charge</td><td>$${deliveryCharge.toFixed(2)}</td></tr>
+      <tr class="total-row"><td>TOTAL</td><td>$${total.toFixed(2)}</td></tr>
+    </table>
+
+    <hr class="divider" />
+
+    <!-- Payment -->
+    <div style="text-align:center; margin: 6px 0;">
+      <span class="payment-badge">💵 Cash On Delivery</span>
+    </div>
+
+
+
   </div>
-  <div class="divider"></div>
-  <div class="small">
-    <div><span class="bold">Order:</span> ${orderId}</div>
-    <div><span class="bold">Date:</span> ${dateStr}</div>
-    <div><span class="bold">Time:</span> ${timeStr}</div>
-    <div><span class="bold">Payment:</span> Cash On Delivery</div>
-  </div>
-  ${customerRows ? `<div class="divider"></div><div class="small">${customerRows}</div>` : ''}
-  <div class="divider"></div>
-  <table>${itemRows}</table>
-  <div class="divider"></div>
-  <div class="summary-row"><span>Subtotal</span><span>$${subtotal.toFixed(2)}</span></div>
-  <div class="summary-row"><span>Delivery Charge</span><span>$${deliveryCharge.toFixed(2)}</span></div>
-  <div class="summary-row total"><span>TOTAL</span><span>$${total.toFixed(2)}</span></div>
-  <div class="divider"></div>
-  <div class="footer">
-    <div>Thank You For Your Order</div>
-    <div>Please Visit Again ❤️</div>
-  </div>
+
   <script>
-    window.onload = function() {
+    window.onload = function () {
       window.print();
-      window.onafterprint = function() { window.close(); };
+      window.onafterprint = function () { window.close(); };
     };
   </script>
 </body>
 </html>`;
 
-    const w = window.open('', '_blank', 'width=420,height=700');
+    const w = window.open('', '_blank', 'width=600,height=800');
     if (!w) { alert('Please allow popups to print receipt.'); return; }
     w.document.open();
     w.document.write(html);
@@ -141,10 +293,10 @@ export default function ConfirmOrderModal({
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-200">
+      <div className="w-full max-w-2xl bg-white rounded shadow-2xl overflow-hidden border border-slate-200">
 
         {/* GRADIENT HEADER */}
-        <div className="relative overflow-hidden bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-5 text-white">
+        <div className="relative overflow-hidden 0 px-5 py-5 text-gray-700">
           <button
             onClick={onClose}
             disabled={isSubmitting}
@@ -157,7 +309,7 @@ export default function ConfirmOrderModal({
               <ReceiptText size={24} />
             </div>
             <div>
-              <p className="text-xs uppercase tracking-[0.25em] text-indigo-100 font-semibold">
+              <p className="text-xs uppercase tracking-[0.25em] text-gray-700 font-semibold">
                 Restaurant POS
               </p>
               <h2 className="text-xl font-bold mt-0.5">Confirm Order</h2>
@@ -166,8 +318,8 @@ export default function ConfirmOrderModal({
         </div>
 
         {/* SCROLLABLE RECEIPT BODY */}
-        <div className="p-5 bg-slate-50 max-h-[70vh] overflow-y-auto">
-          <div className="bg-white rounded-2xl border border-dashed border-slate-300 p-5 shadow-sm">
+        <div className="p-5  max-h-[70vh] max-w-md mx-auto overflow-y-auto">
+          <div className="bg-white rounded border border-dashed border-slate-300 p-5 shadow-sm">
 
             {/* Restaurant name */}
             <div className="text-center">
@@ -297,9 +449,7 @@ export default function ConfirmOrderModal({
               </div>
             </div>
 
-            <p className="text-center text-xs text-slate-400 mt-5">
-              Thank you for your order ❤️
-            </p>
+
           </div>
 
           {/* ACTION BUTTONS */}

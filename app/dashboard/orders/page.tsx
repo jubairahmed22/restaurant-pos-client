@@ -4,6 +4,7 @@ import React, { useMemo, useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAdminOrders } from '@/app/hooks/useAdminOrders';
 import DataTable from '@/components/ui/DataTable';
+import { Button } from '@/components/ui/Button';
 
 // ─────────────────────────────────────────────
 // TYPES
@@ -440,18 +441,21 @@ export default function AdminOrderManagement() {
       {/* ─── FILTER BAR ─────────────────────────────────────────────── */}
       <div className="flex flex-wrap gap-2 items-center bg-white border border-slate-200 rounded-xl p-3">
 
+       <div>
         <input
           value={searchInput}
           onChange={e => { setSearchInputLocal(e.target.value); hookSetSearch(e.target.value); }}
           onKeyDown={e => e.key === 'Enter' && applySearch()}
           placeholder="Search name, email, phone, order ID…"
-          className="border border-slate-200 px-3 py-2 text-sm rounded-lg min-w-[200px] flex-1 focus:outline-none focus:ring-2 focus:ring-blue-200"
+          className="border border-slate-200 px-3 py-2 text-sm rounded-lg min-w-[100px] flex-1 focus:outline-none focus:ring-2 focus:ring-blue-200"
         />
-        <button onClick={applySearch} className="bg-gray-900 text-white px-4 py-2 text-sm rounded-lg hover:bg-gray-700 transition-colors">
+        <Button onClick={applySearch} className="bg-gray-900 text-white px-4 py-2 text-sm rounded-lg hover:bg-gray-700 transition-colors">
           Search
-        </button>
+        </Button>
+       </div>
 
-        <select value={filters.orderStatus}   onChange={e => applyFilter('orderStatus',   e.target.value)} className="border border-slate-200 px-2 py-2 text-sm rounded-lg bg-white focus:outline-none">
+       <div className='flex flex-row gap-5'>
+                <select value={filters.orderStatus}   onChange={e => applyFilter('orderStatus',   e.target.value)} className="border border-slate-200 px-2 py-2 text-sm rounded-lg bg-white focus:outline-none">
           <option value="">All status</option>
           {ORDER_STATUSES.map(s   => <option key={s} value={s}>{s}</option>)}
         </select>
@@ -501,6 +505,7 @@ export default function AdminOrderManagement() {
         <button onClick={handleClearAll} className="border border-red-200 text-red-500 px-3 py-2 text-sm rounded-lg hover:bg-red-50 transition-colors">
           Clear all
         </button>
+       </div>
       </div>
 
       {/* ─── ACTIVE FILTER PILLS ────────────────────────────────────── */}
