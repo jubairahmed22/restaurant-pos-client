@@ -183,22 +183,22 @@ export default function CheckoutPanel({
         </div>
 
         {/* ── price summary ── */}
-        <div className="border border-slate-200 rounded-xl overflow-hidden text-sm">
-          <div className="flex justify-between p-3 border-b">
+        <div className="border  border-slate-400 rounded overflow-hidden text-[12px]">
+          <div className="flex justify-between p-3 border-b border-slate-400">
             <span className="text-slate-500">Subtotal</span>
             <span className="font-semibold text-slate-700">
               ${subtotal.toFixed(2)}
             </span>
           </div>
-          <div className="flex justify-between p-3 border-b">
+          <div className="flex justify-between p-3 border-b border-slate-400">
             <span className="text-slate-500">Delivery Charge</span>
             <span className="font-semibold text-slate-700">
               ${tax.toFixed(2)}
             </span>
           </div>
-          <div className="flex justify-between p-3 bg-emerald-50">
+          <div className="flex justify-between p-3 bg-emerald-50 text-[12px]">
             <span className="font-black text-emerald-700">Total</span>
-            <span className="font-black text-emerald-600 text-base sm:text-lg">
+            <span className="font-black text-emerald-600 text-base text-[12px]">
               ${total.toFixed(2)}
             </span>
           </div>
@@ -264,17 +264,17 @@ export default function CheckoutPanel({
         </div>
 
         {/* ── payment ── */}
-        <div className="mt-4">
+        {/* <div className="mt-4">
           <h3 className="font-black text-sm mb-2 text-slate-700">
             Payment Method
           </h3>
-          <div className="flex items-center gap-2 px-4 py-3 bg-indigo-50 border border-indigo-200 rounded-xl">
+          <div className="flex items-center gap-2 px-4 py-3 bg-indigo-50 border border-indigo-200 rounded">
             <span className="text-lg">💵</span>
             <span className="font-bold text-indigo-700 text-sm">
               Cash on Delivery
             </span>
           </div>
-        </div>
+        </div> */}
 
         {/* ── actions ── */}
         <div className="grid grid-cols-2 gap-3 mt-5">
@@ -287,7 +287,7 @@ export default function CheckoutPanel({
             className="
               bg-rose-500 hover:bg-rose-600
               disabled:bg-slate-200 disabled:cursor-not-allowed
-              text-white font-black rounded-xl h-12
+              text-white font-black rounded h-12
               transition-colors text-sm
               active:scale-95
             "
@@ -301,7 +301,7 @@ export default function CheckoutPanel({
             className="
               bg-indigo-600 hover:bg-indigo-700
               disabled:bg-slate-300 disabled:cursor-not-allowed
-              text-white font-black rounded-xl h-12
+              text-white font-black rounded h-12
               transition-colors text-sm
               active:scale-95
             "
@@ -330,7 +330,7 @@ function InputRow({
     <div
       className={`
         flex ${alignItems} gap-2.5
-        border border-slate-200 rounded-xl px-3 py-2.5
+        border border-slate-200 rounded px-3 py-2.5
         focus-within:border-indigo-400
         transition-colors
         ${className}

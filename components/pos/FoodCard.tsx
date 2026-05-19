@@ -8,7 +8,7 @@ export default function FoodCard({ item, onAdd }: any) {
     <div className="flex flex-col gap-2 rounded ">
 
       {/* ── IMAGE CARD ── */}
-      <div className="relative rounded-3xl overflow-hidden aspect-square bg-slate-100 group">
+      <div className="relative rounded-xl overflow-hidden aspect-square bg-slate-100 group">
 
         {/* Food image — full bleed */}
         <img

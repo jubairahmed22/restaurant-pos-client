@@ -28,9 +28,7 @@ export default function OrderItem({
                 {item.title}
               </h4>
 
-              <p className="text-xs text-slate-400 mt-1">
-                Premium Food
-              </p>
+           
             </div>
 
             <div className="flex items-center gap-2 bg-slate-50 rounded-lg p-1">
@@ -52,7 +50,7 @@ export default function OrderItem({
 
           <div className="flex justify-between mt-4">
 
-            <span className="font-black text-lg">
+            <span className="font-black text-md">
               ${(item.price * item.qty).toFixed(2)}
             </span>
 

@@ -38,20 +38,21 @@ export default function FoodGrid({
   return (
     <div className="h-[100dvh] flex flex-col gap-4 overflow-hidden">
 
-      {/* ─────────────────────────────────────────
+    <div className='flex flex-col'>
+            {/* ─────────────────────────────────────────
           SEARCH
       ───────────────────────────────────────── */}
       <div
         className="
-          bg-white border border-slate-100 rounded-2xl
+          bg-white border border-slate-100 rounded
           p-3 sm:p-4
           flex items-center gap-3
           shrink-0
         "
       >
-        <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center">
+        {/* <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center">
           <Search size={18} className="text-slate-400" />
-        </div>
+        </div> */}
 
         <Input
           value={search}
@@ -66,7 +67,7 @@ export default function FoodGrid({
       {/* ─────────────────────────────────────────
           CATEGORY FILTERS
       ───────────────────────────────────────── */}
-      <div className="bg-white border border-slate-100 rounded-2xl p-3 overflow-x-auto shrink-0">
+      <div className="bg-white border border-slate-100 rounded p-3 overflow-x-auto shrink-0">
         <div className="flex items-center gap-2 min-w-max">
           <ListButton
             label="All"
@@ -86,6 +87,7 @@ export default function FoodGrid({
           ))}
         </div>
       </div>
+    </div>
 
       {/* ─────────────────────────────────────────
           SCROLLABLE CATEGORY SECTIONS
