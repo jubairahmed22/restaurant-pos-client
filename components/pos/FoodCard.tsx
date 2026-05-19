@@ -1,58 +1,79 @@
 'use client';
 
 import React from 'react';
-import { ShoppingCart } from 'lucide-react';
+import { Plus } from 'lucide-react';
 
 export default function FoodCard({ item, onAdd }: any) {
   return (
-    <div className="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm relative group overflow-hidden">
+    <div className="flex flex-col gap-2">
 
-      <span className="absolute top-4 left-4 bg-rose-500 text-white text-[10px] font-black px-2 py-1 rounded-md z-10">
-        Best Seller
-      </span>
+      {/* ── IMAGE CARD ── */}
+      <div className="relative rounded-3xl overflow-hidden aspect-square bg-slate-100 group">
 
-      <div className="aspect-square rounded-2xl overflow-hidden mb-4 bg-slate-50">
+        {/* Food image — full bleed */}
         <img
           src={item.image}
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+          alt={item.title}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
-      </div>
 
-      <div className="flex justify-between items-start mb-2 gap-3">
-        <h3 className="font-black text-slate-800">
-          {item.title}
-        </h3>
+        {/* Dark gradient overlay — bottom half only */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
-        <div className="flex items-center gap-1 bg-slate-50 px-2 py-1 rounded-md">
-          <span className="text-orange-400 text-xs">★</span>
-          <span className="text-[10px] font-bold text-slate-600">
-            4.8/5
-          </span>
-        </div>
-      </div>
-
-      <p className="text-xs text-slate-400 font-bold mb-4">
-        Premium Food Collection
-      </p>
-
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-[10px] font-bold text-indigo-500 uppercase">
-            Regular Price
-          </p>
-
-          <span className="text-lg font-black text-slate-800">
-            ${item.price}
-          </span>
-        </div>
-
+        {/* + button — top right */}
         <button
           onClick={() => onAdd(item)}
-          className="w-11 h-11 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center hover:bg-indigo-600 hover:text-white"
+          aria-label={`Add ${item.title} to cart`}
+          className="
+            absolute top-3 right-3
+            w-11 h-11
+            bg-white rounded-full
+            flex items-center justify-center
+            shadow-md
+            hover:bg-slate-100
+            active:scale-95
+            transition-all duration-150
+            z-10
+          "
         >
-          <ShoppingCart size={18} />
+          <Plus size={22} strokeWidth={2.5} className="text-slate-800" />
         </button>
+
+        {/* Bottom overlay — price + title */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 flex flex-col gap-0.5 z-10">
+
+          {/* Price badge */}
+          <span
+            className="
+              self-start
+              bg-white text-slate-800
+              text-sm font-semibold
+              px-3 py-1 rounded-full
+              shadow-sm
+              mb-1
+            "
+          >
+            ${Number(item.price).toFixed(2)}
+          </span>
+
+          {/* Title */}
+          <h3
+            className="
+              text-white font-extrabold
+              text-2xl leading-tight
+            "
+          >
+            {item.title}
+          </h3>
+        </div>
       </div>
+
+      {/* ── DESCRIPTION below card ── */}
+      {item.description && (
+        <p className="text-sm text-slate-500 px-1 leading-snug">
+          {item.description}
+        </p>
+      )}
     </div>
   );
 }

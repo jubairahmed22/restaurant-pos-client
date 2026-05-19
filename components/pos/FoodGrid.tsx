@@ -22,19 +22,14 @@ export default function FoodGrid({
       {/* =========================
           SEARCH BAR
       ========================= */}
-      <div className="bg-white border border-slate-100 rounded-2xl p-4 flex items-center gap-3">
-
+      <div className="bg-white border border-slate-100 rounded p-4 flex items-center gap-3">
         <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center">
           <Search size={18} className="text-slate-400" />
         </div>
-
         <Input
           value={search}
-          onChange={(e) =>
-            updateURL({
-              search: e.target.value,
-              page: '1',
-            })
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+            updateURL({ search: e.target.value, page: '1' })
           }
           placeholder="Search foods..."
           className="border-0 shadow-none bg-transparent"
@@ -44,34 +39,21 @@ export default function FoodGrid({
       {/* =========================
           CATEGORY FILTERS
       ========================= */}
-      <div className="bg-white border border-slate-100 rounded-2xl p-3 overflow-x-auto no-scrollbar">
-
+      <div className="bg-white border border-slate-100 rounded p-3 overflow-x-auto no-scrollbar">
         <div className="flex items-center gap-3 min-w-max">
 
-          {/* ALL BUTTON */}
           <ListButton
             label="All"
             isActive={category === ''}
-            onClick={() =>
-              updateURL({
-                category: '',
-                page: '1',
-              })
-            }
+            onClick={() => updateURL({ category: '', page: '1' })}
           />
 
-          {/* CATEGORY LIST */}
           {categories?.map((cat: any) => (
             <ListButton
               key={cat._id}
               label={cat.title}
               isActive={category === cat._id}
-              onClick={() =>
-                updateURL({
-                  category: cat._id,
-                  page: '1',
-                })
-              }
+              onClick={() => updateURL({ category: cat._id, page: '1' })}
             />
           ))}
         </div>
