@@ -148,14 +148,14 @@ export default function CheckoutPanel({
       />
 
       {/* PANEL */}
-      <div className="bg-white border border-slate-100 rounded-3xl p-4 sm:p-5 xl:sticky xl:top-5">
+      <div className="bg-white border border-slate-100 rounded p-4 sm:p-5 xl:sticky xl:top-5">
 
         {/* ── header ── */}
         <div className="pb-4 border-b border-slate-100">
-          <p className="text-xs font-black text-indigo-500 uppercase tracking-wider">
+          <p className="text-[10px] font-black text-indigo-500 uppercase tracking-wider">
             Order Summary
           </p>
-          <h2 className="text-lg sm:text-xl font-black text-slate-800 mt-0.5">
+          <h2 className="text-md sm:text-md font-black text-slate-800 mt-0.5">
             Current Draft
           </h2>
         </div>

@@ -24,12 +24,12 @@
     font-family: var(--font-inter);
   }
 
-  h1,
+  /* h1,
   h2,
   h3,
   .font-display {
     font-family: var(--font-calistoga);
-  }
+  } */
 }
 
 /* CUSTOM UTILITIES */
