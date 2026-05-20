@@ -107,7 +107,7 @@ export default function DashboardLayout({
           {/* LOGO */}
           <div
             className="flex items-center gap-2 cursor-pointer"
-            onClick={() => router.push('/dashboard')}
+            onClick={() => router.push('/')}
           >
             <p className="text-white font-bold text-lg">
               Los Pollos Hermanos
