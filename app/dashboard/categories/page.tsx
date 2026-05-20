@@ -159,7 +159,7 @@ export default function ManageCategories() {
     return (
         <div className="space-y-8">
 
-            <h3>Category Management</h3>
+            {/* <h3>Category Management</h3> */}
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
