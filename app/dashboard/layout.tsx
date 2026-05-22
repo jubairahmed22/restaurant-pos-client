@@ -92,7 +92,7 @@ export default function DashboardLayout({
         {/* LEFT */}
         <div className="flex items-center gap-4 md:gap-8">
 
-          {/* MOBILE MENU */}
+    asdfasdf      {/* MOBILE MENU */}
           <button
             onClick={toggleSidebar}
             className="lg:hidden text-white p-1 hover:bg-white/10 rounded-md transition"
