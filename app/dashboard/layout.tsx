@@ -90,7 +90,7 @@ export default function DashboardLayout({
       <header className="h-16 bg-[#6366F1] flex items-center justify-between px-4 md:px-6 sticky top-0 z-[60] shadow-md">
 
         {/* LEFT */}
-        <div className="flex items-center gap-4 md:gap-8">
+        <div className="flex items-center gap-4 md:gap-8">asdfasd
 
           {/* MOBILE MENU */}
           <button
