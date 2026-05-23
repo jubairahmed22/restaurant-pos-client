@@ -6,6 +6,11 @@ export const CategoryService = {
     return response.data;
   },
 
+  reorderCategories: async (orderedIds: string[]) => {
+  const response = await api.put('/categories/reorder', { orderedIds });
+  return response.data;
+},
+
   // Changed to accept FormData to support image uploads
   createCategory: async (formData: FormData) => {
     const response = await api.post('/categories', formData, {
@@ -29,4 +34,6 @@ export const CategoryService = {
     const response = await api.delete(`/categories/${id}`);
     return response.data;
   }
+
+  
 };

@@ -40,14 +40,14 @@ const CategoryCard = ({ cat, onDelete }: CategoryCardProps) => {
           </div> */}
         </div>
       </div>
-
+ asdfasd
       {/* Hover Action Button */}
-      <button 
+      {/* <button 
         onClick={() => onDelete(cat._id)}
         className="absolute -top-2 -right-2 p-2 bg-rose-50 text-rose-500 rounded-full opacity-0 group-hover:opacity-100 transition-all shadow-sm border border-rose-100 hover:bg-rose-500 hover:text-white"
       >
         <Trash2 size={14} />
-      </button>
+      </button> */}
     </div>
   );
 };
