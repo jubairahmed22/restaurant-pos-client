@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Plus_Jakarta_Sans } from 'next/font/google';
 import Providers from './providers';
 import './globals.css';
+import Navbar from '@/components/shared/Navbar';
 
 const jakartaSans = Plus_Jakarta_Sans({ 
   subsets: ['latin'],
@@ -17,7 +18,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="h-full scroll-smooth">
-      <body className={`${jakartaSans.variable} font-sans antialiased bg-slate-50 text-slate-600 min-h-full flex flex-col`}>
+      <body className={`${jakartaSans.variable} font-sans antialiased bg-[#0e0e0c] text-slate-600 min-h-full flex flex-col`}>
+              <Navbar></Navbar>
+
         <Providers>
           <div className="flex-grow">{children}</div>
         </Providers>

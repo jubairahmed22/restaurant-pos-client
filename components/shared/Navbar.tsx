@@ -9,7 +9,6 @@ import {
   User,
   LogOut,
   LayoutDashboard,
-  Utensils,
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -23,116 +22,108 @@ export default function Navbar() {
   };
 
   const navLinks = [
-    { label: 'Home', href: '/' },
     { label: 'Menu', href: '/menu' },
     { label: 'Reservation', href: '/reservation' },
-    { label: 'Corporate Order', href: '/corporate-order' },
-    { label: 'Gallery', href: '/gallery' },
-    { label: 'Location', href: '/location' },
-    { label: 'Contact Us', href: '/contact' },
+    { label: 'About', href: '/corporate-order' },
+    { label: 'Restaurant', href: '/restaurant' },
   ];
 
   return (
-    <header className="sticky top-0 bg-white border-b border-slate-100 z-50">
-      <div className="max-w-8xl mx-auto px-6 py-4 flex justify-between items-center">
+    <header className="fixed top-0 left-0 z-50 flex items-start">
+      {/* MAIN PILL 
+          - relative: so we can position the scoop
+          - after: the pseudo-element that creates the 'inverted' curve
+      */}
+      <div className="relative bg-[#0e0e0c] text-white flex items-center px-8 py-4 gap-8 rounded-br-[2.5rem] 
+                      after:content-[''] after:absolute after:top-0 after:-right-[60px] after:w-[60px] after:h-[30px] 
+                      after:rounded-tl-[1.5rem] after:shadow-[-20px_0_0_0_#0e0e0c] after:pointer-events-none">
 
         {/* LOGO */}
         <Link
           href="/"
-          className="flex items-center gap-2 text-2xl font-black text-orange-600 tracking-tight"
+          className="font-serif italic text-xl tracking-tight whitespace-nowrap"
         >
-          <Utensils className="h-6 w-6" />
-          <span>GOURMET KITCHEN</span>
+          Gusto
         </Link>
 
         {/* NAV LINKS */}
-        <nav className="hidden lg:flex items-center gap-6">
-          {navLinks.map((link) => (
+        <nav className="hidden xl:flex items-center gap-6">
+          {navLinks.map((item) => (
             <Link
-              key={link.href}
-              href={link.href}
-              className="text-sm font-semibold text-slate-600 hover:text-orange-600 transition"
+              key={item.href}
+              href={item.href}
+              className="text-[13px] font-medium text-zinc-400 hover:text-white transition whitespace-nowrap"
             >
-              {link.label}
+              {item.label}
             </Link>
           ))}
         </nav>
 
         {/* RIGHT SIDE */}
-        <div className="flex items-center gap-4">
-
-          {/* CART */}
-          <Link
-            href="/cart"
-            className="relative p-2.5 bg-orange-50 rounded-full text-orange-600 hover:bg-orange-100 transition"
-          >
-            <ShoppingCart size={20} />
-
-            {cartItems.length > 0 && (
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white font-bold text-xs w-5 h-5 rounded-full flex items-center justify-center">
-                {cartItems.reduce(
-                  (acc, i) => acc + i.quantity,
-                  0
-                )}
-              </span>
-            )}
-          </Link>
-
-          {/* AUTH SECTION */}
+        <div className="flex items-center gap-3 ml-2">
+          {/* AUTH */}
           {user ? (
-            <div className="flex items-center gap-3 border-l pl-4 border-slate-200">
+            <div className="flex items-center gap-3">
+              {/* USER INFO */}
+              <div className="hidden md:block text-right">
+                <p className="text-[8px] text-zinc-500 uppercase tracking-wider leading-none">
+                  {user.role}
+                </p>
+                <p className="text-[10px] font-semibold text-white">
+                  {user.name}
+                </p>
+              </div>
 
-              {/* DASHBOARD (ADMIN ONLY) */}
+              {/* DASHBOARD */}
               {user?.role === 'admin' && (
                 <Link
                   href="/dashboard"
-                  className="flex items-center gap-1 text-sm font-semibold text-slate-600 hover:text-orange-600 transition"
+                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700 transition text-sm"
                 >
                   <LayoutDashboard size={16} />
                   <span>Dashboard</span>
                 </Link>
               )}
 
-              {/* USER INFO */}
-              <div className="text-right hidden sm:block">
-                <p className="text-xs text-slate-400 capitalize">
-                  {user.role}
-                </p>
-                <p className="text-sm font-bold text-slate-800">
-                  {user.name}
-                </p>
-              </div>
-
               {/* LOGOUT */}
               <button
                 onClick={handleLogout}
-                className="p-2 text-slate-500 hover:text-red-500 hover:bg-red-50 rounded-lg transition"
-                title="Logout"
+                className="flex items-center justify-center w-10 h-10 rounded-full bg-zinc-800 hover:bg-red-500 transition group"
               >
-                <LogOut size={20} />
+                <LogOut size={18} className="group-hover:text-white" />
               </button>
             </div>
           ) : (
             <div className="flex items-center gap-3">
-
-              {/* SIGN IN */}
               <Link
                 href="/login"
-                className="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium px-4 py-2 rounded-xl transition"
+                className="flex items-center gap-2 px-4 py-2 rounded-full bg-white text-black hover:bg-zinc-200 transition text-sm font-medium whitespace-nowrap"
               >
                 <User size={16} />
                 <span>Sign In</span>
               </Link>
 
-              {/* SIGN UP */}
               <Link
                 href="/register"
-                className="text-sm font-semibold text-slate-600 hover:text-orange-600 transition"
+                className="text-sm text-zinc-400 hover:text-white transition whitespace-nowrap"
               >
                 Sign Up
               </Link>
             </div>
           )}
+
+          {/* CART */}
+          <Link
+            href="/cart"
+            className="relative flex items-center justify-center w-10 h-10 rounded-full bg-zinc-800 hover:bg-zinc-700 transition"
+          >
+            <ShoppingCart size={18} />
+            {cartItems.length > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-[#0e0e0c]">
+                {cartItems.reduce((acc, item) => acc + item.quantity, 0)}
+              </span>
+            )}
+          </Link>
         </div>
       </div>
     </header>

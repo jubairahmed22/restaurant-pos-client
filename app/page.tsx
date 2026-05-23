@@ -1,151 +1,192 @@
-'use client';
+"use client";
+import React, { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronLeft, ChevronRight, Star, Calendar, X,  } from 'lucide-react';
 
-import React, { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { FoodService } from '@/services/food.service';
-import Navbar from '@/components/shared/Navbar';
-import FoodCard from '@/components/shared/FoodCard';
-import { Search, SlidersHorizontal, Utensils, Sparkles, Flame } from 'lucide-react';
-import axios from 'axios';
+// Assets
+import slideOne from '../app/assest/slideOne.avif';
+import slideTwo from '../app/assest/slideTwo.avif';
+import menu from '../app/assest/menu.avif';
+import ourRestaourant from '../app/assest/our-restaourant.avif';
 
-export default function StorefrontHomePage() {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+const slides = [
+  {
+    id: 1,
+    img: slideOne,
+    title: "The Best Pasta Outside of Italy",
+    desc: "I'm Italian, and let me tell you, this pasta tastes like home. The sauces are rich, the pasta is cooked to perfection.",
+    rating: "4.8",
+    reviews: "1,240"
+  },
+  {
+    id: 2,
+    img: slideTwo,
+    title: "A Culinary Masterpiece",
+    desc: "Every bite tells a story of tradition and quality. The atmosphere is warm, making it the perfect spot.",
+    rating: "4.9",
+    reviews: "850"
+  }
+];
 
-  // 1. Fetch live structural categories from database cluster
-  const { data: categoryRes } = useQuery({
-    queryKey: ['public-categories'],
-    queryFn: async () => (await axios.get('http://localhost:51000/api/v1/categories')).data,
-  });
+const openingHours = [
+  { day: "Monday", time: "Closed" },
+  { day: "Tuesday", time: "16:00 - 22:00" },
+  { day: "Wednesday", time: "16:00 - 22:00" },
+  { day: "Thursday", time: "16:00 - 22:00" },
+  { day: "Friday", time: "17:00 - 22:00" },
+  { day: "Sat - Sun", time: "17:00 - 22:00" },
+];
 
-  // 2. Fetch active food listings based on search metrics and categories
-  const { data: foodRes, isLoading } = useQuery({
-    queryKey: ['public-foods-catalog', selectedCategory],
-    queryFn: () => {
-      const paramString = selectedCategory ? `category=${selectedCategory}` : '';
-      return FoodService.getAllFoods(paramString);
-    },
-  });
+const Page = () => {
+  const [current, setCurrent] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
-  const categories = categoryRes?.data || [];
-  
-  // 3. Client-side filtration overlay for high-speed indexing matching search queries
-  const filteredFoods = (foodRes?.data || []).filter((food: any) =>
-    food.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const nextSlide = useCallback(() => {
+    setCurrent((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+  }, []);
+
+  useEffect(() => {
+    if (isPaused) return;
+    const timer = setInterval(nextSlide, 5000);
+    return () => clearInterval(timer);
+  }, [nextSlide, isPaused]);
 
   return (
-    <div className="min-h-screen bg-slate-50/50 flex flex-col">
-      <Navbar />
+    <div className='min-h-screen w-full flex flex-row bg-[#0a0a0a] text-white font-sans selection:bg-white/20'>
+      
+      {/* LEFT: Premium Slider (70%) */}
+      <div 
+        className='relative w-[70%] h-screen overflow-hidden group'
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+      >
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={current}
+            initial={{ opacity: 0, scale: 1.05 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.2 }}
+            className="absolute inset-0"
+          >
+            <Image src={slides[current].img} alt="bg" fill className="object-cover" priority />
+            <div className="absolute inset-0 bg-black/20" />
+          </motion.div>
+        </AnimatePresence>
 
-      {/* Hero Visual Spotlight Box Banner */}
-      <section className="bg-slate-900 text-white py-16 sm:py-24 px-6 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(249,115,22,0.15),transparent_50%)]" />
-        <div className="max-w-7xl mx-auto relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-6 max-w-xl">
-            <span className="inline-flex items-center gap-1.5 bg-orange-500/10 text-orange-400 text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full border border-orange-500/20">
-              <Sparkles size={12} />
-              <span>Premium Culinary Destination</span>
-            </span>
-            <h1 className="text-4xl sm:text-6xl font-black tracking-tight leading-tight">
-              Craving Excellence? <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-amber-400">
-                We Deliver It Fresh.
-              </span>
-            </h1>
-            <p className="text-slate-400 text-base sm:text-lg leading-relaxed">
-              Explore gourmet recipes handcrafted by world-class chefs. Track your meals instantly from the flame grill directly to your front door.
-            </p>
-          </div>
-
-          {/* Interactive Filtering and Live Query Search Bar */}
-          <div className="bg-white/5 backdrop-blur-md p-6 rounded-3xl border border-white/10 space-y-4 shadow-2xl">
-            <h3 className="text-sm font-bold tracking-wider text-orange-400 uppercase flex items-center gap-2">
-              <Flame size={14} />
-              <span>Locate Your Next Meal</span>
-            </h3>
-            <div className="relative">
-              <Search className="absolute left-4 top-3.5 h-5 w-5 text-slate-400" />
-              <input
-                type="text"
-                placeholder="Search pizzas, global burgers, dynamic pastas..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-slate-950/60 border border-slate-800 rounded-2xl pl-12 pr-4 py-3.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-orange-500/40 transition"
-              />
+        {/* Testimonial Overlay */}
+        <div className="absolute bottom-12 left-12 z-20 max-w-lg p-10 rounded-3xl bg-black/40 backdrop-blur-xl border border-white/10">
+          <h2 className="text-4xl font-serif italic mb-4 leading-tight">“{slides[current].title}”</h2>
+          <p className="text-gray-300 font-light mb-6 leading-relaxed">"{slides[current].desc}"</p>
+          <div className="flex items-center gap-3">
+            <div className="flex -space-x-2">
+              {[1, 2, 3].map(i => <div key={i} className="w-8 h-8 rounded-full bg-zinc-800 border border-zinc-900" />)}
             </div>
+            <span className="text-sm font-bold">{slides[current].rating} <span className="text-zinc-500 font-normal">({slides[current].reviews})</span></span>
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* Core Catalog Segment Component Layer */}
-      <main className="max-w-7xl mx-auto px-6 py-12 flex-grow w-full space-y-10">
+      {/* RIGHT: Scrollable Side Panel (30%) */}
+      <div className='w-[30%] h-screen bg-[#0a0a0a] flex flex-col gap-4 overflow-y-auto p-4 no-scrollbar'>
         
-        {/* Category Filters Carousel Row */}
-        <div className="space-y-4">
-          <div className="flex items-center gap-2 text-slate-800 font-extrabold text-lg">
-            <SlidersHorizontal size={18} className="text-orange-600" />
-            <h2>Filter By Category Selection</h2>
+{/* Restaurant Card */}
+        <div className="relative w-full h-56 rounded-[2rem] overflow-hidden group flex-shrink-0">
+          <div className="absolute top-0 left-0 bg-[#0a0a0a] px-6 py-3 rounded-br-[1.5rem] z-10 text-xs tracking-widest uppercase text-white">
+            Our Restaurant
           </div>
-          
-          <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-none">
-            <button
-              onClick={() => setSelectedCategory(null)}
-              className={`px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition shrink-0 whitespace-nowrap ${
-                selectedCategory === null
-                  ? 'bg-orange-600 text-white shadow-md shadow-orange-600/10'
-                  : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-300'
-              }`}
-            >
-              All Delicacies
-            </button>
-            {categories.map((cat: any) => (
-              <button
-                key={cat._id}
-                onClick={() => setSelectedCategory(cat._id)}
-                className={`px-5 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition shrink-0 whitespace-nowrap ${
-                  selectedCategory === cat._id
-                    ? 'bg-orange-600 text-white shadow-md shadow-orange-600/10'
-                    : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-300'
-                }`}
-              >
-                {cat.title}
-              </button>
-            ))}
-          </div>
+          <Image 
+            src={ourRestaourant} // Using your imported slideOne asset
+            alt="Restaurant" 
+            fill 
+            className="object-cover transition-transform duration-700 group-hover:scale-110" 
+          />
         </div>
 
-        {/* Dynamic Multi-Column Grid Display Panel */}
-        {isLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[...Array(4)].map((_, i) => (
-              <div key={i} className="bg-white rounded-2xl border border-slate-100 p-4 h-80 animate-pulse space-y-4">
-                <div className="bg-slate-200 h-40 rounded-xl w-full" />
-                <div className="bg-slate-200 h-5 rounded-md w-2/3" />
-                <div className="bg-slate-200 h-4 rounded-md w-full" />
-                <div className="flex justify-between items-center pt-2">
-                  <div className="bg-slate-200 h-6 rounded-md w-1/3" />
-                  <div className="bg-slate-200 h-8 rounded-md w-8" />
-                </div>
+        {/* Menu Card */}
+        <div className="relative w-full h-56 rounded-[2rem] overflow-hidden group flex-shrink-0">
+          <div className="absolute top-0 left-0 bg-[#0a0a0a] px-8 py-3 rounded-br-[1.5rem] z-10 text-xs tracking-widest uppercase text-white">
+            Menu
+          </div>
+          <Image 
+            src={menu} // Using your imported slideTwo asset
+            alt="Menu" 
+            fill 
+            className="object-cover transition-transform duration-700 group-hover:scale-110" 
+          />
+        </div>
+
+        {/* Book a Table Button */}
+        <button className="w-full bg-[#fdfcf5] py-3 px-8 rounded-2xl flex items-center justify-between group flex-shrink-0">
+          <span className="text-[#1a1a1a] text-sm font-medium">Book a Table</span>
+          <div className="p-2 rounded-lg bg-black/5 text-black">
+             <Calendar size={18} />
+          </div>
+        </button>
+
+        {/* Opening Hours Section */}
+        <div className="w-full bg-[#111111] p-8 rounded-[2rem] flex flex-col gap-6 flex-shrink-0">
+          <h4 className="text-zinc-500 text-sm font-light">Opening Hours</h4>
+          <div className="flex flex-col gap-4">
+            {openingHours.map((item, idx) => (
+              <div key={idx} className="flex items-center justify-between text-[15px]">
+                <span className="text-zinc-300 font-light">{item.day}</span>
+                <div className="flex-grow mx-4 border-b border-dotted border-zinc-800 h-1"></div>
+                <span className={item.time === "Closed" ? "text-zinc-500" : "text-zinc-300"}>{item.time}</span>
               </div>
             ))}
           </div>
-        ) : filteredFoods.length === 0 ? (
-          <div className="text-center py-20 bg-white border border-slate-100 rounded-3xl max-w-md mx-auto p-8 space-y-4">
-            <Utensils className="mx-auto text-slate-300" size={44} />
-            <div>
-              <h3 className="font-bold text-slate-800 text-lg">No Recipes Match Your Criteria</h3>
-              <p className="text-slate-400 text-xs mt-1">Try modifying your text parameters or clearing chosen filtering metrics.</p>
+        </div>
+
+        {/* Social Links Grid */}
+        <div className="grid grid-cols-2 gap-4 flex-shrink-0">
+          <div className="bg-[#111111] p-6 rounded-3xl flex items-center justify-between group cursor-pointer border border-white/5">
+            <span className="text-sm font-light text-zinc-300">X / Twitter</span>
+            {/* <X size={16} className="text-zinc-500 group-hover:text-white transition-colors" /> */}
+          </div>
+          <div className="bg-[#111111] p-6 rounded-3xl flex items-center justify-between group cursor-pointer border border-white/5">
+            <span className="text-sm font-light text-zinc-300">Instagram</span>
+            {/* < size={16} className="text-zinc-500 group-hover:text-white transition-colors" /> */}
+          </div>
+        </div>
+
+        {/* Footer Navigation */}
+        <div className="w-full bg-[#111111] py-12 px-8 rounded-[2rem] flex flex-col items-center gap-12 flex-shrink-0 mb-4">
+          <div className="flex flex-col items-center gap-6">
+            <h3 className="text-xl font-serif italic mb-2">Menu</h3>
+            <div className="flex flex-col items-center gap-4 text-white font-light text-[15px]">
+              {["Home", "Menu", "About", "Restaurant", "Reservation"].map((link) => (
+                <a key={link} href="#" className="hover:text-white transition-colors">{link}</a>
+              ))}
             </div>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {filteredFoods.map((food: any) => (
-              <FoodCard key={food._id} food={food} />
-            ))}
+
+          <div className="flex flex-col items-center gap-6">
+            <h3 className="text-xl font-serif italic mb-2">Utility</h3>
+            <div className="flex flex-col items-center gap-4 text-white font-light text-[15px]">
+              {["404", "Licensing"].map((link) => (
+                <a key={link} href="#" className="hover:text-white transition-colors">{link}</a>
+              ))}
+            </div>
           </div>
-        )}
-      </main>
+
+          <div className="pt-8 border-t border-white/5 w-full flex flex-col items-center gap-4">
+            <p className="text-zinc-600 text-[13px]">© By <span className="text-white underline cursor-pointer">Gola Templates</span></p>
+            <div className="bg-white text-black px-4 py-2 rounded-full flex items-center gap-2 text-[12px] font-medium">
+              <span className="rotate-45 block">▲</span> Made in Framer
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <style jsx global>{`
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
     </div>
   );
-}
+};
+
+export default Page;
