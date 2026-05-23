@@ -40,7 +40,7 @@ const CategoryCard = ({ cat, onDelete }: CategoryCardProps) => {
           </div> */}
         </div>
       </div>
-asdfas
+
       {/* Hover Action Button */}
       {/* <button 
         onClick={() => onDelete(cat._id)}
