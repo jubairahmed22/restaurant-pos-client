@@ -92,7 +92,7 @@ const Page = () => {
       <div className='w-[30%] h-screen bg-[#0a0a0a] flex flex-col gap-4 overflow-y-auto p-4 no-scrollbar'>
         
 {/* Restaurant Card */}
-        <div className="relative w-full h-56 rounded-[2rem] overflow-hidden group flex-shrink-0">
+        <div className="relative cursor-pointer w-full h-56 rounded-[2rem] overflow-hidden group flex-shrink-0">
           <div className="absolute top-0 left-0 bg-[#0a0a0a] px-6 py-3 rounded-br-[1.5rem] z-10 text-xs tracking-widest uppercase text-white">
             Our Restaurant
           </div>
@@ -105,7 +105,7 @@ const Page = () => {
         </div>
 
         {/* Menu Card */}
-        <div className="relative w-full h-56 rounded-[2rem] overflow-hidden group flex-shrink-0">
+        <div className="relative cursor-pointer w-full h-56 rounded-[2rem] overflow-hidden group flex-shrink-0">
           <div className="absolute top-0 left-0 bg-[#0a0a0a] px-8 py-3 rounded-br-[1.5rem] z-10 text-xs tracking-widest uppercase text-white">
             Menu
           </div>
