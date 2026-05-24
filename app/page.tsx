@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Star, Calendar, X,  } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star, Calendar, X, Link,  } from 'lucide-react';
 
 // Assets
 import slideOne from '../app/assest/slideOne.avif';
@@ -105,6 +105,7 @@ const Page = () => {
         </div>
 
         {/* Menu Card */}
+        <Link href='/menu'>
         <div className="relative cursor-pointer w-full h-56 rounded-[2rem] overflow-hidden group flex-shrink-0">
           <div className="absolute top-0 left-0 bg-[#0a0a0a] px-8 py-3 rounded-br-[1.5rem] z-10 text-xs tracking-widest uppercase text-white">
             Menu
@@ -117,6 +118,7 @@ const Page = () => {
           />
         </div>
 
+        </Link>
         {/* Book a Table Button */}
         <button className="w-full bg-[#fdfcf5] py-3 px-8 rounded-2xl flex items-center justify-between group flex-shrink-0">
           <span className="text-[#1a1a1a] text-sm font-medium">Book a Table</span>
