@@ -87,7 +87,7 @@ const Page = () => {
           </div>
         </div>
       </div>
-afsdasdf
+
       {/* RIGHT: Scrollable Side Panel (30%) */}
       <div className='w-[30%] h-screen bg-[#0a0a0a] flex flex-col gap-4 overflow-y-auto p-4 no-scrollbar'>
         
