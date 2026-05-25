@@ -59,7 +59,7 @@ export default function FoodCardMenu({ item, onAdd }: any) {
           {/* Title */}
           <h3
             className="
-              text-white content font-semibold
+              text-white content font-bold
               text-md 
             "
           >
@@ -70,7 +70,7 @@ export default function FoodCardMenu({ item, onAdd }: any) {
 
       {/* ── DESCRIPTION below card ── */}
    {item.description && (
-  <p className='text-gray-700 font-semibold text-[12px]'>
+  <p className='text-gray-50 font-semibold text-[14px]'>
     {item.description.split(' ').length > 10
       ? item.description.split(' ').slice(0, 5).join(' ') + '..'
       : item.description}
