@@ -2,13 +2,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Star, Calendar, X, Link,  } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star, Calendar, X, } from 'lucide-react';
 
 // Assets
 import slideOne from '../app/assest/slideOne.avif';
 import slideTwo from '../app/assest/slideTwo.avif';
 import menu from '../app/assest/menu.avif';
 import ourRestaourant from '../app/assest/our-restaourant.avif';
+import Link from 'next/link';
 
 const slides = [
   {
@@ -54,9 +55,9 @@ const Page = () => {
 
   return (
     <div className='min-h-screen w-full flex flex-row bg-[#0a0a0a] text-white font-sans selection:bg-white/20'>
-      
+
       {/* LEFT: Premium Slider (70%) */}
-      <div 
+      <div
         className='relative w-[75%] h-screen overflow-hidden group'
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
@@ -90,40 +91,41 @@ const Page = () => {
 
       {/* RIGHT: Scrollable Side Panel (30%) */}
       <div className='w-[25%] h-screen bg-[#0a0a0a] flex flex-col gap-4 overflow-y-auto p-4 no-scrollbar'>
-        
-{/* Restaurant Card */}
-        <div className="relative cursor-pointer w-full h-56 rounded-[2rem] overflow-hidden group flex-shrink-0">
-          <div className="absolute top-0 left-0 bg-[#0a0a0a] px-6 py-3 rounded-br-[1.5rem] z-10 text-xs tracking-widest uppercase text-white">
-            Our Restaurant
+
+        {/* Restaurant Card */}
+        <Link href='/restaurant' className="block w-full h-56 flex-shrink-0">
+          <div className="relative cursor-pointer w-full h-full rounded-[2rem] overflow-hidden group">
+            <div className="absolute top-0 left-0 bg-[#0a0a0a] px-6 py-3 rounded-br-[1.5rem] z-10 text-xs tracking-widest uppercase text-white">
+              Our Restaurant
+            </div>
+            <Image
+              src={ourRestaourant}
+              alt="Restaurant"
+              fill
+              className="object-cover transition-transform duration-700 group-hover:scale-110"
+            />
           </div>
-          <Image 
-            src={ourRestaourant} // Using your imported slideOne asset
-            alt="Restaurant" 
-            fill 
-            className="object-cover transition-transform duration-700 group-hover:scale-110" 
-          />
-        </div>
+        </Link>
 
         {/* Menu Card */}
-        <Link href='/menu'>
-        <div className="relative cursor-pointer w-full h-56 rounded-[2rem] overflow-hidden group flex-shrink-0">
-          <div className="absolute top-0 left-0 bg-[#0a0a0a] px-8 py-3 rounded-br-[1.5rem] z-10 text-xs tracking-widest uppercase text-white">
-            Menu
+        <Link href='/menu' className="block w-full h-56 flex-shrink-0">
+          <div className="relative cursor-pointer w-full h-full rounded-[2rem] overflow-hidden group">
+            <div className="absolute top-0 left-0 bg-[#0a0a0a] px-8 py-3 rounded-br-[1.5rem] z-10 text-xs tracking-widest uppercase text-white">
+              Menu
+            </div>
+            <Image
+              src={menu}
+              alt="Menu"
+              fill
+              className="object-cover transition-transform duration-700 group-hover:scale-110"
+            />
           </div>
-          <Image 
-            src={menu} // Using your imported slideTwo asset
-            alt="Menu" 
-            fill 
-            className="object-cover transition-transform duration-700 group-hover:scale-110" 
-          />
-        </div>
-
         </Link>
         {/* Book a Table Button */}
         <button className="w-full bg-[#fdfcf5] py-3 px-8 rounded-2xl flex items-center justify-between group flex-shrink-0">
           <span className="text-[#1a1a1a] text-sm font-medium">Book a Table</span>
           <div className="p-2 rounded-lg bg-black/5 text-black">
-             <Calendar size={18} />
+            <Calendar size={18} />
           </div>
         </button>
 
