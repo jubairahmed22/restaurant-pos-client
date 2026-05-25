@@ -32,7 +32,7 @@ const EMPTY_CUSTOMER: CustomerInfo = {
 const CART_KEY = 'pos-cart-data';
 
 /* ─── component ──────────────────────────────────────────────── */
-export default function CheckoutPanel({
+export default function CheckoutPanelMenu({
   cart,
   subtotal,
   tax,

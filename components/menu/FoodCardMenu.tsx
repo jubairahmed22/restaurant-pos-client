@@ -69,13 +69,13 @@ export default function FoodCardMenu({ item, onAdd }: any) {
       </div>
 
       {/* ── DESCRIPTION below card ── */}
-   {item.description && (
-  <p className='text-gray-50 font-semibold text-[14px]'>
-    {item.description.split(' ').length > 10
-      ? item.description.split(' ').slice(0, 5).join(' ') + '..'
-      : item.description}
-  </p>
-)}
+      {item.description && (
+        <p className='text-gray-50 font-semibold text-[14px]'>
+          {item.description.split(' ').length > 10
+            ? item.description.split(' ').slice(0, 5).join(' ') + '..'
+            : item.description}
+        </p>
+      )}
     </div>
   );
 }
