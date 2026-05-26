@@ -7,7 +7,6 @@ import { ChevronRight, Phone, Mail, X } from 'lucide-react';
 // Assets
 import slideOne from '../../assest/slideOne.avif';
 import slideTwo from '../../assest/slideTwo.avif';
-import aboutCouple from '../../assest/about-couple.webp'; // Your couple image
 
 const slides = [
   {
@@ -26,6 +25,15 @@ const slides = [
     rating: "4.9",
     reviews: "850"
   }
+];
+
+const openingHours = [
+  { day: "Monday", time: "Closed" },
+  { day: "Tuesday", time: "16:00 - 22:00" },
+  { day: "Wednesday", time: "16:00 - 22:00" },
+  { day: "Thursday", time: "16:00 - 22:00" },
+  { day: "Friday", time: "17:00 - 22:00" },
+  { day: "Sat - Sun", time: "17:00 - 22:00" },
 ];
 
 const Page = () => {
@@ -81,49 +89,64 @@ const Page = () => {
       {/* RIGHT: Scrollable Side Panel (30%) */}
       <div className='w-[30%] h-screen bg-[#0a0a0a] flex flex-col gap-4 overflow-y-auto p-4 no-scrollbar'>
 
-        {/* --- ABOUT SECTION START --- */}
-        <div className="flex flex-col gap-4 flex-shrink-0">
-          
-          {/* Top Intro Card */}
-          <div className="bg-[#121210] p-10 rounded-[2rem] border border-white/5">
-            <h2 className="text-5xl font-serif italic mb-10">About</h2>
-            <p className="text-zinc-400 text-[15px] leading-relaxed font-light">
-              Founded by Italian owners, our restaurant brings authentic flavors from Italy to Prague, 
-              celebrating tradition, quality ingredients, and true hospitality.
+        {/* 1. Opening Hours Card */}
+        <div className="w-full bg-[#121210] p-8 rounded-[2rem] flex flex-col gap-6 flex-shrink-0 border border-white/5">
+          <h4 className="text-zinc-500 text-sm font-light uppercase tracking-widest">Opening Hours</h4>
+          <div className="flex flex-col gap-4">
+            {openingHours.map((item, idx) => (
+              <div key={idx} className="flex items-center justify-between text-[15px]">
+                <span className="text-zinc-300 font-light">{item.day}</span>
+                <div className="flex-grow mx-4 border-b border-dotted border-zinc-800 h-4"></div>
+                <span className={item.time === "Closed" ? "text-zinc-500" : "text-zinc-300"}>{item.time}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 2. Address & Contact Card */}
+        <div className="w-full bg-[#121210] p-8 rounded-[2rem] flex flex-col gap-8 flex-shrink-0 border border-white/5">
+          <div className="flex flex-col gap-4">
+            <h4 className="text-zinc-500 text-sm font-light uppercase tracking-widest">Address</h4>
+            <p className="text-zinc-300 font-light leading-relaxed">
+              Václavské náměstí 45<br />
+              110 00 Praha
             </p>
           </div>
 
-          {/* Couple Image Card */}
-          <div className="relative h-[450px] w-full rounded-[2rem] overflow-hidden group border border-white/5">
-            <Image 
-              src={aboutCouple} 
-              alt="Maria & Giovanni" 
-              fill 
-              className="object-cover transition-transform duration-700 group-hover:scale-105" 
-            />
-            {/* Label Overlay */}
-            <div className="absolute bottom-6 right-6 bg-black/60 backdrop-blur-md px-4 py-2 rounded-xl border border-white/10">
-              <span className="text-xs font-light tracking-wide text-zinc-200">Maria & Giovanni</span>
+          <div className="flex flex-col gap-4">
+            <h4 className="text-zinc-500 text-sm font-light uppercase tracking-widest">Contact</h4>
+            <div className="flex flex-col gap-3">
+              <a href="tel:+420123456789" className="flex items-center gap-3 text-zinc-300 hover:text-white transition-colors">
+                <Phone size={16} className="text-zinc-500" />
+                <span className="underline underline-offset-4 decoration-zinc-700">+420 123 456 789</span>
+              </a>
+              <a href="mailto:info@gusto.example" className="flex items-center gap-3 text-zinc-300 hover:text-white transition-colors">
+                <Mail size={16} className="text-zinc-500" />
+                <span className="underline underline-offset-4 decoration-zinc-700">info@gusto.example</span>
+              </a>
             </div>
           </div>
-
-          {/* Bottom Story Card */}
-          <div className="bg-[#121210] p-10 rounded-[2rem] border border-white/5">
-            <h3 className="text-4xl font-serif italic mb-10">Maria & Giovanni</h3>
-            <div className="flex flex-col gap-6">
-              <p className="text-zinc-400 text-[15px] leading-relaxed font-light">
-                Meet Maria and Giovanni, the heart and soul behind our restaurant. Hailing from the beautiful region of Tuscany, 
-                they’ve always had a love for cooking, rooted in family traditions and the rich flavors of Italy.
-              </p>
-              <p className="text-zinc-400 text-[15px] leading-relaxed font-light">
-                After years of honing their skills in Italy’s finest kitchens, they dreamed of sharing authentic Italian 
-                flavors with the world—sparking a passion to bring true Italian dining to the vibrant city of Prague.
-              </p>
-            </div>
-          </div>
-
         </div>
-        {/* --- ABOUT SECTION END --- */}
+
+        {/* 3. Map Card */}
+        <div className="w-full h-[300px] bg-[#121210] rounded-[2rem] overflow-hidden flex-shrink-0 border border-white/5 relative">
+          <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2560.1158145137255!2d14.4265147!3d50.0817634!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470b949219e2c605%3A0x280e224e754a32!2zVsOhY2xhdnNrw6kgbsOhbcSbc3TDrSA0NSwgMTEwIDAwIE5vdsOpIE3Em3N0bywgQ3plY2hpYQ!5e0!3m2!1sen!2sus!4v1715800000000!5m2!1sen!2sus" 
+            width="100%" 
+            height="100%" 
+            style={{ border: 0, filter: 'grayscale(1) invert(0.92) contrast(1.2)' }} 
+            allowFullScreen="" 
+            loading="lazy" 
+            referrerPolicy="no-referrer-when-downgrade"
+          />
+          {/* Custom Overlay for Map UI feel */}
+          <div className="absolute bottom-4 right-4 bg-black/60 backdrop-blur-md p-2 rounded-lg border border-white/10">
+             <div className="flex flex-col gap-2">
+                <div className="w-6 h-6 border border-white/20 rounded flex items-center justify-center text-[10px]">+</div>
+                <div className="w-6 h-6 border border-white/20 rounded flex items-center justify-center text-[10px]">-</div>
+             </div>
+          </div>
+        </div>
 
         {/* Social Links Grid */}
         <div className="grid grid-cols-2 gap-4 flex-shrink-0 mt-2">
@@ -156,7 +179,7 @@ const Page = () => {
               ))}
             </div>
           </div>
-asdfad
+
           <div className="pt-8 border-t border-white/5 w-full flex flex-col items-center gap-4">
             <p className="text-zinc-600 text-[13px]">© By <span className="text-white underline cursor-pointer">Gola Templates</span></p>
             <div className="bg-white text-black px-4 py-2 rounded-full flex items-center gap-2 text-[12px] font-medium">
