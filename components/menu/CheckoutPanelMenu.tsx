@@ -90,7 +90,7 @@ export default function CheckoutPanelMenu({
   };
 
   /* ───────────────── OPEN CHECKOUT ───────────────── */
-
+sadfas
   const handleOpenCheckout = () => {
     if (cart.length === 0) return;
 
