@@ -19,11 +19,11 @@ export default function FoodGridMenu({ foods, categories, search, category, upda
 
   return (
     <div className="flex flex-col gap-6">
-      
+
       {/* ─── COMPACT CONTROL BAR ─── */}
-      <div className="sticky top-0 z-30 pt-24 pb-4 bg-[#0f0f0f]/80 backdrop-blur-xl border-b border-white/5 -mx-4 px-4 lg:-mx-10 lg:px-10">
+      <div className="sticky top-0 z-30 pt-24 pb-4 bg-[#161813]/80 backdrop-blur-xl border-b border-white/5 -mx-4 px-4 lg:-mx-10 lg:px-10">
         <div className="flex flex-col gap-4">
-          
+
           {/* Search & Action Row */}
           <div className="flex items-center gap-3">
             <div className="relative flex-1 group max-w-3xl">
@@ -38,8 +38,8 @@ export default function FoodGridMenu({ foods, categories, search, category, upda
                 className="w-full h-11 pl-10 pr-4 bg-white/[0.04] text-white placeholder-zinc-500 text-sm border border-white/10 rounded-xl outline-none transition-all focus:border-indigo-500/40 focus:bg-white/[0.07]"
               />
             </div>
-            
-     
+
+
           </div>
 
           {/* Minimalist Category Ribbon */}

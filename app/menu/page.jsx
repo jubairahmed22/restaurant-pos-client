@@ -118,7 +118,7 @@ export default function PremiumPOSPage() {
     <div className="min-h-screen w-full flex bg-[#080808] text-zinc-100 font-sans selection:bg-indigo-500/30 overflow-hidden">
 
       {/* LEFT: Explorer Section (75%) */}
-      <main className="relative w-full xl:w-[75%] h-screen flex flex-col border-r border-white/5 bg-[#0f0f0f]">
+      <main className="relative w-full xl:w-[75%] h-screen flex flex-col border-r border-white/5 bg-[#161813]">
         {/* Content Area */}
         <div className="flex-1 overflow-y-auto px-6 lg:px-10 no-scrollbar">
           <div className="max-w-[1400px] mx-auto">
