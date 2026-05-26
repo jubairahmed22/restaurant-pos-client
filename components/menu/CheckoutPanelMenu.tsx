@@ -202,8 +202,8 @@ function ConfirmDialog({ total, onConfirm, onCancel, isSubmitting }: {
   total: number; onConfirm: () => void; onCancel: () => void; isSubmitting: boolean;
 }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
-      <div className="bg-zinc-900 border border-white/10 rounded-3xl p-6 w-full max-w-sm shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#161813]/70 backdrop-blur-sm px-4">
+      <div className="bg-[#161813] border border-white/10 rounded-3xl p-6 w-full max-w-sm shadow-2xl">
         <div className="flex items-center justify-center w-14 h-14 rounded-full bg-amber-500/10 border border-amber-500/20 mx-auto mb-5">
           <AlertTriangle className="text-amber-400" size={28} />
         </div>
@@ -241,8 +241,8 @@ function SuccessModal({ onClose, onPrint }: {
   onPrint: () => void;
 }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
-      <div className="bg-zinc-900 border border-white/10 rounded-3xl p-8 w-full max-w-sm shadow-2xl text-center relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#161813]/70 backdrop-blur-sm px-4">
+      <div className="bg-[#161813] border border-white/10 rounded-3xl p-8 w-full max-w-sm shadow-2xl text-center relative">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-zinc-600 hover:text-white transition-colors"
@@ -439,7 +439,7 @@ export default function CheckoutPanelMenu({
             </div>
 
             {/* Customer Info */}
-            <div className="mt-8 space-y-4">
+            <div className="mt-8 space-y-4 bg-[#161813] p-5 rounded-2xl">
               <h3 className="text-[11px] font-bold uppercase tracking-[0.2em] text-zinc-500">
                 Delivery Details
               </h3>
@@ -448,7 +448,7 @@ export default function CheckoutPanelMenu({
                   icon={<User size={14} />} placeholder="Full Name"
                   value={customer.fullName} onChange={(v: string) => handleField('fullName', v)}
                 />
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 gap-2">
                   <TransparentInput
                     icon={<Phone size={14} />} placeholder="Phone"
                     value={customer.phone} onChange={(v: string) => handleField('phone', v)}
@@ -467,7 +467,7 @@ export default function CheckoutPanelMenu({
             </div>
 
             {/* Totals */}
-            <div className="mt-8 pt-6 border-t border-white/5 space-y-3">
+            <div className="mt-8 p-5 rounded-2xl border-t border-white/5 bg-[#161813] space-y-3">
               <div className="flex justify-between text-sm text-zinc-400">
                 <span>Subtotal</span>
                 <span className="text-white">${subtotal.toFixed(2)}</span>

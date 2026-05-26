@@ -114,7 +114,7 @@ export default function Navbar() {
 
           {/* CART */}
           <Link
-            href="/cart"
+            href="/menu"
             className="relative flex items-center justify-center w-10 h-10 rounded-full bg-zinc-800 hover:bg-zinc-700 transition"
           >
             <ShoppingCart size={18} />

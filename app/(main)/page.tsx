@@ -5,10 +5,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Star, Calendar, X, } from 'lucide-react';
 
 // Assets
-import slideOne from '../app/assest/slideOne.avif';
-import slideTwo from '../app/assest/slideTwo.avif';
-import menu from '../app/assest/menu.avif';
-import ourRestaourant from '../app/assest/our-restaourant.avif';
+import slideOne from '../../app/assest/slideOne.avif';
+import slideTwo from '../../app/assest/slideTwo.avif';
+import menu from '../../app/assest/menu.avif';
+import ourRestaourant from '../../app/assest/our-restaourant.avif';
 import Link from 'next/link';
 
 const slides = [
@@ -130,7 +130,7 @@ const Page = () => {
         </button>
 
         {/* Opening Hours Section */}
-        <div className="w-full bg-[#111111] p-8 rounded-[2rem] flex flex-col gap-6 flex-shrink-0">
+        <div className="w-full bg-[#161813] p-8 rounded-[2rem] flex flex-col gap-6 flex-shrink-0">
           <h4 className="text-zinc-500 text-sm font-light">Opening Hours</h4>
           <div className="flex flex-col gap-4">
             {openingHours.map((item, idx) => (
@@ -145,18 +145,18 @@ const Page = () => {
 
         {/* Social Links Grid */}
         <div className="grid grid-cols-2 gap-4 flex-shrink-0">
-          <div className="bg-[#111111] p-6 rounded-3xl flex items-center justify-between group cursor-pointer border border-white/5">
+          <div className="bg-[#161813] p-6 rounded-3xl flex items-center justify-between group cursor-pointer border border-white/5">
             <span className="text-sm font-light text-zinc-300">X / Twitter</span>
             {/* <X size={16} className="text-zinc-500 group-hover:text-white transition-colors" /> */}
           </div>
-          <div className="bg-[#111111] p-6 rounded-3xl flex items-center justify-between group cursor-pointer border border-white/5">
+          <div className="bg-[#161813] p-6 rounded-3xl flex items-center justify-between group cursor-pointer border border-white/5">
             <span className="text-sm font-light text-zinc-300">Instagram</span>
             {/* < size={16} className="text-zinc-500 group-hover:text-white transition-colors" /> */}
           </div>
         </div>
 
         {/* Footer Navigation */}
-        <div className="w-full bg-[#111111] py-12 px-8 rounded-[2rem] flex flex-col items-center gap-12 flex-shrink-0 mb-4">
+        <div className="w-full bg-[#161813] py-12 px-8 rounded-[2rem] flex flex-col items-center gap-12 flex-shrink-0 mb-4">
           <div className="flex flex-col items-center gap-6">
             <h3 className="text-xl font-serif italic mb-2">Menu</h3>
             <div className="flex flex-col items-center gap-4 text-white font-light text-[15px]">
