@@ -155,7 +155,7 @@ const Page = () => {
                 <a key={link} href="#" className="hover:text-white transition-colors">{link}</a>
               ))}
             </div>
-          </div>
+          </div>sadfasd
 
           <div className="pt-8 border-t border-white/5 w-full flex flex-col items-center gap-4">
             <p className="text-zinc-600 text-[13px]">© By <span className="text-white underline cursor-pointer">Gola Templates</span></p>
