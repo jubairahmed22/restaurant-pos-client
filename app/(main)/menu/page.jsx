@@ -118,7 +118,7 @@ export default function PremiumPOSPage() {
     <div className="min-h-screen w-full flex bg-[#080808] text-zinc-100 font-sans selection:bg-indigo-500/30 overflow-hidden">
 
       {/* LEFT: Explorer Section (75%) */}
-      <main className="relative w-full xl:w-[75%] h-screen flex flex-col border-r border-white/5 bg-[#161813]">
+      <main className="relative w-full xl:w-[70%] h-screen flex flex-col border-r border-white/5 bg-[#161813]">
         {/* Content Area */}
         <div className="flex-1 overflow-y-auto px-6 lg:px-10 no-scrollbar">
           <div className="max-w-[1400px] mx-auto">
@@ -136,7 +136,7 @@ export default function PremiumPOSPage() {
       </main>
 
       {/* RIGHT: Order Intelligence (25%) */}
-      <aside className="hidden xl:flex w-[25%] h-screen bg-[#080808] flex-col relative">
+      <aside className="hidden xl:flex w-[30%] h-screen bg-[#080808] flex-col relative">
         <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/5 to-transparent pointer-events-none" />
         <div className="flex-1 overflow-y-auto p-6 no-scrollbar relative z-10">
           <div className="flex items-center justify-between mb-8">

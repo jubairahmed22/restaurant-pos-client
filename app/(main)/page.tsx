@@ -58,7 +58,7 @@ const Page = () => {
 
       {/* LEFT: Premium Slider (70%) */}
       <div
-        className='relative w-[75%] h-screen overflow-hidden group'
+        className='relative w-[70%] h-screen overflow-hidden group'
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
@@ -90,7 +90,7 @@ const Page = () => {
       </div>
 
       {/* RIGHT: Scrollable Side Panel (30%) */}
-      <div className='w-[25%] h-screen bg-[#0a0a0a] flex flex-col gap-4 overflow-y-auto p-4 no-scrollbar'>
+      <div className='w-[30%] h-screen bg-[#0a0a0a] flex flex-col gap-4 overflow-y-auto p-4 no-scrollbar'>
 
         {/* Restaurant Card */}
         <Link href='/restaurant' className="block w-full h-56 flex-shrink-0">
