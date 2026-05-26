@@ -156,7 +156,7 @@ const Page = () => {
               ))}
             </div>
           </div>
-asdfas
+asdfas sadf
           <div className="pt-8 border-t border-white/5 w-full flex flex-col items-center gap-4">
             <p className="text-zinc-600 text-[13px]">© By <span className="text-white underline cursor-pointer">Gola Templates</span></p>
             <div className="bg-white text-black px-4 py-2 rounded-full flex items-center gap-2 text-[12px] font-medium">
