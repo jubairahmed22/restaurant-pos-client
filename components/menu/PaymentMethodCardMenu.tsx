@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-export default function PaymentMethodCard({
+export default function PaymentMethodCardMenu({
   active,
   title,
   icon,

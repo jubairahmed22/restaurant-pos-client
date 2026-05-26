@@ -19,7 +19,7 @@ interface CartItem {
   count?: number;
 }
 
-interface ConfirmOrderModalProps {
+interface ConfirmOrderModalMenuProps {
   isOpen: boolean;
   cart: CartItem[];
   subtotal: number;
@@ -40,10 +40,10 @@ function getQty(item: CartItem): number {
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export default function ConfirmOrderModal({
+export default function ConfirmOrderModalMenu({
   isOpen, cart, subtotal, deliveryCharge, total,
   customer, shippingAddress, isSubmitting, onConfirm, onClose,
-}: ConfirmOrderModalProps) {
+}: ConfirmOrderModalMenuProps) {
   if (!isOpen) return null;
 
   const now = new Date();

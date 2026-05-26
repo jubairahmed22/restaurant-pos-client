@@ -1,6 +1,6 @@
 import api from "@/services/axios";
 
-export const OrderService = {
+export const OrderServiceMenu = {
   /**
    * Place a cash order.
    * Returns the created order object on success.
