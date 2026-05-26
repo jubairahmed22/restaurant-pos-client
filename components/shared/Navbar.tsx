@@ -24,7 +24,7 @@ export default function Navbar() {
   const navLinks = [
     { label: 'Menu', href: '/menu' },
     { label: 'Reservation', href: '/reservation' },
-    { label: 'About', href: '/corporate-order' },
+    { label: 'About', href: '/about' },
     { label: 'Restaurant', href: '/restaurant' },
   ];
 
