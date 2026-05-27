@@ -145,7 +145,7 @@ export default function BookingPage() {
         {/* Booking Card */}
         <div className="w-full bg-[#121210] p-8 rounded-[2rem] flex flex-col gap-8 flex-shrink-0 border border-white/5">
           <div>
-            <h2 className="text-4xl font-serif italic mb-4">Book a Table</h2>
+            <h2 className="text-4xl font-serif italic mb-4">Reservation</h2>
             <p className="text-zinc-400 text-sm leading-relaxed font-light">
               Book your table and savor the authentic taste of Italy in the heart of Prague.
             </p>

@@ -121,9 +121,9 @@ const Page = () => {
             />
           </div>
         </Link>
-        {/* Book a Table Button */}
+        {/* Reservation Button */}
         <button className="w-full bg-[#fdfcf5] py-3 px-8 rounded-2xl flex items-center justify-between group flex-shrink-0">
-          <span className="text-[#1a1a1a] text-sm font-medium">Book a Table</span>
+          <span className="text-[#1a1a1a] text-sm font-medium">Reservation</span>
           <div className="p-2 rounded-lg bg-black/5 text-black">
             <Calendar size={18} />
           </div>
