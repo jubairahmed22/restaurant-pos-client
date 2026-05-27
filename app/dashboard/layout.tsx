@@ -58,6 +58,11 @@ export default function DashboardLayout({
       icon: ShoppingBag,
       href: '/dashboard/orders',
     },
+    {
+      label: 'Reservation',
+      icon: ShoppingBag,
+      href: '/dashboard/reservation-list',
+    },
 
     {
       label: 'FOOD ITEMS',
