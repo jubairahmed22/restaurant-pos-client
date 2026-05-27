@@ -121,9 +121,9 @@ const Page = () => {
                 <Phone size={16} className="text-zinc-500" />
                 <span className="underline underline-offset-4 decoration-zinc-700">+420 123 456 789</span>
               </a>
-              <a href="mailto:info@gusto.example" className="flex items-center gap-3 text-zinc-300 hover:text-white transition-colors">
+              <a href="mailto:info@RIN.example" className="flex items-center gap-3 text-zinc-300 hover:text-white transition-colors">
                 <Mail size={16} className="text-zinc-500" />
-                <span className="underline underline-offset-4 decoration-zinc-700">info@gusto.example</span>
+                <span className="underline underline-offset-4 decoration-zinc-700">info@RIN.example</span>
               </a>
             </div>
           </div>

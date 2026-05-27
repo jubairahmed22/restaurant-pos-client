@@ -115,7 +115,7 @@ export default function DashboardLayout({
             onClick={() => router.push('/')}
           >
             <p className="text-white font-bold text-lg">
-              Los Pollos Hermanos
+              RIN
             </p>
           </div>
         </div>

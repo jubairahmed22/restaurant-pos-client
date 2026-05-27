@@ -43,7 +43,7 @@ export default function Navbar() {
           href="/"
           className="font-serif italic text-xl tracking-tight whitespace-nowrap"
         >
-          Gusto
+          RIN
         </Link>
 
         {/* NAV LINKS */}
