@@ -172,14 +172,14 @@ const Page = () => {
             </div>
           </div>
 
-          <div className="flex flex-col items-center gap-6">
+          {/* <div className="flex flex-col items-center gap-6">
             <h3 className="text-xl font-serif italic mb-2">Utility</h3>
             <div className="flex flex-col items-center gap-4 text-zinc-400 font-light text-[15px]">
               {["404", "Licensing"].map((link) => (
                 <a key={link} href="#" className="hover:text-white transition-colors">{link}</a>
               ))}
             </div>
-          </div>
+          </div> */}
 
                     <Link target='_blank' href="https://www.linkedin.com/in/jubairahmed10/">
             <div className="pt-8 border-t border-white/5 w-full flex flex-col items-center gap-4">
