@@ -52,7 +52,7 @@ export default function Navbar() {
     <Link
       key={item.href}
       href={item.href}
-      className="relative py-1 text-[15px] font-bold text-zinc-400 transition-colors duration-300 hover:text-white group whitespace-nowrap"
+      className="relative py-1 text-[15px] font-bold text-zinc-200 transition-colors duration-300 hover:text-white group whitespace-nowrap"
     >
       {item.label}
       
