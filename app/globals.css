@@ -16,7 +16,7 @@
 
   --font-weight-extrabold: 800;
 }
-asdfasdf
+
 @layer base {
   /* 1. Hide the blinking line on everything */
   *:not(input):not(textarea) {
