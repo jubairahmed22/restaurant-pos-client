@@ -30,7 +30,7 @@ export default function Navbar() {
 
   return (
     <header className="fixed top-0 left-0 z-50 flex items-start">
-      {/* MAIN PILL 
+      {/* MAIN PILL ASDFAS
           - relative: so we can position the scoop
           - after: the pseudo-element that creates the 'inverted' curve
       */}
