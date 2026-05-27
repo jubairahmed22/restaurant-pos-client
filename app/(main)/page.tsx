@@ -122,12 +122,14 @@ const Page = () => {
           </div>
         </Link>
         {/* Reservation Button */}
-        <button className="w-full bg-[#fdfcf5] py-3 px-8 rounded-2xl flex items-center justify-between group flex-shrink-0">
+        <Link href="/reservation">
+          <button className="w-full cursor-pointer bg-[#fdfcf5] py-3 px-8 rounded-2xl flex items-center justify-between group flex-shrink-0">
           <span className="text-[#1a1a1a] text-sm font-medium">Reservation</span>
           <div className="p-2 rounded-lg bg-black/5 text-black">
             <Calendar size={18} />
           </div>
         </button>
+        </Link>
 
         {/* Opening Hours Section */}
         <div className="w-full bg-[#161813] p-8 rounded-[2rem] flex flex-col gap-6 flex-shrink-0">
@@ -175,12 +177,14 @@ const Page = () => {
             </div>
           </div>
 
-          <div className="pt-8 border-t border-white/5 w-full flex flex-col items-center gap-4">
-            <p className="text-zinc-600 text-[13px]">© By <span className="text-white underline cursor-pointer">Gola Templates</span></p>
+          <Link target='_blank' href="https://www.linkedin.com/in/jubairahmed10/">
+            <div className="pt-8 border-t border-white/5 w-full flex flex-col items-center gap-4">
+            {/* <p className="text-zinc-600 text-[13px]">© By <span className="text-white underline cursor-pointer">Gola Templates</span></p> */}
             <div className="bg-white text-black px-4 py-2 rounded-full flex items-center gap-2 text-[12px] font-medium">
-              <span className="rotate-45 block">▲</span> Made in Framer
+              <span className="rotate-45 block">▲</span> Made by Jubair Ahmed
             </div>
           </div>
+          </Link>
         </div>
 
       </div>

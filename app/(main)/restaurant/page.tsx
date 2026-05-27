@@ -7,6 +7,7 @@ import { ChevronRight, Phone, Mail, X } from 'lucide-react';
 // Assets
 import slideOne from '../../assest/slideOne.avif';
 import slideTwo from '../../assest/slideTwo.avif';
+import Link from 'next/link';
 
 const slides = [
   {
@@ -180,12 +181,14 @@ const Page = () => {
             </div>
           </div>
 
-          <div className="pt-8 border-t border-white/5 w-full flex flex-col items-center gap-4">
-            <p className="text-zinc-600 text-[13px]">© By <span className="text-white underline cursor-pointer">Gola Templates</span></p>
+                    <Link target='_blank' href="https://www.linkedin.com/in/jubairahmed10/">
+            <div className="pt-8 border-t border-white/5 w-full flex flex-col items-center gap-4">
+            {/* <p className="text-zinc-600 text-[13px]">© By <span className="text-white underline cursor-pointer">Gola Templates</span></p> */}
             <div className="bg-white text-black px-4 py-2 rounded-full flex items-center gap-2 text-[12px] font-medium">
-              <span className="rotate-45 block">▲</span> Made in Framer
+              <span className="rotate-45 block">▲</span> Made by Jubair Ahmed
             </div>
           </div>
+          </Link>
         </div>
 
       </div>
