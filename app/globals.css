@@ -17,19 +17,21 @@
   --font-weight-extrabold: 800;
 }
 
-/* BASE LAYERS */
 @layer base {
-  body {
-    @apply bg-background text-foreground antialiased;
-    font-family: var(--font-inter);
+  /* 1. Hide the blinking line on everything */
+  *:not(input):not(textarea) {
+    caret-color: transparent;
   }
 
-  /* h1,
-  h2,
-  h3,
-  .font-display {
-    font-family: var(--font-calistoga);
-  } */
+  /* 2. Ensure text doesn't look 'selectable' when clicked */
+  body {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* 3. Force the arrow cursor so it doesn't turn into the 'I' beam */
+  h1, h2, h3, h4, h5, h6, p, span, div {
+    cursor: default;
+  }
 }
 
 /* CUSTOM UTILITIES */

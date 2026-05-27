@@ -41,23 +41,26 @@ export default function Navbar() {
         {/* LOGO */}
         <Link
           href="/"
-          className="font-serif italic text-xl tracking-tight whitespace-nowrap"
+          className="font-serif  text-xl tracking-tight whitespace-nowrap"
         >
           RIN
         </Link>
 
         {/* NAV LINKS */}
-        <nav className="hidden xl:flex items-center gap-6">
-          {navLinks.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="text-[13px] font-medium text-zinc-400 hover:text-white transition whitespace-nowrap"
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+   <nav className="hidden xl:flex items-center gap-8">
+  {navLinks.map((item) => (
+    <Link
+      key={item.href}
+      href={item.href}
+      className="relative py-1 text-[15px] font-bold text-zinc-400 transition-colors duration-300 hover:text-white group whitespace-nowrap"
+    >
+      {item.label}
+      
+      {/* The Animated Underline */}
+      <span className="absolute bottom-0 left-0 h-[2px] w-full scale-x-0 bg-metor-indigo transition-transform duration-300 ease-out origin-right group-hover:scale-x-100 group-hover:origin-left" />
+    </Link>
+  ))}
+</nav>
 
         {/* RIGHT SIDE */}
         <div className="flex items-center gap-3 ml-2">
