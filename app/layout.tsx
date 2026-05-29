@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="h-full scroll-smooth">
-      <body className={`${jakartaSans.variable} font-sans antialiased bg-[#0e0e0c] text-slate-600 min-h-full flex flex-col`}>
+      <body className={`${jakartaSans.variable} font-sans antialiased bg-[#484840] text-slate-600 min-h-full flex flex-col`}>
 
         <Providers>
           <div className="flex-grow">{children}</div>

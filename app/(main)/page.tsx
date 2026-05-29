@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Star, Calendar, X, } from 'lucide-react';
+import { Calendar } from 'lucide-react';
 
 // Assets
 import slideOne from '../../app/assest/slideOne.avif';
@@ -54,11 +54,11 @@ const Page = () => {
   }, [nextSlide, isPaused]);
 
   return (
-    <div className='min-h-screen w-full flex flex-row bg-[#0a0a0a] text-white font-sans selection:bg-white/20'>
+    <div className='min-h-screen w-full flex flex-col lg:flex-row bg-[#0a0a0a] text-white font-sans selection:bg-white/20 pt-20 lg:pt-0'>
 
-      {/* LEFT: Premium Slider (70%) */}
+      {/* LEFT: Premium Slider - HIDDEN ON MOBILE/TABLET (md/sm), VISIBLE ON LG */}
       <div
-        className='relative w-[70%] h-screen overflow-hidden group'
+        className='hidden lg:block relative lg:w-[70%] h-screen overflow-hidden group'
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
@@ -89,11 +89,11 @@ const Page = () => {
         </div>
       </div>
 
-      {/* RIGHT: Scrollable Side Panel (30%) */}
-      <div className='w-[30%] h-screen bg-[#0a0a0a] flex flex-col gap-4 overflow-y-auto p-4 no-scrollbar'>
-
+      {/* RIGHT: Scrollable Side Panel - FULL WIDTH ON MOBILE, 30% ON LG */}
+      <div className='w-full lg:w-[30%] h-auto lg:h-screen bg-[#0a0a0a] flex flex-col gap-4 overflow-y-auto p-4 no-scrollbar'>
+        
         {/* Restaurant Card */}
-        <Link href='/restaurant' className="block w-full h-56 flex-shrink-0">
+        <Link href='/restaurant' className="block w-full h-64 lg:h-56 flex-shrink-0">
           <div className="relative cursor-pointer w-full h-full rounded-[2rem] overflow-hidden group">
             <div className="absolute top-0 left-0 bg-[#0a0a0a] px-6 py-3 rounded-br-[1.5rem] z-10 text-xs tracking-widest uppercase text-white">
               Our Restaurant
@@ -108,7 +108,7 @@ const Page = () => {
         </Link>
 
         {/* Menu Card */}
-        <Link href='/menu' className="block w-full h-56 flex-shrink-0">
+        <Link href='/menu' className="block w-full h-64 lg:h-56 flex-shrink-0">
           <div className="relative cursor-pointer w-full h-full rounded-[2rem] overflow-hidden group">
             <div className="absolute top-0 left-0 bg-[#0a0a0a] px-8 py-3 rounded-br-[1.5rem] z-10 text-xs tracking-widest uppercase text-white">
               Menu
@@ -121,25 +121,26 @@ const Page = () => {
             />
           </div>
         </Link>
+
         {/* Reservation Button */}
         <Link href="/reservation">
-          <button className="w-full cursor-pointer bg-[#fdfcf5] py-3 px-8 rounded-2xl flex items-center justify-between group flex-shrink-0">
-          <span className="text-[#1a1a1a] text-sm font-medium">Reservation</span>
-          <div className="p-2 rounded-lg bg-black/5 text-black">
-            <Calendar size={18} />
-          </div>
-        </button>
+          <button className="w-full cursor-pointer bg-[#fdfcf5] py-4 lg:py-3 px-8 rounded-2xl flex items-center justify-between group flex-shrink-0">
+            <span className="text-[#1a1a1a] text-sm font-bold uppercase tracking-wide">Make a Reservation</span>
+            <div className="p-2 rounded-lg bg-black/5 text-black">
+              <Calendar size={18} />
+            </div>
+          </button>
         </Link>
 
         {/* Opening Hours Section */}
-        <div className="w-full bg-[#161813] p-8 rounded-[2rem] flex flex-col gap-6 flex-shrink-0">
-          <h4 className="text-zinc-500 text-sm font-light">Opening Hours</h4>
+        <div className="w-full bg-[#161813] p-6 lg:p-8 rounded-[2rem] flex flex-col gap-6 flex-shrink-0">
+          <h4 className="text-zinc-500 text-sm font-light uppercase tracking-widest">Opening Hours</h4>
           <div className="flex flex-col gap-4">
             {openingHours.map((item, idx) => (
-              <div key={idx} className="flex items-center justify-between text-[15px]">
+              <div key={idx} className="flex items-center justify-between text-[14px] lg:text-[15px]">
                 <span className="text-zinc-300 font-light">{item.day}</span>
                 <div className="flex-grow mx-4 border-b border-dotted border-zinc-800 h-1"></div>
-                <span className={item.time === "Closed" ? "text-zinc-500" : "text-zinc-300"}>{item.time}</span>
+                <span className={item.time === "Closed" ? "text-zinc-500 font-bold" : "text-zinc-300"}>{item.time}</span>
               </div>
             ))}
           </div>
@@ -147,13 +148,11 @@ const Page = () => {
 
         {/* Social Links Grid */}
         <div className="grid grid-cols-2 gap-4 flex-shrink-0">
-          <div className="bg-[#161813] p-6 rounded-3xl flex items-center justify-between group cursor-pointer border border-white/5">
+          <div className="bg-[#161813] p-6 rounded-3xl flex items-center justify-center lg:justify-between group cursor-pointer border border-white/5 transition-all hover:bg-[#1c1e19]">
             <span className="text-sm font-light text-zinc-300">X / Twitter</span>
-            {/* <X size={16} className="text-zinc-500 group-hover:text-white transition-colors" /> */}
           </div>
-          <div className="bg-[#161813] p-6 rounded-3xl flex items-center justify-between group cursor-pointer border border-white/5">
+          <div className="bg-[#161813] p-6 rounded-3xl flex items-center justify-center lg:justify-between group cursor-pointer border border-white/5 transition-all hover:bg-[#1c1e19]">
             <span className="text-sm font-light text-zinc-300">Instagram</span>
-            {/* < size={16} className="text-zinc-500 group-hover:text-white transition-colors" /> */}
           </div>
         </div>
 
@@ -163,27 +162,17 @@ const Page = () => {
             <h3 className="text-xl font-serif italic mb-2">Menu</h3>
             <div className="flex flex-col items-center gap-4 text-white font-light text-[15px]">
               {["Home", "Menu", "About", "Restaurant", "Reservation"].map((link) => (
-                <a key={link} href="#" className="hover:text-white transition-colors">{link}</a>
+                <a key={link} href="#" className="hover:text-zinc-400 transition-colors">{link}</a>
               ))}
             </div>
           </div>
-
-          {/* <div className="flex flex-col items-center gap-6">
-            <h3 className="text-xl font-serif italic mb-2">Utility</h3>
-            <div className="flex flex-col items-center gap-4 text-white font-light text-[15px]">
-              {["404", "Licensing"].map((link) => (
-                <a key={link} href="#" className="hover:text-white transition-colors">{link}</a>
-              ))}
-            </div>
-          </div> */}
 
           <Link target='_blank' href="https://www.linkedin.com/in/jubairahmed10/">
             <div className="pt-8 border-t border-white/5 w-full flex flex-col items-center gap-4">
-            {/* <p className="text-zinc-600 text-[13px]">© By <span className="text-white underline cursor-pointer">Gola Templates</span></p> */}
-            <div className="bg-white text-black px-4 py-2 rounded-full flex items-center gap-2 text-[12px] font-medium">
-              <span className="rotate-45 block">▲</span> Made by Jubair Ahmed
+              <div className="bg-white text-black px-6 py-2 rounded-full flex items-center gap-2 text-[12px] font-bold uppercase tracking-tighter">
+                <span className="rotate-45 block">▲</span> Made by Jubair Ahmed
+              </div>
             </div>
-          </div>
           </Link>
         </div>
 
