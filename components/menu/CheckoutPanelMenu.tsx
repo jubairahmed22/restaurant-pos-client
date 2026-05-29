@@ -11,7 +11,7 @@ import OrderItemMenu from './OrderItemMenu';
 import { OrderService } from '@/services/order.service';
 
 /* ─────────── TYPES ─────────── */
-sfasdfsad
+
 export interface CustomerInfo {
   fullName: string;
   email: string;
