@@ -35,7 +35,7 @@ export default function FoodGridMenu({
         On mobile the sticky bar sits under the top of the viewport.
         We keep z-30 here; the floating cart FAB uses z-50 so it layers above.
       */}
-      <div className="sticky top-0 z-30 pt-6 sm:pt-8 xl:pt-24 pb-4 bg-[#161813]/80 backdrop-blur-xl border-b border-white/5 -mx-4 px-4 lg:-mx-10 lg:px-10">
+      <div className="sticky top-0 z-30 pt-20 xl:pt-24 pb-4 bg-[#161813]/80 backdrop-blur-xl border-b border-white/5 -mx-4 px-4 lg:-mx-10 lg:px-10">
         <div className="flex flex-col gap-4">
 
           {/* Search row */}
