@@ -11,7 +11,7 @@ import OrderItemMenu from './OrderItemMenu';
 import { OrderService } from '@/services/order.service';
 
 /* ─────────── TYPES ─────────── */
-
+asdfasdf
 export interface CustomerInfo {
   fullName: string;
   email: string;
@@ -84,13 +84,6 @@ function buildReceiptHTML(
     .total-label { font-size: 17px; font-weight: 900; padding-top: 6px; }
     .total-value { font-size: 17px; font-weight: 900; text-align: right; padding-top: 6px; }
     .footer { font-size: 11px; color: #555; margin-top: 14px; line-height: 1.8; }
-    .barcode {
-      font-size: 36px;
-      letter-spacing: -2px;
-      color: #000;
-      margin: 10px 0 4px;
-      font-family: 'Libre Barcode 39', monospace;
-    }
     @media print {
       body { width: 80mm; }
       @page { margin: 0; size: 80mm auto; }
@@ -105,9 +98,7 @@ function buildReceiptHTML(
     <p class="order-id">Order #${orderId.toUpperCase()}</p>
     <p class="tagline">${dateStr} &nbsp;&bull;&nbsp; ${timeStr}</p>
   </div>
-
   <div class="dashed"></div>
-
   <div style="padding: 4px 0 8px;">
     <p class="section-label">Customer</p>
     <p class="customer-name">${customer.fullName}</p>
@@ -115,16 +106,12 @@ function buildReceiptHTML(
     ${customer.address ? `<p class="customer-detail">${customer.address}</p>` : ''}
     ${customer.email   ? `<p class="customer-detail">${customer.email}</p>` : ''}
   </div>
-
   <div class="dashed"></div>
-
   <div style="padding: 4px 0 8px;">
     <p class="section-label">Items</p>
     <table><tbody>${rows}</tbody></table>
   </div>
-
   <div class="dashed"></div>
-
   <table>
     <tbody>
       <tr>
@@ -137,9 +124,7 @@ function buildReceiptHTML(
       </tr>
     </tbody>
   </table>
-
   <div class="solid"></div>
-
   <table>
     <tbody>
       <tr>
@@ -148,9 +133,7 @@ function buildReceiptHTML(
       </tr>
     </tbody>
   </table>
-
   <div class="dashed"></div>
-
   <div class="center footer">
     <p>&#9829; Thank you for dining with us! &#9829;</p>
     <p>Please come again soon</p>
@@ -159,13 +142,7 @@ function buildReceiptHTML(
 </html>`;
 }
 
-/* ─────────────────────────────────────────────────
-   PRINT RECEIPT
-   Opens receipt in a new window → auto-triggers
-   window.print(). Whether the user clicks Print
-   or Cancel in the OS dialog, the window closes
-   and payment is considered complete either way.
-───────────────────────────────────────────────── */
+/* ─────────── PRINT RECEIPT ─────────── */
 
 function printReceipt(
   customer: CustomerInfo, cart: any[],
@@ -174,7 +151,6 @@ function printReceipt(
   const html = buildReceiptHTML(customer, cart, subtotal, tax, total, orderId);
   const win  = window.open('', '_blank', 'width=420,height=720,toolbar=0,scrollbars=0,status=0');
   if (!win) {
-    // Fallback: if popup blocked, use an invisible iframe
     const iframe = document.createElement('iframe');
     iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:302px;height:0;border:none;';
     document.body.appendChild(iframe);
@@ -188,7 +164,6 @@ function printReceipt(
   win.document.open();
   win.document.write(html);
   win.document.close();
-  // afterprint fires when print dialog is dismissed (Print OR Cancel)
   win.onafterprint = () => win.close();
   win.onload = () => {
     win.focus();
@@ -202,7 +177,7 @@ function ConfirmDialog({ total, onConfirm, onCancel, isSubmitting }: {
   total: number; onConfirm: () => void; onCancel: () => void; isSubmitting: boolean;
 }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#161813]/70 backdrop-blur-sm px-4">
+    <div className="fixed inset-0 z-[90] flex items-center justify-center bg-[#161813]/70 backdrop-blur-sm px-4">
       <div className="bg-[#161813] border border-white/10 rounded-3xl p-6 w-full max-w-sm shadow-2xl">
         <div className="flex items-center justify-center w-14 h-14 rounded-full bg-amber-500/10 border border-amber-500/20 mx-auto mb-5">
           <AlertTriangle className="text-amber-400" size={28} />
@@ -241,7 +216,7 @@ function SuccessModal({ onClose, onPrint }: {
   onPrint: () => void;
 }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#161813]/70 backdrop-blur-sm px-4">
+    <div className="fixed inset-0 z-[90] flex items-center justify-center bg-[#161813]/70 backdrop-blur-sm px-4">
       <div className="bg-[#161813] border border-white/10 rounded-3xl p-8 w-full max-w-sm shadow-2xl text-center relative">
         <button
           onClick={onClose}
@@ -249,18 +224,14 @@ function SuccessModal({ onClose, onPrint }: {
         >
           <X size={18} />
         </button>
-
         <div className="flex items-center justify-center w-20 h-20 rounded-full bg-emerald-500/10 border border-emerald-500/20 mx-auto mb-6">
           <CheckCircle2 className="text-emerald-400" size={40} />
         </div>
-
         <h2 className="text-2xl font-bold text-white">Order Confirmed!</h2>
-
         <p className="text-sm text-zinc-400 mt-3 leading-relaxed">
           Payment complete. Receipt sent to printer.
           Need another copy?
         </p>
-
         <button
           onClick={onPrint}
           className="mt-5 w-full h-12 rounded-2xl border border-white/10 text-zinc-200 hover:bg-white/5 transition-all text-sm font-medium flex items-center justify-center gap-2"
@@ -268,7 +239,6 @@ function SuccessModal({ onClose, onPrint }: {
           <Printer size={15} />
           Re-Print Receipt
         </button>
-
         <button
           onClick={onClose}
           className="mt-3 w-full h-12 rounded-2xl bg-white text-black font-bold hover:bg-zinc-200 transition-all text-sm"
@@ -276,6 +246,35 @@ function SuccessModal({ onClose, onPrint }: {
           Done
         </button>
       </div>
+    </div>
+  );
+}
+
+/* ─────────── TRANSPARENT INPUT ─────────── */
+
+function TransparentInput({ icon, placeholder, value, onChange, isTextArea = false }: any) {
+  return (
+    <div className="flex items-start gap-3 px-4 py-3 bg-white/[0.03] border border-white/5 rounded-xl focus-within:border-white/20 focus-within:bg-white/[0.06] transition-all group">
+      <span className="mt-0.5 text-zinc-600 group-focus-within:text-white transition-colors">
+        {icon}
+      </span>
+      {isTextArea ? (
+        <textarea
+          rows={2}
+          placeholder={placeholder}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="flex-1 bg-transparent outline-none text-sm placeholder:text-zinc-700 text-white resize-none"
+        />
+      ) : (
+        <input
+          type="text"
+          placeholder={placeholder}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="flex-1 bg-transparent outline-none text-sm placeholder:text-zinc-700 text-white"
+        />
+      )}
     </div>
   );
 }
@@ -294,7 +293,6 @@ export default function CheckoutPanelMenu({
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [showSuccessModal,  setShowSuccessModal]  = useState(false);
 
-  // Snapshot kept so Re-Print still works after cart is cleared
   const completedOrderRef = useRef<{
     customer: CustomerInfo; cart: any[];
     subtotal: number; tax: number; total: number; orderId: string;
@@ -315,7 +313,6 @@ export default function CheckoutPanelMenu({
     return parts.length ? parts.join(' · ') : 'Dine-In / Walk-In';
   };
 
-  /* open invoice preview */
   const handleOpenCheckout = () => {
     if (cart.length === 0) return;
     if (!customer.fullName.trim() || !customer.phone.trim() || !customer.address.trim()) {
@@ -325,10 +322,8 @@ export default function CheckoutPanelMenu({
     setCheckoutStep('invoice');
   };
 
-  /* confirm button → warning dialog */
   const handleConfirmClick = () => setShowConfirmDialog(true);
 
-  /* actual order submission */
   const handleConfirmOrder = async () => {
     try {
       setIsSubmitting(true);
@@ -363,22 +358,18 @@ export default function CheckoutPanelMenu({
       };
       completedOrderRef.current = snapshot;
 
-      // Reset UI state before printing
       clearCartAndStorage();
       setCustomer(EMPTY_CUSTOMER);
       setCheckoutStep('cart');
       setShowConfirmDialog(false);
 
-      // Auto-open print dialog — payment is complete whether user prints or cancels
       printReceipt(
         snapshot.customer, snapshot.cart,
         snapshot.subtotal, snapshot.tax,
         snapshot.total,    snapshot.orderId,
       );
 
-      // Show success modal
       setShowSuccessModal(true);
-
       onOrderSuccess?.();
     } catch (error: any) {
       setShowConfirmDialog(false);
@@ -388,7 +379,6 @@ export default function CheckoutPanelMenu({
     }
   };
 
-  /* manual re-print from success modal */
   const handleManualPrint = () => {
     const s = completedOrderRef.current;
     if (!s) return;
@@ -596,34 +586,5 @@ export default function CheckoutPanelMenu({
         )}
       </div>
     </>
-  );
-}
-
-/* ─────────── TRANSPARENT INPUT ─────────── */
-
-function TransparentInput({ icon, placeholder, value, onChange, isTextArea = false }: any) {
-  return (
-    <div className="flex items-start gap-3 px-4 py-3 bg-white/[0.03] border border-white/5 rounded-xl focus-within:border-white/20 focus-within:bg-white/[0.06] transition-all group">
-      <span className="mt-0.5 text-zinc-600 group-focus-within:text-white transition-colors">
-        {icon}
-      </span>
-      {isTextArea ? (
-        <textarea
-          rows={2}
-          placeholder={placeholder}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          className="flex-1 bg-transparent outline-none text-sm placeholder:text-zinc-700 text-white resize-none"
-        />
-      ) : (
-        <input
-          type="text"
-          placeholder={placeholder}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          className="flex-1 bg-transparent outline-none text-sm placeholder:text-zinc-700 text-white"
-        />
-      )}
-    </div>
   );
 }
