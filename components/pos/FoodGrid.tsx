@@ -99,7 +99,7 @@ export default function FoodGrid({
             Loading foods...
           </div>
         )}
-
+asdfas
         {!isLoading &&
           groupedFoods.map((group: any) => (
             <div key={group._id} className="space-y-5">
@@ -113,7 +113,7 @@ export default function FoodGrid({
               <div
                 className="
                   grid gap-4 lg:gap-5
-                  grid-cols-1
+                  grid-cols-2
                   sm:grid-cols-2
                   lg:grid-cols-3
                   2xl:grid-cols-4
