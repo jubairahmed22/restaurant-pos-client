@@ -14,6 +14,9 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
+import rinLogo from '../../app/assest/Rin_Logo.png'
+import Image from 'next/image';
+
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const cartItems = useCartStore((state) => state.items);
@@ -43,7 +46,7 @@ export default function Navbar() {
                         after:rounded-tl-[1.5rem] after:shadow-[-20px_0_0_0_#0e0e0c] after:pointer-events-none">
 
           {/* MOBILE MENU TRIGGER */}
-          <button 
+          <button
             onClick={() => setIsOpen(true)}
             className="xl:hidden p-1 hover:text-zinc-400 transition-colors"
           >
@@ -52,11 +55,26 @@ export default function Navbar() {
 
           {/* LOGO */}
           <Link
-            href="/"
-            className="font-serif text-xl tracking-tight whitespace-nowrap"
-          >
-            RIN
-          </Link>
+      href="/"
+      className="flex items-center gap-2 group focus:outline-none"
+    >
+      {/* Container to enforce strict image scale dimensions */}
+      <div className="relative w-20 h-10 md:w-20 md:h-10 transition-transform duration-200 group-hover:scale-105">
+        <Image
+          src={rinLogo}
+          alt="RIN Logo"
+          placeholder="blur" // Adds an inline layout loading state block
+          priority // Bypass lazy-loading since this is an above-the-fold core branding element
+          fill
+          className="object-contain"
+        />
+      </div>
+
+      {/* Corporate Typography Brand Text */}
+      <span className="font-serif text-xl md:text-2xl font-semibold tracking-tight text-gray-100 group-hover:text-white transition-colors whitespace-nowrap">
+        RIN
+      </span>
+    </Link>
 
           {/* DESKTOP NAV LINKS (xl and up) */}
           <nav className="hidden xl:flex items-center gap-8">
@@ -132,16 +150,14 @@ export default function Navbar() {
       </header>
 
       {/* MOBILE SIDEBAR / DRAWER */}
-      <div 
-        className={`fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${
-          isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
-        }`}
+      <div
+        className={`fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          }`}
         onClick={() => setIsOpen(false)}
       />
 
-      <aside className={`fixed top-0 left-0 z-[70] h-full w-[280px] bg-[#0e0e0c] text-white p-6 transform transition-transform duration-300 ease-in-out ${
-        isOpen ? 'translate-x-0' : '-translate-x-full'
-      }`}>
+      <aside className={`fixed top-0 left-0 z-[70] h-full w-[280px] bg-[#0e0e0c] text-white p-6 transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}>
         <div className="flex justify-between items-center mb-12">
           <span className="font-serif text-2xl tracking-tight">RIN</span>
           <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-zinc-800 rounded-full transition">
@@ -160,9 +176,9 @@ export default function Navbar() {
               {item.label}
             </Link>
           ))}
-          
+
           <hr className="border-zinc-800 my-2" />
-          
+
           {!user && (
             <Link
               href="/register"
@@ -172,7 +188,7 @@ export default function Navbar() {
               Create Account
             </Link>
           )}
-          
+
           {user?.role === 'admin' && (
             <Link
               href="/dashboard"
