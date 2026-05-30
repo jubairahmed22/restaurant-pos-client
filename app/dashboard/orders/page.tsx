@@ -441,117 +441,120 @@ export default function AdminOrderManagement() {
      {/* ─── FILTER BAR ─────────────────────────────────────────────── */}
 <div className="flex flex-col gap-3">
 
-  <div className="bg-white border border-slate-200 rounded-xl p-3.5 flex flex-col gap-3">
+<div className="bg-white border border-slate-200 rounded-xl p-3.5 flex flex-col gap-3">
+  {/* Main Container: Stack on mobile, side-by-side on desktop */}
+  <div className="flex flex-col lg:flex-row lg:items-center gap-3">
 
-    {/* Top row: search + divider + dropdowns */}
-    <div className="flex flex-wrap items-center gap-2">
-
-      {/* Search */}
-      <div className="flex gap-1.5 flex-1 min-w-[220px]">
-        <input
-          value={searchInput}
-          onChange={e => { setSearchInputLocal(e.target.value); hookSetSearch(e.target.value); }}
-          onKeyDown={e => e.key === 'Enter' && applySearch()}
-          placeholder="Search name, email, phone, order ID…"
-          className="flex-1 min-w-0 h-9 px-3 text-sm border border-slate-200 rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400"
-        />
-        <Button
-          onClick={applySearch}
-          className="h-9 px-4 text-sm font-medium bg-gray-900 text-white rounded-lg hover:bg-gray-700 transition-colors flex items-center gap-1.5 whitespace-nowrap"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-          </svg>
-          Search
-        </Button>
-      </div>
-
-      {/* Divider */}
-      <div className="w-px h-7 bg-slate-200 hidden sm:block" />
-
-      {/* Filters */}
-      <div className="flex flex-wrap items-center gap-1.5">
-        <select
-          value={filters.orderStatus}
-          onChange={e => applyFilter('orderStatus', e.target.value)}
-          className="h-9 pl-3 pr-7 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-200 appearance-none"
-          style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 8px center' }}
-        >
-          <option value="">All status</option>
-          {ORDER_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
-        </select>
-
-        <select
-          value={filters.paymentStatus}
-          onChange={e => applyFilter('paymentStatus', e.target.value)}
-          className="h-9 pl-3 pr-7 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-200 appearance-none"
-          style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 8px center' }}
-        >
-          <option value="">All payment</option>
-          {PAYMENT_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
-        </select>
-
-        <select
-          value={filters.quickFilter}
-          onChange={e => applyQuickFilter(e.target.value as QuickFilter)}
-          className="h-9 pl-3 pr-7 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-200 appearance-none"
-          style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 8px center' }}
-        >
-          <option value="">Quick filter</option>
-          <option value="today">Today</option>
-          <option value="yesterday">Yesterday</option>
-          <option value="last7days">Last 7 days</option>
-          <option value="last30days">Last 30 days</option>
-        </select>
-
-        {/* Calendar range picker */}
-        <div className="relative" ref={calWrapRef}>
-          <button
-            type="button"
-            onClick={() => setCalOpen(v => !v)}
-            className={`h-9 px-3 text-sm border rounded-lg flex items-center gap-2 transition-colors whitespace-nowrap ${
-              calStart
-                ? 'border-blue-400 bg-blue-50 text-blue-700 font-medium'
-                : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-50'
-            }`}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-              <line x1="16" y1="2" x2="16" y2="6"/>
-              <line x1="8" y1="2" x2="8" y2="6"/>
-              <line x1="3" y1="10" x2="21" y2="10"/>
-            </svg>
-            <span>{calLabel}</span>
-          </button>
-
-          {calOpen && (
-            <div className="absolute top-11 left-0 z-50 bg-white border border-slate-200 rounded-xl shadow-lg">
-              <CalendarPicker
-                rangeStart={calStart}
-                rangeEnd={calEnd}
-                onChange={(s, e) => { setCalStart(s); setCalEnd(e); }}
-                onApply={handleCalApply}
-                onClear={handleCalClear}
-              />
-            </div>
-          )}
-        </div>
-
-        <button
-          onClick={handleClearAll}
-          className="h-9 px-3 text-sm border border-red-200 text-red-500 rounded-lg hover:bg-red-50 transition-colors flex items-center gap-1.5 ml-auto"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-          </svg>
-          Clear all
-        </button>
-      </div>
+    {/* Search Box - Full width on mobile/tablet */}
+    <div className="flex gap-1.5 w-full lg:max-w-md">
+      <input
+        value={searchInput}
+        onChange={e => { setSearchInputLocal(e.target.value); hookSetSearch(e.target.value); }}
+        onKeyDown={e => e.key === 'Enter' && applySearch()}
+        placeholder="Search name, email, phone, order ID…"
+        className="flex-1 min-w-0 h-9 px-3 text-sm border border-slate-200 rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:border-blue-400"
+      />
+      <Button
+        onClick={applySearch}
+        className="h-9 px-4 text-sm font-medium bg-gray-900 text-white rounded-lg hover:bg-gray-700 transition-colors flex items-center gap-1.5 whitespace-nowrap"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        Search
+      </Button>
     </div>
 
-    {/* Active filter pills */}
-    <ActiveFilterPills pills={activePills} />
+    {/* Divider - Hidden entirely on mobile/tablet, visible only on desktop */}
+    <div className="w-px h-7 bg-slate-200 hidden lg:block" />
+
+    {/* Filters Grid - 2 columns on mobile, auto-wrapping flex layout on tablet/desktop */}
+    <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 w-full lg:w-auto flex-1">
+      
+      <select
+        value={filters.orderStatus}
+        onChange={e => applyFilter('orderStatus', e.target.value)}
+        className="h-9 pl-3 pr-7 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-200 appearance-none w-full sm:w-auto min-w-[120px]"
+        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 8px center' }}
+      >
+        <option value="">All status</option>
+        {ORDER_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
+      </select>
+
+      <select
+        value={filters.paymentStatus}
+        onChange={e => applyFilter('paymentStatus', e.target.value)}
+        className="h-9 pl-3 pr-7 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-200 appearance-none w-full sm:w-auto min-w-[120px]"
+        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 8px center' }}
+      >
+        <option value="">All payment</option>
+        {PAYMENT_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
+      </select>
+
+      <select
+        value={filters.quickFilter}
+        onChange={e => applyQuickFilter(e.target.value as QuickFilter)}
+        className="h-9 pl-3 pr-7 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-200 appearance-none w-full sm:w-auto min-w-[120px]"
+        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 8px center' }}
+      >
+        <option value="">Quick filter</option>
+        <option value="today">Today</option>
+        <option value="yesterday">Yesterday</option>
+        <option value="last7days">Last 7 days</option>
+        <option value="last30days">Last 30 days</option>
+      </select>
+
+      {/* Calendar range picker wrapper */}
+      <div className="relative w-full sm:w-auto" ref={calWrapRef}>
+        <button
+          type="button"
+          onClick={() => setCalOpen(v => !v)}
+          className={`h-9 px-3 text-sm border rounded-lg flex items-center justify-center sm:justify-start gap-2 transition-colors whitespace-nowrap w-full sm:w-auto ${
+            calStart
+              ? 'border-blue-400 bg-blue-50 text-blue-700 font-medium'
+              : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-50'
+          }`}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+          <span className="truncate">{calLabel}</span>
+        </button>
+
+        {calOpen && (
+          /* right-0 sm:left-0 makes sure calendar pops up nicely contextually without getting cut off screen edge */
+          <div className="absolute top-11 right-0 sm:left-0 z-50 bg-white border border-slate-200 rounded-xl shadow-lg max-w-[90vw] sm:max-w-none">
+            <CalendarPicker
+              rangeStart={calStart}
+              rangeEnd={calEnd}
+              onChange={(s, e) => { setCalStart(s); setCalEnd(e); }}
+              onApply={handleCalApply}
+              onClear={handleCalClear}
+            />
+          </div>
+        )}
+      </div>
+
+      {/* Clear All Button - Spans full width on mobile grid if needed, or aligns right on desktop */}
+      <button
+        onClick={handleClearAll}
+        className="h-9 px-3 text-sm border border-red-200 text-red-500 rounded-lg hover:bg-red-50 transition-colors flex items-center justify-center gap-1.5 col-span-2 sm:col-span-1 sm:ml-auto w-full sm:w-auto"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+        Clear all
+      </button>
+
+    </div>
   </div>
+
+  {/* Active filter pills */}
+  <ActiveFilterPills pills={activePills} />
+</div>
 
   {/* ─── TABLE ──────────────────────────────────────────────────── */}
   <DataTable<Order>
@@ -565,15 +568,26 @@ export default function AdminOrderManagement() {
   />
 
   {/* ─── SUMMARY STATS ──────────────────────────────────────────── */}
-  <div className="grid grid-cols-3 sm:grid-cols-3 gap-2.5">
-    <div></div>
-    <div></div>
-    <div className="bg-slate-50 rounded-xl p-3.5">
-      <p className="text-xs text-end text-slate-400 mb-1">Revenue (this page)</p>
-      <p className="text-2xl text-end font-semibold text-green-600">AUD {totalRevenue.toLocaleString()}</p>
+<div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+  {/* Left spacer layout - takes 2/3 of space on desktop, completely vanishes cleanly on mobile */}
+  <div className="hidden md:block md:col-span-2" />
+  
+  {/* Revenue Card Card: Full width on mobile/tablet, shifts perfectly right on layout breakpoints */}
+  <div className="bg-white border border-slate-200/80 rounded-xl p-4 flex flex-col justify-center shadow-sm relative overflow-hidden">
+    {/* Subtle indicator bar for an interface accent */}
+    <div className="absolute left-0 top-0 bottom-0 w-1 bg-green-500" />
+    
+    <div className="pl-1">
+      <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-0.5 md:text-right">
+        Revenue (this page)
+      </p>
+      <p className="text-2xl font-bold text-slate-900 tracking-tight md:text-right flex items-baseline justify-start md:justify-end gap-1">
+        <span className="text-xs font-semibold text-green-600">AUD</span>
+        <span className="text-green-600">{totalRevenue.toLocaleString()}</span>
+      </p>
     </div>
- 
   </div>
+</div>
 
 </div>
 

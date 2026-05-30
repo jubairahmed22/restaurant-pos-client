@@ -38,56 +38,56 @@ export default function FoodGrid({
   return (
     <div className="h-[100dvh] flex flex-col gap-4 overflow-hidden">
 
-    <div className='flex flex-col'>
-            {/* ─────────────────────────────────────────
+      <div className='flex flex-col'>
+        {/* ─────────────────────────────────────────
           SEARCH
       ───────────────────────────────────────── */}
-      <div
-        className="
+        <div
+          className="
           bg-white border border-slate-100 rounded
           p-3 sm:p-4
           flex items-center gap-3
           shrink-0
         "
-      >
-        {/* <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center">
+        >
+          {/* <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center">
           <Search size={18} className="text-slate-400" />
         </div> */}
 
-        <Input
-          value={search}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            updateURL({ search: e.target.value, page: '1' })
-          }
-          placeholder="Search foods..."
-          className="border-0 shadow-none bg-transparent"
-        />
-      </div>
+          <Input
+            value={search}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              updateURL({ search: e.target.value, page: '1' })
+            }
+            placeholder="Search foods..."
+            className="border-0 shadow-none bg-transparent"
+          />
+        </div>
 
-      {/* ─────────────────────────────────────────
+        {/* ─────────────────────────────────────────
           CATEGORY FILTERS
       ───────────────────────────────────────── */}
-      <div className="bg-white border border-slate-100 rounded p-3 overflow-x-auto shrink-0">
-        <div className="flex items-center gap-2 min-w-max">
-          <ListButton
-            label="All"
-            isActive={category === ''}
-            onClick={() => updateURL({ category: '', page: '1' })}
-          />
-
-          {categories?.map((cat: any) => (
+        <div className="bg-white border border-slate-100 rounded p-3 overflow-x-auto shrink-0">
+          <div className="flex items-center gap-2 min-w-max">
             <ListButton
-              key={cat._id}
-              label={cat.title}
-              isActive={category === cat._id}
-              onClick={() =>
-                updateURL({ category: cat._id, page: '1' })
-              }
+              label="All"
+              isActive={category === ''}
+              onClick={() => updateURL({ category: '', page: '1' })}
             />
-          ))}
+
+            {categories?.map((cat: any) => (
+              <ListButton
+                key={cat._id}
+                label={cat.title}
+                isActive={category === cat._id}
+                onClick={() =>
+                  updateURL({ category: cat._id, page: '1' })
+                }
+              />
+            ))}
+          </div>
         </div>
       </div>
-    </div>
 
       {/* ─────────────────────────────────────────
           SCROLLABLE CATEGORY SECTIONS
@@ -99,7 +99,7 @@ export default function FoodGrid({
             Loading foods...
           </div>
         )}
-asdfasfd
+        asdfasfd
         {!isLoading &&
           groupedFoods.map((group: any) => (
             <div key={group._id} className="space-y-5">
@@ -146,4 +146,4 @@ asdfasfd
       </div>
     </div>
   );
-}
+} 
