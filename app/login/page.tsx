@@ -101,7 +101,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex bg-[#0a0a0a] overflow-hidden">
+    <div className="min-h-screen flex bg-white overflow-hidden">
 
       {/* ================= LEFT SLIDER ================= */}
       <div
@@ -158,7 +158,7 @@ export default function LoginPage() {
       </div>
 
       {/* ================= RIGHT LOGIN ================= */}
-      <div className="w-full lg:w-[35%] flex items-center justify-center p-6 md:p-10 bg-[#0a0a0a]">
+      <div className="w-full lg:w-[35%] flex items-center justify-center p-6 md:p-10 bg-white">
 
         <motion.div
           initial={{ opacity: 0, y: 25 }}
@@ -173,7 +173,7 @@ export default function LoginPage() {
             </h1>
           </div>
 
-          <div className="bg-[#161813] border border-white/5 rounded-[2rem] p-8 md:p-10">
+          <div className="bg-white border border-white/5 rounded-[2rem] p-8 md:p-10">
 
             <div className="flex items-center gap-3 mb-6">
               <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center">

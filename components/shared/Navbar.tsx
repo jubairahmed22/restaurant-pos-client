@@ -41,20 +41,20 @@ export default function Navbar() {
     <>
       <header className="fixed top-0 left-0 z-50 flex items-start">
         {/* MAIN PILL */}
-        <div className="relative bg-[#0e0e0c] text-white flex items-center px-6 py-4 md:px-8 gap-4 md:gap-8 
+        <div className="relative bg-white text-[#1B3A6B] flex items-center px-6 py-4 md:px-8 gap-4 md:gap-8 
                 /* Rounded corners for the box itself */
                 rounded-br-[2.5rem] rounded-tr-2xl 
                 /* The Scoop Logic */
                 after:content-[''] after:absolute after:top-0 after:-right-[60px] 
                 after:w-[60px] after:h-[60px] 
                 after:rounded-tl-[2.5rem] 
-                after:shadow-[-25px_-25px_0_0_#0e0e0c] 
+                after:shadow-[-25px_-25px_0_0_#ffffff] 
                 after:pointer-events-none">
 
           {/* MOBILE MENU TRIGGER */}
           <button
             onClick={() => setIsOpen(true)}
-            className="xl:hidden p-1 hover:text-zinc-400 transition-colors"
+            className="xl:hidden p-1 hover:text-[#1B3A6B]/70 transition-colors"
           >
             <Menu size={24} />
           </button>
@@ -77,7 +77,7 @@ export default function Navbar() {
             </div>
 
             {/* Corporate Typography Brand Text */}
-            <span className="font-serif text-xl md:text-2xl font-semibold tracking-tight text-gray-100 group-hover:text-white transition-colors whitespace-nowrap">
+            <span className="font-serif text-xl md:text-2xl font-semibold tracking-tight text-[#1B3A6B] transition-colors whitespace-nowrap">
               RIN
             </span>
           </Link>
@@ -88,10 +88,10 @@ export default function Navbar() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="relative py-1 text-[15px] font-bold text-zinc-200 transition-colors duration-300 hover:text-white group whitespace-nowrap"
+                className="relative py-1 text-[15px] font-bold text-[#1B3A6B]/90 transition-colors duration-300 hover:text-[#1B3A6B] group whitespace-nowrap"
               >
                 {item.label}
-                <span className="absolute bottom-0 left-0 h-[2px] w-full scale-x-0 bg-white transition-transform duration-300 ease-out origin-right group-hover:scale-x-100 group-hover:origin-left" />
+                <span className="absolute bottom-0 left-0 h-[2px] w-full scale-x-0 bg-[#1B3A6B] transition-transform duration-300 ease-out origin-right group-hover:scale-x-100 group-hover:origin-left" />
               </Link>
             ))}
           </nav>
@@ -102,10 +102,10 @@ export default function Navbar() {
             {user ? (
               <div className="flex items-center gap-3">
                 <div className="hidden md:block text-right">
-                  <p className="text-[8px] text-zinc-500 uppercase tracking-wider leading-none">
+                  <p className="text-[8px] text-[#1B3A6B]/60 uppercase tracking-wider leading-none">
                     {user.role}
                   </p>
-                  <p className="text-[10px] font-semibold text-white">
+                  <p className="text-[10px] font-semibold text-[#1B3A6B]">
                     {user.name}
                   </p>
                 </div>
@@ -113,7 +113,7 @@ export default function Navbar() {
                 {user?.role === 'admin' && (
                   <Link
                     href="/dashboard"
-                    className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-800 hover:bg-zinc-700 transition text-sm"
+                    className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-100 hover:bg-zinc-200 text-[#1B3A6B] transition text-sm font-medium"
                   >
                     <LayoutDashboard size={16} />
                     <span className="hidden lg:inline">Dashboard</span>
@@ -122,16 +122,16 @@ export default function Navbar() {
 
                 <button
                   onClick={handleLogout}
-                  className="flex items-center justify-center w-10 h-10 rounded-full bg-zinc-800 hover:bg-red-500 transition group"
+                  className="flex items-center justify-center w-10 h-10 rounded-full bg-zinc-100 hover:bg-red-500 hover:text-white text-[#1B3A6B] transition group"
                 >
-                  <LogOut size={18} className="group-hover:text-white" />
+                  <LogOut size={18} />
                 </button>
               </div>
             ) : (
               <div className="flex items-center gap-3">
                 <Link
                   href="/login"
-                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-white text-black hover:bg-zinc-200 transition text-sm font-medium whitespace-nowrap"
+                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#1B3A6B] text-white hover:bg-[#1B3A6B]/90 transition text-sm font-medium whitespace-nowrap"
                 >
                   <User size={16} />
                   <span className="hidden sm:inline">Sign In</span>
@@ -142,11 +142,11 @@ export default function Navbar() {
             {/* CART */}
             <Link
               href="/menu"
-              className="relative flex items-center justify-center w-10 h-10 rounded-full bg-zinc-800 hover:bg-zinc-700 transition"
+              className="relative flex items-center justify-center w-10 h-10 rounded-full bg-zinc-100 hover:bg-zinc-200 text-[#1B3A6B] transition"
             >
               <ShoppingCart size={18} />
               {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-[#0e0e0c]">
+                <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white">
                   {cartCount}
                 </span>
               )}
@@ -157,16 +157,16 @@ export default function Navbar() {
 
       {/* MOBILE SIDEBAR / DRAWER */}
       <div
-        className={`fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        className={`fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
           }`}
         onClick={() => setIsOpen(false)}
       />
 
-      <aside className={`fixed top-0 left-0 z-[70] h-full w-[280px] bg-[#0e0e0c] text-white p-6 transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'
+      <aside className={`fixed top-0 left-0 z-[70] h-full w-[280px] bg-white text-[#1B3A6B] p-6 transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}>
         <div className="flex justify-between items-center mb-12">
-          <span className="font-serif text-2xl tracking-tight">RIN</span>
-          <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-zinc-800 rounded-full transition">
+          <span className="font-serif text-2xl tracking-tight font-semibold">RIN</span>
+          <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-zinc-100 rounded-full transition">
             <X size={24} />
           </button>
         </div>
@@ -177,19 +177,19 @@ export default function Navbar() {
               key={item.href}
               href={item.href}
               onClick={() => setIsOpen(false)}
-              className="text-lg font-medium text-zinc-300 hover:text-white transition-colors"
+              className="text-lg font-medium text-[#1B3A6B]/80 hover:text-[#1B3A6B] transition-colors"
             >
               {item.label}
             </Link>
           ))}
 
-          <hr className="border-zinc-800 my-2" />
+          <hr className="border-zinc-200 my-2" />
 
           {!user && (
             <Link
               href="/register"
               onClick={() => setIsOpen(false)}
-              className="text-lg font-medium text-zinc-300 hover:text-white transition-colors"
+              className="text-lg font-medium text-[#1B3A6B]/80 hover:text-[#1B3A6B] transition-colors"
             >
               Create Account
             </Link>
@@ -199,7 +199,7 @@ export default function Navbar() {
             <Link
               href="/dashboard"
               onClick={() => setIsOpen(false)}
-              className="flex items-center gap-3 text-lg font-medium text-zinc-300 hover:text-white transition-colors"
+              className="flex items-center gap-3 text-lg font-medium text-[#1B3A6B]/80 hover:text-[#1B3A6B] transition-colors"
             >
               <LayoutDashboard size={20} />
               Dashboard

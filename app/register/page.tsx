@@ -118,7 +118,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex bg-[#0a0a0a] overflow-hidden">
+    <div className="min-h-screen flex bg-white overflow-hidden">
 
       {/* LEFT SIDE SLIDER */}
       <div
@@ -190,7 +190,7 @@ export default function RegisterPage() {
             </h1>
           </div>
 
-          <div className="bg-[#161813] border border-white/5 rounded-[2rem] p-6 md:p-8">
+          <div className="bg-white border border-white/5 rounded-[2rem] p-6 md:p-8">
 
             <div className="flex items-center gap-3 mb-8">
               <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center">

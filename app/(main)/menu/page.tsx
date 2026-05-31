@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
-import { X, ShoppingCart, ChevronRight } from "lucide-react";
+import { X, ChevronRight } from "lucide-react";
 
 import { FoodService } from "@/services/food.service";
 import { CategoryService } from "@/services/category.service";
@@ -115,12 +115,12 @@ export default function PremiumPOSPage() {
   const cartCount = cart.reduce((a: number, i: any) => a + i.qty, 0);
 
   return (
-    <div className="min-h-screen w-full flex bg-[#080808] text-zinc-100 font-sans selection:bg-indigo-500/30 overflow-hidden">
+    <div className="min-h-screen w-full flex flex-col xl:flex-row bg-[#F8FAFC] text-slate-800 font-sans selection:bg-[#1B3A6B]/10 overflow-hidden">
 
-      {/* LEFT: Explorer Section (75%) */}
-      <main className="relative w-full xl:w-[70%] h-screen flex flex-col border-r border-white/5 bg-[#161813]">
+      {/* LEFT: Explorer Section (68% Split Area) */}
+      <main className="relative w-full xl:w-[68%] h-screen flex flex-col border-r border-slate-200 bg-[#F8FAFC]">
         {/* Content Area — extra bottom padding on mobile so FAB doesn't cover content */}
-        <div className="flex-1 overflow-y-auto px-6 lg:px-10 no-scrollbar pb-28 xl:pb-0">
+        <div className="flex-1 overflow-y-auto px-6 lg:px-10 no-scrollbar pb-28 xl:pb-8 ">
           <div className="max-w-[1400px] mx-auto">
             <FoodGridMenu
               foods={foods}
@@ -146,55 +146,57 @@ export default function PremiumPOSPage() {
             >
               <button
                 onClick={() => setDrawerOpen(true)}
-                className="w-full flex items-center gap-3 bg-[#080808] border border-white/10 rounded-2xl px-4 py-3.5 shadow-2xl shadow-black/60 active:scale-[0.98] transition-transform"
+                className="w-full flex items-center gap-3 bg-[#1B3A6B] border border-white/10 rounded-2xl px-4 py-3.5 shadow-2xl shadow-[#1B3A6B]/20 active:scale-[0.98] transition-transform"
               >
                 {/* Left — cart count badge */}
-                <div className="flex items-center justify-center min-w-[38px] h-[38px] bg-indigo-600 rounded-xl shrink-0">
-                  <span className="text-white text-sm font-bold leading-none">
+                <div className="flex items-center justify-center min-w-[38px] h-[38px] bg-white text-[#1B3A6B] rounded-xl shrink-0">
+                  <span className="text-sm font-black leading-none">
                     {cartCount}
                   </span>
                 </div>
 
                 {/* Middle — label */}
-                <span className="flex-1 text-left text-white text-sm font-semibold tracking-tight">
-                  View Cart
+                <span className="flex-1 text-left text-white text-sm font-bold uppercase tracking-widest text-[11px]">
+                  View Order
                 </span>
 
                 {/* Right — total */}
-                <span className="text-lime-400 text-base font-bold shrink-0">
+                <span className="text-white text-base font-bold shrink-0">
                   ${subtotal.toFixed(2)}
                 </span>
 
-                <ChevronRight size={18} className="text-zinc-500 shrink-0" />
+                <ChevronRight size={18} className="text-white/60 shrink-0" />
               </button>
             </motion.div>
           )}
         </AnimatePresence>
       </main>
 
-      {/* RIGHT: Order Intelligence (25%) — desktop only */}
-      <aside className="hidden xl:flex w-[30%] h-screen bg-[#080808] flex-col relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/5 to-transparent pointer-events-none" />
-        <div className="flex-1 overflow-y-auto p-6 no-scrollbar relative z-10">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-xl font-bold tracking-tight italic">
+      {/* RIGHT: Order Intelligence (32% Sidebar Panel Layout) — desktop only */}
+      <aside className="hidden xl:flex w-[32%] h-screen bg-white flex-col relative border-l border-slate-100 shadow-sm">
+        <div className="flex-1 overflow-y-auto p-6 lg:p-8 no-scrollbar relative z-10 flex flex-col">
+          <div className="flex items-center justify-between mb-8 shrink-0">
+            <h2 className="text-2xl font-serif italic text-[#1B3A6B]">
               Current Order
             </h2>
-            <div className="px-3 py-1 bg-white/5 rounded-full text-[10px] text-zinc-500 uppercase tracking-widest border border-white/5">
+            <div className="px-3 py-1 bg-[#F8FAFC] rounded-full text-[10px] font-black text-slate-400 uppercase tracking-widest border border-slate-200">
               Draft #2026
             </div>
           </div>
-          <CheckoutPanelMenu
-            cart={cart}
-            subtotal={subtotal}
-            tax={subtotal * 0.125}
-            total={subtotal * 1.125}
-            setCart={setCart}
-            increaseQty={increaseQty}
-            decreaseQty={decreaseQty}
-            removeItem={removeItem}
-            clearCart={() => setCart([])}
-          />
+          
+          <div className="flex-1">
+            <CheckoutPanelMenu
+              cart={cart}
+              subtotal={subtotal}
+              tax={subtotal * 0.125}
+              total={subtotal * 1.125}
+              setCart={setCart}
+              increaseQty={increaseQty}
+              decreaseQty={decreaseQty}
+              removeItem={removeItem}
+              clearCart={() => setCart([])}
+            />
+          </div>
         </div>
       </aside>
 
@@ -208,7 +210,7 @@ export default function PremiumPOSPage() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setDrawerOpen(false)}
-              className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-xl xl:hidden"
+              className="fixed inset-0 z-[60] bg-slate-900/60 backdrop-blur-sm xl:hidden"
             />
 
             {/* Drawer panel */}
@@ -217,33 +219,33 @@ export default function PremiumPOSPage() {
               animate={{ y: 0 }}
               exit={{ y: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="fixed bottom-0 left-0 right-0 z-[70] bg-[#0d0d0d] rounded-t-[2.5rem] border-t border-white/10 max-h-[92vh] overflow-hidden flex flex-col xl:hidden"
+              className="fixed bottom-0 left-0 right-0 z-[70] bg-white rounded-t-[2.5rem] border-t border-slate-200 max-h-[92vh] overflow-hidden flex flex-col xl:hidden shadow-2xl"
             >
               {/* Drag handle */}
               <div className="flex justify-center pt-4 pb-2 shrink-0">
-                <div className="w-10 h-1 bg-white/20 rounded-full" />
+                <div className="w-10 h-1 bg-slate-200 rounded-full" />
               </div>
 
               {/* Drawer header */}
-              <div className="flex justify-between items-center px-6 pb-4 shrink-0">
+              <div className="flex justify-between items-center px-6 pb-4 shrink-0 border-b border-slate-100">
                 <div className="flex items-center gap-3">
-                  <h2 className="text-2xl font-black italic">Your Bag</h2>
+                  <h2 className="text-2xl font-serif italic text-[#1B3A6B]">Your Bag</h2>
                   {cartCount > 0 && (
-                    <span className="px-2.5 py-0.5 bg-indigo-600 rounded-full text-xs font-bold text-white">
+                    <span className="px-2.5 py-0.5 bg-[#1B3A6B] rounded-full text-xs font-bold text-white">
                       {cartCount}
                     </span>
                   )}
                 </div>
                 <button
                   onClick={() => setDrawerOpen(false)}
-                  className="p-3 bg-white/5 rounded-full hover:bg-white/10 transition-colors"
+                  className="p-2.5 bg-slate-50 text-slate-400 hover:text-slate-600 rounded-full border border-slate-200 transition-colors"
                 >
-                  <X size={20} />
+                  <X size={18} />
                 </button>
               </div>
 
               {/* Scrollable content */}
-              <div className="flex-1 overflow-y-auto px-6 pb-8 no-scrollbar">
+              <div className="flex-1 overflow-y-auto px-6 py-6 no-scrollbar bg-white">
                 <CheckoutPanelMenu
                   cart={cart}
                   subtotal={subtotal}
@@ -261,6 +263,12 @@ export default function PremiumPOSPage() {
           </>
         )}
       </AnimatePresence>
+
+      {/* SCROLLBAR & OVERRIDE RESET CONFIGURATIONS */}
+      <style jsx global>{`
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
     </div>
   );
 }

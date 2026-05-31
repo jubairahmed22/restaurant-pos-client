@@ -10,7 +10,7 @@ export default function OrderItemMenu({
   onRemove,
 }: any) {
   return (
-    <div className="group relative overflow-hidden rounded-3xl border border-white/10 bg-[#161813] p-4 transition-all duration-300 hover:border-white/20 hover:bg-[#161616]">
+    <div className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white p-4 transition-all duration-300 hover:border-white/20 hover:bg-[#161616]">
 
       {/* Glow Effect */}
       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 bg-gradient-to-r from-white/[0.03] via-transparent to-white/[0.02]" />

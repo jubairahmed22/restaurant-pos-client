@@ -30,26 +30,22 @@ export default function FoodGridMenu({
   return (
     <div className="flex flex-col gap-6">
 
-      {/* ─── COMPACT CONTROL BAR ─── */}
-      {/*
-        On mobile the sticky bar sits under the top of the viewport.
-        We keep z-30 here; the floating cart FAB uses z-50 so it layers above.
-      */}
-      <div className="sticky top-0 z-30 pt-20 xl:pt-24 pb-4 bg-[#161813]/80 backdrop-blur-xl border-b border-white/5 -mx-4 px-4 lg:-mx-10 lg:px-10">
-        <div className="flex flex-col gap-4">
+      {/* ─── PREMIUM CONTROL BAR ─── */}
+      <div className="sticky top-0 z-30 pt-20 pb-6 bg-[#F8FAFC]/80 backdrop-blur-xl border-b border-slate-200 -mx-4 px-4 lg:-mx-10 lg:px-10">
+        <div className="flex flex-col gap-5">
 
           {/* Search row */}
           <div className="flex items-center gap-3">
             <div className="relative flex-1 group max-w-3xl">
-              <span className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-zinc-500 group-focus-within:text-indigo-500 transition-colors">
-                <SearchIcon size={16} strokeWidth={2} />
+              <span className="absolute inset-y-0 left-3.5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-[#1B3A6B] transition-colors">
+                <SearchIcon size={18} strokeWidth={2.5} />
               </span>
               <input
                 type="text"
                 value={search}
                 onChange={(e) => updateURL({ search: e.target.value, page: '1' })}
-                placeholder="Search menu..."
-                className="w-full h-11 pl-10 pr-4 bg-white/[0.04] text-white placeholder-zinc-500 text-sm border border-white/10 rounded-xl outline-none transition-all focus:border-indigo-500/40 focus:bg-white/[0.07]"
+                placeholder="Search our menu..."
+                className="w-full h-12 pl-11 pr-4 bg-white text-[#1B3A6B] placeholder-slate-400 text-sm font-medium border border-slate-200 rounded-2xl outline-none transition-all shadow-sm focus:border-[#1B3A6B] focus:ring-4 focus:ring-[#1B3A6B]/5"
               />
             </div>
           </div>
@@ -57,19 +53,19 @@ export default function FoodGridMenu({
           {/* Category ribbon */}
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth">
             <ListButtonWhite
-              label="All"
+              label="All Menu"
               isActive={category === ''}
               onClick={() => updateURL({ category: '', page: '1' })}
-              className="px-4 py-1.5 text-xs"
+              className="px-5 py-2 text-xs font-bold uppercase tracking-wider"
             />
-            <div className="w-[1px] h-4 bg-white/10 shrink-0" />
+            <div className="w-[1px] h-4 bg-slate-200 shrink-0 mx-1" />
             {categories?.map((cat: any) => (
               <ListButtonWhite
                 key={cat._id}
                 label={cat.title}
                 isActive={category === cat._id}
                 onClick={() => updateURL({ category: cat._id, page: '1' })}
-                className="px-4 py-1.5 text-xs whitespace-nowrap"
+                className="px-5 py-2 text-xs font-bold uppercase tracking-wider whitespace-nowrap"
               />
             ))}
           </div>
@@ -77,13 +73,13 @@ export default function FoodGridMenu({
       </div>
 
       {/* ─── MENU EXPLORER ─── */}
-      <div className="space-y-12 mt-4">
+      <div className="space-y-16 mt-8">
         {isLoading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
             {[...Array(8)].map((_, i) => (
               <div
                 key={i}
-                className="h-48 rounded-2xl bg-white/[0.02] animate-pulse border border-white/5"
+                className="h-64 rounded-3xl bg-white animate-pulse border border-slate-200 shadow-sm"
               />
             ))}
           </div>
@@ -91,19 +87,21 @@ export default function FoodGridMenu({
           groupedFoods.map((group: any) => (
             <section
               key={group._id}
-              className="animate-in fade-in slide-in-from-bottom-2 duration-500"
+              className="animate-in fade-in slide-in-from-bottom-4 duration-700"
             >
-              <div className="flex items-center gap-3 mb-6">
-                <h2 className="text-xl font-serif italic text-white/80">
+              {/* Category Header */}
+              <div className="flex items-center gap-4 mb-8">
+                <h2 className="text-2xl lg:text-3xl font-serif italic text-[#1B3A6B]">
                   {group.title}
                 </h2>
-                <div className="h-[1px] flex-1 bg-gradient-to-r from-white/10 to-transparent" />
-                <span className="text-zinc-600 text-[10px] font-mono uppercase tracking-widest">
-                  {group.foods.length} items
+                <div className="h-[1px] flex-1 bg-gradient-to-r from-slate-200 to-transparent" />
+                <span className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em]">
+                  {group.foods.length} Dishes
                 </span>
               </div>
 
-              <div className="grid gap-4 sm:gap-5 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+              {/* Responsive Grid */}
+              <div className="grid gap-6 sm:gap-8 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
                 {group.foods.map((item: any) => (
                   <FoodCardMenu key={item._id} item={item} onAdd={onAdd} />
                 ))}
@@ -112,14 +110,26 @@ export default function FoodGridMenu({
           ))
         )}
 
+        {/* Empty State */}
         {!isLoading && groupedFoods.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-24 opacity-60">
-            <p className="text-zinc-400 text-sm font-light italic">
+          <div className="flex flex-col items-center justify-center py-32 text-center">
+            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
+               <SearchIcon size={24} className="text-slate-300" />
+            </div>
+            <p className="text-[#1B3A6B] text-lg font-serif italic">
               No culinary matches found.
+            </p>
+            <p className="text-slate-400 text-sm mt-1">
+              Try adjusting your search or category filters.
             </p>
           </div>
         )}
       </div>
+
+      <style jsx global>{`
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
     </div>
   );
 }

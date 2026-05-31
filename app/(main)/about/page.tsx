@@ -44,7 +44,7 @@ const Page = () => {
   }, [nextSlide, isPaused]);
 
   return (
-    <div className='min-h-screen w-full flex flex-col lg:flex-row bg-[#0a0a0a] text-white font-sans selection:bg-white/20 '>
+    <div className='min-h-screen w-full flex flex-col lg:flex-row bg-white text-white font-sans selection:bg-white/20 '>
 
       {/* LEFT: Premium Slider 
           - On mobile: fixed height (h-64)
@@ -70,7 +70,7 @@ const Page = () => {
         </AnimatePresence>
 
         {/* Testimonial Overlay - Responsive adjustments for mobile */}
-        <div className="absolute bottom-4 left-4 right-4 lg:bottom-12 lg:left-12 z-20 max-w-lg p-6 lg:p-10 rounded-[1.5rem] lg:rounded-3xl bg-black/40 backdrop-blur-xl border border-white/10">
+        <div className="absolute bottom-4 left-4 right-4 lg:bottom-12 lg:left-12 z-20 max-w-lg p-6 lg:p-10 rounded-xl lg:rounded-xl bg-black/40 backdrop-blur-xl border border-white/10">
           <h2 className="text-xl lg:text-4xl font-serif italic mb-2 lg:mb-4 leading-tight">“{slides[current].title}”</h2>
           <p className="hidden md:block text-gray-300 font-light mb-4 lg:mb-6 text-sm lg:text-base leading-relaxed">"{slides[current].desc}"</p>
           <div className="flex items-center gap-3">
@@ -86,13 +86,13 @@ const Page = () => {
           - On mobile: Full width, natural height
           - On desktop: 30% width, fixed height
       */}
-      <div className='w-full lg:w-[30%] h-auto lg:h-screen bg-[#0a0a0a] flex flex-col gap-4 overflow-y-auto p-4 no-scrollbar'>
+      <div className='w-full lg:w-[30%] h-auto lg:h-screen bg-white flex flex-col gap-4 overflow-y-auto p-4 no-scrollbar'>
 
         {/* --- ABOUT SECTION --- */}
         <div className="flex flex-col gap-4 flex-shrink-0">
           
           {/* Top Intro Card */}
-          <div className="bg-[#121210] p-8 lg:p-10 rounded-[2rem] border border-white/5">
+          <div className="bg-[#1B3A6B] p-8 lg:p-10 rounded-xl border border-white/5">
             <h2 className="text-4xl lg:text-5xl font-serif italic mb-6 lg:mb-10">About</h2>
             <p className="text-zinc-400 text-[14px] lg:text-[15px] leading-relaxed font-light">
               Founded by Italian owners, our restaurant brings authentic flavors from Italy to Prague, 
@@ -101,7 +101,7 @@ const Page = () => {
           </div>
 
           {/* Couple Image Card */}
-          <div className="relative h-[350px] lg:h-[450px] w-full rounded-[2rem] overflow-hidden group border border-white/5">
+          <div className="relative h-[350px] lg:h-[450px] w-full rounded-xl overflow-hidden group border border-white/5">
             <Image 
               src={aboutCouple} 
               alt="Maria & Giovanni" 
@@ -115,7 +115,7 @@ const Page = () => {
           </div>
 
           {/* Bottom Story Card */}
-          <div className="bg-[#121210] p-8 lg:p-10 rounded-[2rem] border border-white/5">
+          <div className="bg-[#1B3A6B] p-8 lg:p-10 rounded-xl border border-white/5">
             <h3 className="text-3xl lg:text-4xl font-serif italic mb-6 lg:mb-10">Maria & Giovanni</h3>
             <div className="flex flex-col gap-6">
               <p className="text-zinc-400 text-[14px] lg:text-[15px] leading-relaxed font-light">
@@ -133,18 +133,18 @@ const Page = () => {
 
         {/* Social Links Grid */}
         <div className="grid grid-cols-2 gap-4 flex-shrink-0 mt-2">
-          <div className="bg-[#121210] p-5 lg:p-6 rounded-3xl flex items-center justify-center lg:justify-between group cursor-pointer border border-white/5 transition-colors hover:bg-zinc-800">
+          <div className="bg-[#1B3A6B] p-5 lg:p-6 rounded-xl flex items-center justify-center lg:justify-between group cursor-pointer border border-white/5 transition-colors hover:bg-zinc-800">
             <span className="text-xs lg:text-sm font-light text-zinc-300">X / Twitter</span>
             <X size={14} className="hidden lg:block text-zinc-500 group-hover:text-white transition-colors" />
           </div>
-          <div className="bg-[#121210] p-5 lg:p-6 rounded-3xl flex items-center justify-center lg:justify-between group cursor-pointer border border-white/5 transition-colors hover:bg-zinc-800">
+          <div className="bg-[#1B3A6B] p-5 lg:p-6 rounded-xl flex items-center justify-center lg:justify-between group cursor-pointer border border-white/5 transition-colors hover:bg-zinc-800">
             <span className="text-xs lg:text-sm font-light text-zinc-300">Instagram</span>
             <ChevronRight size={14} className="hidden lg:block text-zinc-500 group-hover:text-white transition-colors" />
           </div>
         </div>
 
         {/* Footer Navigation */}
-        <div className="w-full bg-[#121210] py-12 px-8 rounded-[2rem] flex flex-col items-center gap-12 flex-shrink-0 mb-4 border border-white/5">
+        <div className="w-full bg-[#1B3A6B] py-12 px-8 rounded-xl flex flex-col items-center gap-12 flex-shrink-0 mb-4 border border-white/5">
           <div className="flex flex-col items-center gap-6">
             <h3 className="text-xl font-serif italic mb-2">Menu</h3>
             <div className="flex flex-col items-center gap-4 text-zinc-400 font-light text-[14px] lg:text-[15px]">
