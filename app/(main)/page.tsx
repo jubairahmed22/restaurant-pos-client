@@ -58,8 +58,8 @@ const Page = () => {
 
       {/* LEFT: Premium Slider - HIDDEN ON MOBILE/TABLET (md/sm), VISIBLE ON LG */}
       <div
-        className='hidden lg:block relative lg:w-[70%] h-screen overflow-hidden group'
-        onMouseEnter={() => setIsPaused(true)}
+        className='hidden lg:block m-2 rounded-2xl relative lg:w-[70%] h-[calc(100vh-1rem)] overflow-hidden group'
+  onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >
         <AnimatePresence mode="wait">
@@ -77,7 +77,7 @@ const Page = () => {
         </AnimatePresence>
 
         {/* Testimonial Overlay */}
-        <div className="absolute bottom-12 left-12 z-20 max-w-lg p-10 rounded-3xl bg-black/40 backdrop-blur-xl border border-white/10">
+        <div className="absolute bottom-12 left-12 z-20 max-w-lg p-10 rounded-lg bg-black/40 backdrop-blur-xl border border-white/10">
           <h2 className="text-4xl font-serif italic mb-4 leading-tight">“{slides[current].title}”</h2>
           <p className="text-gray-300 font-light mb-6 leading-relaxed">"{slides[current].desc}"</p>
           <div className="flex items-center gap-3">
@@ -93,38 +93,120 @@ const Page = () => {
       <div className='w-full lg:w-[30%] h-auto lg:h-screen bg-[#0a0a0a] flex flex-col gap-4 overflow-y-auto p-4 no-scrollbar'>
         
         {/* Restaurant Card */}
-        <Link href='/restaurant' className="block w-full h-64 lg:h-56 flex-shrink-0">
-          <div className="relative cursor-pointer w-full h-full rounded-[2rem] overflow-hidden group">
-            <div className="absolute top-0 left-0 bg-[#0a0a0a] px-6 py-3 rounded-br-[1.5rem] z-10 text-xs tracking-widest uppercase text-white">
-              Our Restaurant
-            </div>
-            <Image
-              src={ourRestaourant}
-              alt="Restaurant"
-              fill
-              className="object-cover transition-transform duration-700 group-hover:scale-110"
-            />
-          </div>
-        </Link>
+        <Link href='/restaurant' className="block w-full h-64 lg:h-80 flex-shrink-0">
+  <div className="relative cursor-pointer w-full h-full group rounded-2xl">
+    
+    {/* Image fills the whole card with rounded corners */}
+    <div 
+      className="absolute inset-0 overflow-hidden rounded-2xl"
+      data-framer-background-image-wrapper="true"
+    >
+      <Image
+        src={ourRestaourant}
+        alt="Restaurant"
+        fill
+        sizes="(min-width: 1200px) 400px, (max-width: 810px) 100vw, 50vw"
+        style={{
+          display: 'block',
+          width: '100%',
+          height: '100%',
+          objectPosition: 'center top',
+          objectFit: 'cover',
+        }}
+        className="rounded-2xl transition-all duration-1000 ease-out group-hover:scale-110 group-hover:blur-[3px] brightness-90 group-hover:brightness-50"
+      />
+    </div>
 
+    {/* Label tab — sits on top */}
+    <div className="absolute top-0 left-0 z-20 flex flex-col items-start">
+      <div className="flex items-start">
+        <div className="bg-[#0a0a0a] py-5 rounded-tl-2xl rounded-br-2xl text-[11px] tracking-[0.25em] uppercase text-white flex items-center gap-3 transition-all duration-300 group-hover:pr-14">
+          <span className="whitespace-nowrap">Our Restaurant</span>
+          <span className="opacity-0 -translate-x-3 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0 font-light">
+            →
+          </span>
+        </div>
+
+        {/* RIGHT SIDE CURVE */}
+        <div className="w-5 h-5 -ml-[0.2px] fill-[#0a0a0a]">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 0 L100 0 Q0 0 0 100 Z" />
+          </svg>
+        </div>
+      </div>
+
+      {/* BOTTOM CURVE */}
+      <div className="w-5 h-5 -mt-[0.5px] fill-[#0a0a0a]">
+        <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0 0 L0 100 Q0 0 100 0 Z" />
+        </svg>
+      </div>
+    </div>
+
+    {/* Hover overlay */}
+    <div className="absolute inset-0 rounded-2xl bg-black/0 group-hover:bg-black/20 transition-all duration-500 pointer-events-none" />
+  </div>
+        </Link>
         {/* Menu Card */}
-        <Link href='/menu' className="block w-full h-64 lg:h-56 flex-shrink-0">
-          <div className="relative cursor-pointer w-full h-full rounded-[2rem] overflow-hidden group">
-            <div className="absolute top-0 left-0 bg-[#0a0a0a] px-8 py-3 rounded-br-[1.5rem] z-10 text-xs tracking-widest uppercase text-white">
-              Menu
+        {/* Menu Card */}
+        <Link href='/menu' className="block w-full h-64 lg:h-80 flex-shrink-0">
+          <div className="relative cursor-pointer w-full h-full group rounded-2xl">
+            
+            {/* Image fills the whole card with rounded corners */}
+            <div 
+              className="absolute inset-0 overflow-hidden rounded-2xl"
+              data-framer-background-image-wrapper="true"
+            >
+              <Image
+                src={menu}
+                alt="Menu"
+                fill
+                sizes="(min-width: 1200px) 400px, (max-width: 810px) 100vw, 50vw"
+                style={{
+                  display: 'block',
+                  width: '100%',
+                  height: '100%',
+                  objectPosition: 'center top',
+                  objectFit: 'cover',
+                }}
+                className="rounded-2xl transition-all duration-1000 ease-out group-hover:scale-110 group-hover:blur-[3px] brightness-90 group-hover:brightness-50"
+              />
             </div>
-            <Image
-              src={menu}
-              alt="Menu"
-              fill
-              className="object-cover transition-transform duration-700 group-hover:scale-110"
-            />
+
+            {/* Label tab — sits on top */}
+            <div className="absolute top-0 left-0 z-20 flex flex-col items-start">
+              <div className="flex items-start">
+                <div className="bg-[#0a0a0a] py-5 rounded-tl-2xl rounded-br-2xl text-[11px] tracking-[0.25em] uppercase text-white flex items-center gap-3 transition-all duration-300 group-hover:pr-14">
+                  <span className="whitespace-nowrap">Our Menu</span>
+                  <span className="opacity-0 -translate-x-3 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0 font-light">
+                    →
+                  </span>
+                </div>
+
+                {/* RIGHT SIDE CURVE */}
+                <div className="w-5 h-5 -ml-[0.2px] fill-[#0a0a0a]">
+                  <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 0 L100 0 Q0 0 0 100 Z" />
+                  </svg>
+                </div>
+              </div>
+
+              {/* BOTTOM CURVE */}
+              <div className="w-5 h-5 -mt-[0.5px] fill-[#0a0a0a]">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0 0 L0 100 Q0 0 100 0 Z" />
+                </svg>
+              </div>
+            </div>
+
+            {/* Hover overlay */}
+            <div className="absolute inset-0 rounded-2xl bg-black/0 group-hover:bg-black/20 transition-all duration-500 pointer-events-none" />
           </div>
         </Link>
 
         {/* Reservation Button */}
         <Link href="/reservation">
-          <button className="w-full cursor-pointer bg-[#fdfcf5] py-4 lg:py-3 px-8 rounded-2xl flex items-center justify-between group flex-shrink-0">
+          <button className="w-full cursor-pointer bg-[#fdfcf5] py-4 lg:py-3 px-8 rounded-lg flex items-center justify-between group flex-shrink-0">
             <span className="text-[#1a1a1a] text-sm font-bold uppercase tracking-wide">Make a Reservation</span>
             <div className="p-2 rounded-lg bg-black/5 text-black">
               <Calendar size={18} />
@@ -133,7 +215,7 @@ const Page = () => {
         </Link>
 
         {/* Opening Hours Section */}
-        <div className="w-full bg-[#161813] p-6 lg:p-8 rounded-[2rem] flex flex-col gap-6 flex-shrink-0">
+        <div className="w-full bg-[#161813] p-6 lg:p-8 rounded-lg flex flex-col gap-6 flex-shrink-0">
           <h4 className="text-zinc-500 text-sm font-light uppercase tracking-widest">Opening Hours</h4>
           <div className="flex flex-col gap-4">
             {openingHours.map((item, idx) => (
@@ -148,16 +230,16 @@ const Page = () => {
 
         {/* Social Links Grid */}
         <div className="grid grid-cols-2 gap-4 flex-shrink-0">
-          <div className="bg-[#161813] p-6 rounded-3xl flex items-center justify-center lg:justify-between group cursor-pointer border border-white/5 transition-all hover:bg-[#1c1e19]">
+          <div className="bg-[#161813] p-6 rounded-lg flex items-center justify-center lg:justify-between group cursor-pointer border border-white/5 transition-all hover:bg-[#1c1e19]">
             <span className="text-sm font-light text-zinc-300">X / Twitter</span>
           </div>
-          <div className="bg-[#161813] p-6 rounded-3xl flex items-center justify-center lg:justify-between group cursor-pointer border border-white/5 transition-all hover:bg-[#1c1e19]">
+          <div className="bg-[#161813] p-6 rounded-lg flex items-center justify-center lg:justify-between group cursor-pointer border border-white/5 transition-all hover:bg-[#1c1e19]">
             <span className="text-sm font-light text-zinc-300">Instagram</span>
           </div>
         </div>
 
         {/* Footer Navigation */}
-        <div className="w-full bg-[#161813] py-12 px-8 rounded-[2rem] flex flex-col items-center gap-12 flex-shrink-0 mb-4">
+        <div className="w-full bg-[#161813] py-12 px-8 rounded-lg flex flex-col items-center gap-12 flex-shrink-0 mb-4">
           <div className="flex flex-col items-center gap-6">
             <h3 className="text-xl font-serif italic mb-2">Menu</h3>
             <div className="flex flex-col items-center gap-4 text-white font-light text-[15px]">

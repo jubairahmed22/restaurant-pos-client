@@ -122,7 +122,7 @@ export default function BookingPage() {
         </AnimatePresence>
 
         {/* Floating Testimonial - Adjusted for small screens */}
-        <div className="absolute bottom-4 left-4 right-4 lg:bottom-12 lg:left-12 z-20 max-w-lg p-6 lg:p-10 rounded-[1.5rem] lg:rounded-3xl bg-black/40 backdrop-blur-xl border border-white/10">
+        <div className="absolute bottom-4 left-4 right-4 lg:bottom-12 lg:left-12 z-20 max-w-lg p-6 lg:p-10 rounded-xl lg:rounded-xl bg-black/40 backdrop-blur-xl border border-white/10">
           <h2 className="text-xl lg:text-4xl font-serif italic mb-2 lg:mb-4 leading-tight">"{slides[current].title}"</h2>
           <p className="hidden md:block text-gray-300 font-light mb-4 lg:mb-6 text-sm lg:text-base leading-relaxed">"{slides[current].desc}"</p>
           <div className="flex items-center gap-3">
@@ -144,7 +144,7 @@ export default function BookingPage() {
       <div className='w-full lg:w-[30%] h-auto lg:h-screen bg-[#0a0a0a] flex flex-col gap-4 overflow-y-auto p-4 no-scrollbar'>
 
         {/* Booking Card */}
-        <div className="w-full bg-[#121210] p-6 lg:p-8 rounded-[2rem] flex flex-col gap-8 flex-shrink-0 border border-white/5">
+        <div className="w-full bg-[#121210] p-6 lg:p-8 rounded-xl flex flex-col gap-8 flex-shrink-0 border border-white/5">
           <div>
             <h2 className="text-3xl lg:text-4xl font-serif italic mb-3">Reservation</h2>
             <p className="text-zinc-400 text-sm leading-relaxed font-light">
@@ -203,7 +203,7 @@ export default function BookingPage() {
         </div>
 
         {/* Opening Hours */}
-        <div className="w-full bg-[#161813] p-6 lg:p-8 rounded-[2rem] flex flex-col gap-6 flex-shrink-0">
+        <div className="w-full bg-[#161813] p-6 lg:p-8 rounded-xl flex flex-col gap-6 flex-shrink-0">
           <h4 className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest">Opening Hours</h4>
           <div className="flex flex-col gap-4">
             {openingHours.map((item, idx) => (
@@ -218,18 +218,18 @@ export default function BookingPage() {
 
         {/* Social Grid */}
         <div className="grid grid-cols-2 gap-4 flex-shrink-0">
-          <div className="bg-[#161813] p-5 lg:p-6 rounded-3xl flex items-center justify-center lg:justify-between group cursor-pointer border border-white/5 transition-colors hover:bg-zinc-800">
+          <div className="bg-[#161813] p-5 lg:p-6 rounded-xl flex items-center justify-center lg:justify-between group cursor-pointer border border-white/5 transition-colors hover:bg-zinc-800">
             <span className="text-xs font-light text-zinc-300">X / Twitter</span>
             <X size={14} className="hidden lg:block text-zinc-500 group-hover:text-white" />
           </div>
-          <div className="bg-[#161813] p-5 lg:p-6 rounded-3xl flex items-center justify-center lg:justify-between group cursor-pointer border border-white/5 transition-colors hover:bg-zinc-800">
+          <div className="bg-[#161813] p-5 lg:p-6 rounded-xl flex items-center justify-center lg:justify-between group cursor-pointer border border-white/5 transition-colors hover:bg-zinc-800">
             <span className="text-xs font-light text-zinc-300">Instagram</span>
             <ChevronRight size={14} className="hidden lg:block text-zinc-500 group-hover:text-white" />
           </div>
         </div>
 
         {/* Footer */}
-        <div className="w-full bg-[#161813] py-12 px-8 rounded-[2rem] flex flex-col items-center gap-12 flex-shrink-0 mb-4">
+        <div className="w-full bg-[#161813] py-12 px-8 rounded-xl flex flex-col items-center gap-12 flex-shrink-0 mb-4">
           <div className="flex flex-col items-center gap-6">
             <h3 className="text-xl font-serif italic">Menu</h3>
             <div className="flex flex-col items-center gap-4 text-white/70 font-light text-[14px]">

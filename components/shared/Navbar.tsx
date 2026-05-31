@@ -41,9 +41,15 @@ export default function Navbar() {
     <>
       <header className="fixed top-0 left-0 z-50 flex items-start">
         {/* MAIN PILL */}
-        <div className="relative bg-[#0e0e0c] text-white flex items-center px-6 py-4 md:px-8 gap-4 md:gap-8 rounded-br-[2.5rem] 
-                        after:content-[''] after:absolute after:top-0 after:-right-[60px] after:w-[60px] after:h-[30px] 
-                        after:rounded-tl-[1.5rem] after:shadow-[-20px_0_0_0_#0e0e0c] after:pointer-events-none">
+        <div className="relative bg-[#0e0e0c] text-white flex items-center px-6 py-4 md:px-8 gap-4 md:gap-8 
+                /* Rounded corners for the box itself */
+                rounded-br-[2.5rem] rounded-tr-2xl 
+                /* The Scoop Logic */
+                after:content-[''] after:absolute after:top-0 after:-right-[60px] 
+                after:w-[60px] after:h-[60px] 
+                after:rounded-tl-[2.5rem] 
+                after:shadow-[-25px_-25px_0_0_#0e0e0c] 
+                after:pointer-events-none">
 
           {/* MOBILE MENU TRIGGER */}
           <button
@@ -55,26 +61,26 @@ export default function Navbar() {
 
           {/* LOGO */}
           <Link
-      href="/"
-      className="flex items-center gap-2 group focus:outline-none"
-    >
-      {/* Container to enforce strict image scale dimensions */}
-      <div className="relative w-20 h-10 md:w-20 md:h-10 transition-transform duration-200 group-hover:scale-105">
-        <Image
-          src={rinLogo}
-          alt="RIN Logo"
-          placeholder="blur" // Adds an inline layout loading state block
-          priority // Bypass lazy-loading since this is an above-the-fold core branding element
-          fill
-          className="object-contain"
-        />
-      </div>
+            href="/"
+            className="flex items-center gap-2 group focus:outline-none"
+          >
+            {/* Container to enforce strict image scale dimensions */}
+            <div className="relative w-20 h-10 md:w-20 md:h-10 transition-transform duration-200 group-hover:scale-105">
+              <Image
+                src={rinLogo}
+                alt="RIN Logo"
+                placeholder="blur" // Adds an inline layout loading state block
+                priority // Bypass lazy-loading since this is an above-the-fold core branding element
+                fill
+                className="object-contain"
+              />
+            </div>
 
-      {/* Corporate Typography Brand Text */}
-      <span className="font-serif text-xl md:text-2xl font-semibold tracking-tight text-gray-100 group-hover:text-white transition-colors whitespace-nowrap">
-        RIN
-      </span>
-    </Link>
+            {/* Corporate Typography Brand Text */}
+            <span className="font-serif text-xl md:text-2xl font-semibold tracking-tight text-gray-100 group-hover:text-white transition-colors whitespace-nowrap">
+              RIN
+            </span>
+          </Link>
 
           {/* DESKTOP NAV LINKS (xl and up) */}
           <nav className="hidden xl:flex items-center gap-8">
