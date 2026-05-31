@@ -105,7 +105,7 @@ export const OrderService = {
     const response = await api.post('/orders', orderData);
     return response.data;
   },
-asdfgsdf
+
   // ─────────────────────────────────────────
   // GET MY ORDERS (USER)
   // ─────────────────────────────────────────
