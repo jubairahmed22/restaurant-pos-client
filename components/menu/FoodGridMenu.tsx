@@ -29,7 +29,7 @@ export default function FoodGridMenu({
 
   return (
     <div className="flex flex-col gap-6">
-
+adsfsa
       {/* ─── PREMIUM CONTROL BAR ─── */}
       <div className="sticky top-0 z-20 pt-20 pb-6 bg-[#F8FAFC]/80 backdrop-blur-xl border-b border-slate-200 -mx-4 px-4 lg:-mx-10 lg:px-10">
         <div className="flex flex-col gap-5">
