@@ -58,7 +58,7 @@ const Page = () => {
 
       {/* LEFT: Premium Slider - HIDDEN ON MOBILE/TABLET (md/sm), VISIBLE ON LG */}
       <div
-        className='hidden lg:block relative lg:w-[70%] h-[calc(100vh-1rem)] overflow-hidden group'
+        className='hidden lg:block relative lg:w-[70%]  overflow-hidden group'
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
       >

@@ -173,35 +173,63 @@ function printReceipt(
 
 /* ─────────── CONFIRM DIALOG ─────────── */
 
-function ConfirmDialog({ total, onConfirm, onCancel, isSubmitting }: {
-  total: number; onConfirm: () => void; onCancel: () => void; isSubmitting: boolean;
-}) {
+export function ConfirmDialog({ total, onConfirm, onCancel, isSubmitting }: ConfirmDialogProps) {
   return (
-    <div className="fixed inset-0 z-[90] flex items-center justify-center bg-slate-900/40 backdrop-blur-sm px-4">
-      <div className="bg-white border border-slate-200 rounded-3xl p-6 w-full max-w-sm shadow-2xl animate-in fade-in zoom-in-95 duration-200">
-        <div className="flex items-center justify-center w-14 h-14 rounded-full bg-amber-50 border border-amber-200 mx-auto mb-5">
-          <AlertTriangle className="text-amber-500" size={28} />
+    // Lowered Z-index slightly if needed, but inset-0 is correct for a global modal.
+    // The bg-slate-900/40 is what creates that high-end dimmed look from your image.
+    <div className="fixed inset-0 z-40 flex items-center justify-center p-4">
+      
+      {/* 1. Backdrop - Separate div for better control over blur/dimming */}
+      <div 
+        className="absolute inset-0 bg-[#0F172A]/40 backdrop-blur-[2px] animate-in fade-in duration-300" 
+        onClick={onCancel} // Close on clicking background
+      />
+
+      {/* 2. Dialog Box */}
+      <div className="relative bg-white border border-slate-200/60 rounded-[2.5rem] p-8 w-full max-w-md shadow-[0_20px_50px_rgba(0,0,0,0.1)] animate-in fade-in zoom-in-95 slide-in-from-bottom-4 duration-300">
+        
+        {/* Icon Header */}
+        <div className="flex items-center justify-center w-16 h-16 rounded-full bg-amber-50 border border-amber-100 mx-auto mb-6">
+          <AlertTriangle className="text-amber-500" size={32} />
         </div>
-        <h2 className="text-xl font-serif italic text-[#1B3A6B] text-center">Confirm Your Order</h2>
-        <p className="text-sm text-slate-500 text-center mt-2 leading-relaxed">
-          You are about to place an order for{' '}
-          <span className="text-[#1B3A6B] font-bold">${total.toFixed(2)}</span>.
-          A POS receipt will open for printing automatically.
-        </p>
-        <div className="grid grid-cols-2 gap-3 mt-6">
+
+        {/* Text Content */}
+        <div className="space-y-3 mb-8">
+          <h2 className="text-2xl font-serif italic text-[#1B3A6B] text-center">
+            Confirm Your Order
+          </h2>
+          <p className="text-slate-500 text-center leading-relaxed px-4">
+            You are about to place an order for{' '}
+            <span className="text-[#1B3A6B] font-bold text-lg">
+              ${total.toFixed(2)}
+            </span>. 
+            A POS receipt will open for printing automatically.
+          </p>
+        </div>
+
+        {/* Actions */}
+        <div className="grid grid-cols-2 gap-4">
           <button
             onClick={onCancel}
             disabled={isSubmitting}
-            className="h-12 rounded-2xl border border-slate-200 text-slate-600 hover:bg-slate-50 transition-all text-sm font-medium cursor-pointer"
+            className="h-14 rounded-2xl border border-slate-200 text-slate-500 hover:bg-slate-50 hover:text-slate-700 transition-all font-bold text-sm active:scale-95 disabled:opacity-50 cursor-pointer"
           >
             Cancel
           </button>
+          
           <button
             onClick={onConfirm}
             disabled={isSubmitting}
-            className="h-12 rounded-2xl bg-[#1B3A6B] text-white font-bold hover:bg-[#1B3A6B]/90 transition-all text-sm shadow-sm shadow-[#1B3A6B]/10 cursor-pointer"
+            className="h-14 rounded-2xl bg-[#1B3A6B] text-white font-bold hover:bg-[#1B3A6B]/90 transition-all text-sm shadow-lg shadow-[#1B3A6B]/20 active:scale-95 disabled:opacity-50 cursor-pointer"
           >
-            {isSubmitting ? 'Processing...' : 'Yes, Confirm'}
+            {isSubmitting ? (
+              <span className="flex items-center justify-center gap-2">
+                <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Processing...
+              </span>
+            ) : (
+              'Yes, Confirm'
+            )}
           </button>
         </div>
       </div>

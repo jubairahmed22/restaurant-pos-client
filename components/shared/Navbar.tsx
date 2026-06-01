@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useCartStore } from '@/store/cartStore';
 import { useAuthStore } from '@/store/authStore';
 import {
@@ -14,11 +15,12 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-import rinLogo from '../../app/assest/Rin_Logo.png'
+import rinLogo from '../../app/assest/Rin_Logo.png';
 import Image from 'next/image';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
   const cartItems = useCartStore((state) => state.items);
   const { user, logout } = useAuthStore();
 
@@ -39,7 +41,7 @@ export default function Navbar() {
 
   return (
     <>
-      <header className="fixed top-0 left-0 z-50 flex items-start">
+      <header className="fixed top-0 left-0 z-30 flex items-start">
         {/* MAIN PILL */}
         <div className="relative bg-white text-[#1B3A6B] flex items-center px-6 py-4 md:px-8 gap-4 md:gap-8 
                 /* Rounded corners for the box itself */
@@ -84,16 +86,27 @@ export default function Navbar() {
 
           {/* DESKTOP NAV LINKS (xl and up) */}
           <nav className="hidden xl:flex items-center gap-8">
-            {navLinks.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="relative py-1 text-[15px] font-bold text-[#1B3A6B]/90 transition-colors duration-300 hover:text-[#1B3A6B] group whitespace-nowrap"
-              >
-                {item.label}
-                <span className="absolute bottom-0 left-0 h-[2px] w-full scale-x-0 bg-[#1B3A6B] transition-transform duration-300 ease-out origin-right group-hover:scale-x-100 group-hover:origin-left" />
-              </Link>
-            ))}
+            {navLinks.map((item) => {
+              const isActive = pathname === item.href;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`relative py-1 text-[15px] font-bold transition-colors duration-300 group whitespace-nowrap ${
+                    isActive ? 'text-[#1B3A6B]' : 'text-[#1B3A6B]/80 hover:text-[#1B3A6B]'
+                  }`}
+                >
+                  {item.label}
+                  <span 
+                    className={`absolute bottom-0 left-0 h-[2px] w-full bg-[#1B3A6B] transition-transform duration-300 ease-out ${
+                      isActive 
+                        ? 'scale-x-100' 
+                        : 'scale-x-0 origin-right group-hover:scale-x-100 group-hover:origin-left'
+                    }`} 
+                  />
+                </Link>
+              );
+            })}
           </nav>
 
           {/* RIGHT SIDE (Icons) */}
@@ -113,7 +126,11 @@ export default function Navbar() {
                 {user?.role === 'admin' && (
                   <Link
                     href="/dashboard"
-                    className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-100 hover:bg-zinc-200 text-[#1B3A6B] transition text-sm font-medium"
+                    className={`hidden sm:flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition ${
+                      pathname === '/dashboard'
+                        ? 'bg-[#1B3A6B] text-white'
+                        : 'bg-zinc-100 hover:bg-zinc-200 text-[#1B3A6B]'
+                    }`}
                   >
                     <LayoutDashboard size={16} />
                     <span className="hidden lg:inline">Dashboard</span>
@@ -122,7 +139,7 @@ export default function Navbar() {
 
                 <button
                   onClick={handleLogout}
-                  className="flex items-center justify-center w-10 h-10 rounded-full bg-zinc-100 hover:bg-red-500 hover:text-white text-[#1B3A6B] transition group"
+                  className="flex items-center justify-center w-10 h-10 rounded-full bg-zinc-100 hover:bg-rose-500 hover:text-white text-[#1B3A6B] transition group"
                 >
                   <LogOut size={18} />
                 </button>
@@ -131,7 +148,11 @@ export default function Navbar() {
               <div className="flex items-center gap-3">
                 <Link
                   href="/login"
-                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#1B3A6B] text-white hover:bg-[#1B3A6B]/90 transition text-sm font-medium whitespace-nowrap"
+                  className={`flex items-center gap-2 px-4 py-2 rounded-full transition text-sm font-medium whitespace-nowrap ${
+                    pathname === '/login' || pathname === '/register'
+                      ? 'bg-[#1B3A6B]/10 text-[#1B3A6B] border border-[#1B3A6B]/20'
+                      : 'bg-[#1B3A6B] text-white hover:bg-[#1B3A6B]/90'
+                  }`}
                 >
                   <User size={16} />
                   <span className="hidden sm:inline">Sign In</span>
@@ -146,7 +167,7 @@ export default function Navbar() {
             >
               <ShoppingCart size={18} />
               {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white">
+                <span className="absolute -top-1 -right-1 bg-rose-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white">
                   {cartCount}
                 </span>
               )}
@@ -172,16 +193,23 @@ export default function Navbar() {
         </div>
 
         <nav className="flex flex-col gap-6">
-          {navLinks.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setIsOpen(false)}
-              className="text-lg font-medium text-[#1B3A6B]/80 hover:text-[#1B3A6B] transition-colors"
-            >
-              {item.label}
-            </Link>
-          ))}
+          {navLinks.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setIsOpen(false)}
+                className={`text-lg transition-colors ${
+                  isActive 
+                    ? 'font-bold text-[#1B3A6B]' 
+                    : 'font-medium text-[#1B3A6B]/70 hover:text-[#1B3A6B]'
+                }`}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
 
           <hr className="border-zinc-200 my-2" />
 
@@ -189,7 +217,11 @@ export default function Navbar() {
             <Link
               href="/register"
               onClick={() => setIsOpen(false)}
-              className="text-lg font-medium text-[#1B3A6B]/80 hover:text-[#1B3A6B] transition-colors"
+              className={`text-lg transition-colors ${
+                pathname === '/register'
+                  ? 'font-bold text-[#1B3A6B]'
+                  : 'font-medium text-[#1B3A6B]/70 hover:text-[#1B3A6B]'
+              }`}
             >
               Create Account
             </Link>
@@ -199,7 +231,11 @@ export default function Navbar() {
             <Link
               href="/dashboard"
               onClick={() => setIsOpen(false)}
-              className="flex items-center gap-3 text-lg font-medium text-[#1B3A6B]/80 hover:text-[#1B3A6B] transition-colors"
+              className={`flex items-center gap-3 text-lg transition-colors ${
+                pathname === '/dashboard'
+                  ? 'font-bold text-[#1B3A6B]'
+                  : 'font-medium text-[#1B3A6B]/70 hover:text-[#1B3A6B]'
+              }`}
             >
               <LayoutDashboard size={20} />
               Dashboard
