@@ -136,7 +136,7 @@ export default function Navbar() {
                     {/* <span className="hidden lg:inline">Dashboard</span> */}
                   </Link>
                 )}
-sdfds
+
                 <button
                   onClick={handleLogout}
                   className="flex items-center justify-center w-10 h-10 rounded-full bg-zinc-100 hover:bg-rose-500 hover:text-white text-[#1B3A6B] transition group"
