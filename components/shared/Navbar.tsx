@@ -33,7 +33,7 @@ export default function Navbar() {
   const navLinks = [
     { label: 'Menu', href: '/menu' },
     { label: 'Reservation', href: '/reservation' },
-    { label: 'About', href: '/about' },
+    // { label: 'About', href: '/about' },
     { label: 'Restaurant', href: '/restaurant' },
   ];
 
@@ -133,10 +133,10 @@ export default function Navbar() {
                     }`}
                   >
                     <LayoutDashboard size={16} />
-                    <span className="hidden lg:inline">Dashboard</span>
+                    {/* <span className="hidden lg:inline">Dashboard</span> */}
                   </Link>
                 )}
-
+safsddfs
                 <button
                   onClick={handleLogout}
                   className="flex items-center justify-center w-10 h-10 rounded-full bg-zinc-100 hover:bg-rose-500 hover:text-white text-[#1B3A6B] transition group"
