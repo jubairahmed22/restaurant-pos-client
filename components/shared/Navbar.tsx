@@ -135,7 +135,7 @@ export default function Navbar() {
                     <LayoutDashboard size={16} />
                     {/* <span className="hidden lg:inline">Dashboard</span> */}
                   </Link>
-                )}
+                )}s
 
                 <button
                   onClick={handleLogout}
