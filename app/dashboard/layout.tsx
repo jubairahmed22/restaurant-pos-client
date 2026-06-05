@@ -7,6 +7,7 @@ import {
   FolderTree,
   PlusCircle,
   Utensils,
+  LayoutGrid,
   LogOut,
   Bell,
   Moon,
@@ -74,6 +75,12 @@ export default function DashboardLayout({
       label: 'CATEGORIES',
       icon: FolderTree,
       href: '/dashboard/categories',
+    },
+
+    {
+      label: 'TABLES',
+      icon: LayoutGrid,
+      href: '/dashboard/tables',
     },
   ];
 
@@ -259,7 +266,8 @@ export default function DashboardLayout({
 
             {menuItems.map((item) => {
               const isActive =
-                pathname === item.href;
+                pathname === item.href ||
+                (item.href !== '/dashboard' && pathname.startsWith(item.href));
 
               const Icon = item.icon;
 
@@ -336,10 +344,13 @@ export default function DashboardLayout({
 
         {/* MAIN CONTENT */}
         <main className="flex-1 overflow-y-auto bg-[#ebedf6]">
-
-          <div className="p-4 md:p-8 max-w-[1600px] mx-auto animate-in fade-in duration-500">
-            {children}
-          </div>
+          {(pathname.includes('/session') || pathname.includes('/edit')) ? (
+            <div className="animate-in fade-in duration-500">{children}</div>
+          ) : (
+            <div className="p-4 md:p-8 max-w-[1600px] mx-auto animate-in fade-in duration-500">
+              {children}
+            </div>
+          )}
         </main>
       </div>
 

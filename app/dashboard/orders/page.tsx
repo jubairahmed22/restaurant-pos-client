@@ -2,9 +2,175 @@
 
 import React, { useMemo, useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { motion, AnimatePresence } from 'framer-motion';
+import toast from 'react-hot-toast';
+import { Clock, Users, ChefHat, ArrowRight, CheckCircle2, RefreshCw } from 'lucide-react';
 import { useAdminOrders } from '@/app/hooks/useAdminOrders';
 import DataTable from '@/components/ui/DataTable';
 import { Button } from '@/components/ui/Button';
+import { SessionService, ITableSession } from '@/services/session.service';
+
+// ── Table Order Status Groups ─────────────────────────────
+type TableGroupKey = 'upcoming' | 'new' | 'in-progress' | 'ready' | 'complete';
+interface TableOrderGroup {
+  key: TableGroupKey; label: string; statuses: string[]; isCompleted?: boolean;
+  bg: string; badge: string; dot: string; accent: string;
+}
+const TABLE_ORDER_GROUPS: TableOrderGroup[] = [
+  { key: 'upcoming',    label: 'Upcoming',    statuses: ['seated'],       bg: 'bg-slate-50',   badge: 'bg-slate-200 text-slate-600',    dot: 'bg-slate-400',    accent: 'border-l-slate-400'    },
+  { key: 'new',         label: 'New',         statuses: ['ordering'],     bg: 'bg-blue-50',    badge: 'bg-blue-200 text-blue-800',      dot: 'bg-blue-400',     accent: 'border-l-blue-400'     },
+  { key: 'in-progress', label: 'In Progress', statuses: ['waiting'],      bg: 'bg-amber-50',   badge: 'bg-amber-200 text-amber-800',    dot: 'bg-amber-400',    accent: 'border-l-amber-400'    },
+  { key: 'ready',       label: 'Ready',       statuses: ['ready-to-pay'], bg: 'bg-emerald-50', badge: 'bg-emerald-200 text-emerald-800', dot: 'bg-emerald-500', accent: 'border-l-emerald-500'  },
+  { key: 'complete',    label: 'Complete',    statuses: [], isCompleted: true, bg: 'bg-slate-100', badge: 'bg-slate-300 text-slate-700', dot: 'bg-slate-500', accent: 'border-l-slate-500'   },
+];
+
+function fmtMoney(n: number) { return `$${n.toFixed(2)}`; }
+function elapsedLabel(iso: string) {
+  const mins = Math.floor((Date.now() - new Date(iso).getTime()) / 60000);
+  return mins < 60 ? `${mins}m` : `${Math.floor(mins/60)}h ${mins%60}m`;
+}
+
+// ── Mini Table Order Card ─────────────────────────────────
+function TableOrderCard({ session, group, onOpen, onComplete, completing }: {
+  session: ITableSession;
+  group: typeof TABLE_ORDER_GROUPS[number];
+  onOpen: () => void;
+  onComplete?: () => void;
+  completing?: boolean;
+}) {
+  return (
+    <motion.div layout initial={{ opacity:0, y:4 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0 }}
+      className={`bg-white rounded-xl border-l-4 ${group.accent} shadow-sm hover:shadow-md transition-shadow`}>
+      <div className="flex items-center gap-3 px-3 py-2.5">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-bold text-slate-800">{session.tableLabel}</span>
+            <span className="text-[10px] font-mono text-slate-300">#{session.checkId?.slice(-5)}</span>
+          </div>
+          <div className="flex items-center gap-2.5 mt-0.5 text-[10px] text-slate-400">
+            <span className="flex items-center gap-0.5"><Users className="w-2.5 h-2.5" />{session.partySize}</span>
+            <span className="flex items-center gap-0.5"><Clock className="w-2.5 h-2.5" />{elapsedLabel(session.seatedAt)}</span>
+            <span className="font-semibold text-slate-500">{fmtMoney(session.total)}</span>
+          </div>
+        </div>
+        <div className="flex items-center gap-1 shrink-0">
+          {onComplete && (
+            <button onClick={onComplete} disabled={completing}
+              className="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100 flex items-center justify-center transition disabled:opacity-50">
+              <CheckCircle2 className="w-3 h-3" />
+            </button>
+          )}
+          <button onClick={onOpen}
+            className="w-6 h-6 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 flex items-center justify-center transition">
+            <ArrowRight className="w-3 h-3" />
+          </button>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+// ── Table Orders Section ──────────────────────────────────
+function TableOrdersSection() {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const [activeTab, setActiveTab] = useState<TableGroupKey>('new');
+  const [completingId, setCompletingId] = useState<string | null>(null);
+
+  const { data: activeSessions = [], isLoading: activeLoading, refetch } = useQuery<ITableSession[]>({
+    queryKey: ['activeSessions'],
+    queryFn: SessionService.getActiveSessions,
+    refetchInterval: 8_000,
+    staleTime: 4_000,
+  });
+
+  const { data: completedData } = useQuery({
+    queryKey: ['completedSessions'],
+    queryFn: () => SessionService.getCompleted({ limit: 30 }),
+    refetchInterval: 30_000,
+    staleTime: 10_000,
+    enabled: activeTab === 'complete',
+  });
+  const completedSessions: ITableSession[] = completedData?.data ?? [];
+
+  const completeMutation = useMutation({
+    mutationFn: (id: string) => SessionService.complete(id, 'cash'),
+    onMutate: (id) => setCompletingId(id),
+    onSuccess: () => {
+      toast.success('Order completed');
+      queryClient.invalidateQueries({ queryKey: ['activeSessions'] });
+      queryClient.invalidateQueries({ queryKey: ['completedSessions'] });
+      setCompletingId(null);
+    },
+    onError: () => { toast.error('Failed to complete'); setCompletingId(null); },
+  });
+
+  const counts = TABLE_ORDER_GROUPS.reduce((acc, g) => {
+    acc[g.key] = g.isCompleted ? completedSessions.length : activeSessions.filter(s => g.statuses.includes(s.status)).length;
+    return acc;
+  }, {} as Record<string, number>);
+
+  const currentGroup = TABLE_ORDER_GROUPS.find(g => g.key === activeTab)!;
+  const currentSessions = currentGroup.isCompleted
+    ? completedSessions
+    : activeSessions.filter(s => currentGroup.statuses.includes(s.status));
+
+  return (
+    <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+      {/* Header */}
+      <div className="flex items-center justify-between px-5 py-3.5 border-b border-slate-100">
+        <div>
+          <h2 className="text-sm font-bold text-slate-800">Table Orders</h2>
+          <p className="text-xs text-slate-400 mt-0.5">{activeSessions.length} live · {Object.values(counts).reduce((a,b)=>a+b,0)} total</p>
+        </div>
+        <button onClick={() => refetch()} className="w-7 h-7 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-400 hover:bg-slate-100 transition">
+          <RefreshCw className="w-3.5 h-3.5" />
+        </button>
+      </div>
+
+      {/* Status summary strip */}
+      <div className="grid grid-cols-5 divide-x divide-slate-100 border-b border-slate-100">
+        {TABLE_ORDER_GROUPS.map(g => (
+          <button key={g.key} onClick={() => setActiveTab(g.key)}
+            className={`py-2.5 text-center transition ${activeTab === g.key ? `${g.bg}` : 'hover:bg-slate-50'}`}>
+            <div className="flex items-center justify-center gap-1.5 mb-0.5">
+              <div className={`w-1.5 h-1.5 rounded-full ${g.dot}`} />
+              <span className="text-[10px] font-black uppercase tracking-wide text-slate-500">{g.label}</span>
+            </div>
+            <p className="text-xl font-bold text-slate-800 tabular-nums">{counts[g.key] ?? 0}</p>
+          </button>
+        ))}
+      </div>
+
+      {/* Cards */}
+      <div className="p-4">
+        {activeLoading ? (
+          <div className="flex justify-center py-8"><div className="w-6 h-6 border-2 border-indigo-400 border-t-transparent rounded-full animate-spin" /></div>
+        ) : currentSessions.length === 0 ? (
+          <p className="text-center text-xs text-slate-300 py-8">No {currentGroup.label.toLowerCase()} orders right now</p>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2.5">
+            <AnimatePresence>
+              {currentSessions.map(s => (
+                <TableOrderCard
+                  key={s._id}
+                  session={s}
+                  group={currentGroup as any}
+                  onOpen={() => router.push(`/dashboard/tables/${s.table}/session`)}
+                  onComplete={!currentGroup.isCompleted ? () => {
+                    if (confirm(`Complete table ${s.tableLabel}?`)) completeMutation.mutate(s._id);
+                  } : undefined}
+                  completing={completingId === s._id}
+                />
+              ))}
+            </AnimatePresence>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 // ─────────────────────────────────────────────
 // TYPES
@@ -437,6 +603,9 @@ export default function AdminOrderManagement() {
   // ─────────────────────────────────────────────
   return (
     <div className="space-y-4">
+
+      {/* ─── TABLE ORDERS SECTION ────────────────────────────────────── */}
+      <TableOrdersSection />
 
      {/* ─── FILTER BAR ─────────────────────────────────────────────── */}
 <div className="flex flex-col gap-3">
