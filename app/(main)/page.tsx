@@ -270,7 +270,7 @@ const Page = () => {
               </div>
             ))}
           </div>
-        </div>asdfsa
+        </div>
 
         {/* Social Links */}
         <div className="grid grid-cols-1 gap-3 flex-shrink-0">
