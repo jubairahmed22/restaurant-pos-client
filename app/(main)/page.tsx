@@ -269,7 +269,7 @@ const Page = () => {
                 </span>
               </div>
             ))}
-          </div>asdfasd
+          </div>
         </div>
 
         {/* Social Links */}
