@@ -1,5 +1,4 @@
 import type { NextConfig } from 'next';
-asdfds
 const nextConfig: NextConfig = {
   // ── Core ──────────────────────────────────────────────
   reactStrictMode: true,
