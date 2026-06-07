@@ -6,7 +6,7 @@ import { FoodService } from '@/services/food.service';
 import Navbar from '@/components/shared/Navbar';
 import FoodCard from '@/components/shared/FoodCard';
 import { Search, SlidersHorizontal, Utensils, Sparkles, Flame } from 'lucide-react';
-import axios from 'axios';
+import api from '@/services/axios';
 
 export default function StorefrontHomePage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -15,7 +15,7 @@ export default function StorefrontHomePage() {
   // 1. Fetch live structural categories from database cluster
   const { data: categoryRes } = useQuery({
     queryKey: ['public-categories'],
-    queryFn: async () => (await axios.get('http://localhost:51000/api/v1/categories')).data,
+    queryFn: async () => (await api.get('/categories')).data,
   });
 
   // 2. Fetch active food listings based on search metrics and categories

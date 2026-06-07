@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import { Suspense, useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { X, ChevronRight } from "lucide-react";
@@ -33,7 +33,7 @@ const saveCart = (cart: any[]) => {
   } catch {}
 };
 
-export default function PremiumPOSPage() {
+function MenuPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -270,5 +270,13 @@ export default function PremiumPOSPage() {
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
     </div>
+  );
+}
+
+export default function PremiumPOSPage() {
+  return (
+    <Suspense>
+      <MenuPageInner />
+    </Suspense>
   );
 }

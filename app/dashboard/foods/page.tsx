@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import {
   useMutation,
   useQuery,
@@ -38,7 +38,7 @@ import { ListButton } from '@/components/ui/ListButton';
    PAGE
 ========================= */
 
-export default function FoodTablePage() {
+function FoodTablePageInner() {
   const queryClient = useQueryClient();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -580,5 +580,13 @@ export default function FoodTablePage() {
         </Dialog>
       </div>
     </div>
+  );
+}
+
+export default function FoodTablePage() {
+  return (
+    <Suspense>
+      <FoodTablePageInner />
+    </Suspense>
   );
 }

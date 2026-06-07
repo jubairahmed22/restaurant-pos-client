@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import axios from 'axios';
+import api from '@/services/axios';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
@@ -76,10 +76,7 @@ export default function LoginPage() {
 
   const onSubmit = async (data: LoginForm) => {
     try {
-      const response = await axios.post(
-        'http://localhost:51000/api/v1/auth/login',
-        data
-      );
+      const response = await api.post('/auth/login', data);
 
       if (response.data.success) {
         setAuth(response.data.token, response.data.user);

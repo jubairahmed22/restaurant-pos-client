@@ -28,6 +28,8 @@ export interface GetReservationsParams {
   search?: string;
   status?: string;
   date?: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 export const ReservationService = {

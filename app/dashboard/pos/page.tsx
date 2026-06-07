@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { Suspense, useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ShoppingCart, X } from 'lucide-react';
@@ -32,7 +32,7 @@ function saveCart(cart: any[]) {
 }
 
 /* ─── component ─────────────────────────────────────────────── */
-export default function FoodTablePage() {
+function FoodTablePageInner() {
   const router       = useRouter();
   const searchParams = useSearchParams();
 
@@ -255,5 +255,13 @@ export default function FoodTablePage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function FoodTablePage() {
+  return (
+    <Suspense>
+      <FoodTablePageInner />
+    </Suspense>
   );
 }

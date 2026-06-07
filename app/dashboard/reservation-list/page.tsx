@@ -1,7 +1,7 @@
 // app/dashboard/reservations/page.tsx
 'use client';
 
-import React, { useMemo, useState, useEffect, useRef, useCallback } from 'react';
+import React, { Suspense, useMemo, useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import DataTable from '@/components/ui/DataTable';
 import { Button } from '@/components/ui/Button';
@@ -194,7 +194,7 @@ const STATUS_BADGE: Record<Reservation['status'], string> = {
 // MAIN PAGE
 // ─────────────────────────────────────────────
 
-export default function AdminReservationManagement() {
+function AdminReservationManagementInner() {
   const router       = useRouter();
   const searchParams = useSearchParams();
   const getParam     = (k: string) => searchParams.get(k) ?? '';
@@ -543,5 +543,13 @@ export default function AdminReservationManagement() {
 
       </div>
     </div>
+  );
+}
+
+export default function AdminReservationManagement() {
+  return (
+    <Suspense>
+      <AdminReservationManagementInner />
+    </Suspense>
   );
 }

@@ -20,18 +20,19 @@ interface DataTableProps<T> {
   data: T[];
   columns: TableColumn<T>[];
 
-  search: string;
-  setSearch: React.Dispatch<React.SetStateAction<string>>;
+  search?: string;
+  setSearch?: (search: string) => void;
 
   page: number;
   totalPages: number;
-  setPage: React.Dispatch<React.SetStateAction<number>>;
+  setPage: (page: number) => void;
 
   onView?: (item: T) => void;
   onEdit?: (item: T) => void;
   onDelete?: (item: T) => void;
 
   isActionLoading?: boolean;
+  loading?: boolean;
 }
 
 export default function DataTable<T extends { _id: string }>({
@@ -51,6 +52,7 @@ export default function DataTable<T extends { _id: string }>({
   onDelete,
 
   isActionLoading = false,
+  loading = false,
 }: DataTableProps<T>) {
   return (
     <div className="w-full bg-white rounded-xl border border-slate-200/70 shadow-sm overflow-hidden">
@@ -255,7 +257,7 @@ export default function DataTable<T extends { _id: string }>({
         <div className="flex items-center gap-2">
           <button
             disabled={page === 1}
-            onClick={() => setPage((prev) => prev - 1)}
+            onClick={() => setPage(page - 1)}
             className="h-8 px-3 border border-slate-200 bg-white rounded-lg text-xs font-semibold shadow-sm transition hover:bg-slate-50 active:bg-slate-100 disabled:opacity-40 disabled:pointer-events-none"
           >
             Prev
@@ -263,7 +265,7 @@ export default function DataTable<T extends { _id: string }>({
 
           <button
             disabled={page === totalPages}
-            onClick={() => setPage((prev) => prev + 1)}
+            onClick={() => setPage(page + 1)}
             className="h-8 px-3 border border-slate-200 bg-white rounded-lg text-xs font-semibold shadow-sm transition hover:bg-slate-50 active:bg-slate-100 disabled:opacity-40 disabled:pointer-events-none"
           >
             Next

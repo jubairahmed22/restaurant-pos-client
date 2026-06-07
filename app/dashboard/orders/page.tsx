@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useState, useEffect, useRef, useCallback } from 'react';
+import React, { Suspense, useMemo, useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -419,7 +419,7 @@ function ActiveFilterPills({ pills }: { pills: FilterPill[] }) {
 // MAIN PAGE COMPONENT
 // ─────────────────────────────────────────────
 
-export default function AdminOrderManagement() {
+function AdminOrderManagementInner() {
   const router       = useRouter();
   const searchParams = useSearchParams();
   const getParam     = (k: string) => searchParams.get(k) ?? '';
@@ -761,5 +761,13 @@ export default function AdminOrderManagement() {
 </div>
 
     </div>
+  );
+}
+
+export default function AdminOrderManagement() {
+  return (
+    <Suspense>
+      <AdminOrderManagementInner />
+    </Suspense>
   );
 }

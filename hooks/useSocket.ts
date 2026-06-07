@@ -10,10 +10,13 @@ export const useSocket = (roomName?: string) => {
 
   useEffect(() => {
     // Initialise Socket connection
-    const socketInstance = io('http://localhost:51000', {
-      withCredentials: true,
-      transports: ['websocket', 'polling']
-    });
+    const socketInstance = io(
+      process.env.NEXT_PUBLIC_SOCKET_URL || 'https://ortazz.com.au',
+      {
+        withCredentials: true,
+        transports: ['polling', 'websocket'], // polling first for shared hosting
+      }
+    );
 
     setSocket(socketInstance);
 

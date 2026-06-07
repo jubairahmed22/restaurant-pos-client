@@ -1,11 +1,14 @@
 import axios from 'axios';
 
+// Use a relative baseURL so all API calls go through Next.js rewrites proxy.
+// On localhost: Next.js forwards /api/v1/* → https://ortazz.com.au/api/v1/*
+// On Vercel:    same — no CORS involved at all, browser stays on same origin.
 const api = axios.create({
-  baseURL: 'http://localhost:51000/api/v1',
+  baseURL: '/api/v1',
 
-  timeout: 10000,
+  timeout: 15000,
 
-  withCredentials: true,
+  withCredentials: false, // not needed — same-origin via proxy
 
   headers: {
     'Content-Type': 'application/json',

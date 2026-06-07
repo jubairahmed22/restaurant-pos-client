@@ -5,7 +5,7 @@ import {
   X, Printer, CircleCheck, Banknote,
   Loader2, MapPin, Clock3, ReceiptText, User, Phone,
 } from 'lucide-react';
-import type { CustomerInfo } from './CheckoutPanel';
+import type { CustomerInfo } from './CheckoutPanelMenu';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 

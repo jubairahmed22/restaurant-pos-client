@@ -10,21 +10,23 @@ import slideTwo from '../../app/assest/slideTwo.avif';
 import menu from '../../app/assest/menu.avif';
 import ourRestaourant from '../../app/assest/our-restaourant.avif';
 import Link from 'next/link';
+import rinLogo from '../../app/assest/Rin_Logo.png';
+
 
 const slides = [
   {
     id: 1,
     img: slideOne,
-    title: "The Best Pasta Outside of Italy",
-    desc: "I'm Italian, and let me tell you, this pasta tastes like home. The sauces are rich, the pasta is cooked to perfection.",
+    title: "Pure Tokyo Bliss",
+    desc: "Blown away, mate! The ramen broth is incredibly rich, and the sushi tastes like it was flown straight from Tokyo market this morning.",
     rating: "4.8",
     reviews: "1,240"
   },
   {
     id: 2,
     img: slideTwo,
-    title: "A Culinary Masterpiece",
-    desc: "Every bite tells a story of tradition and quality. The atmosphere is warm, making it the perfect spot.",
+    title: "Best Izakaya Alive",
+    desc: "Hands down the most authentic Japanese spot in town. Sensational flavours, unreal service, and the tempura is absolutely spot on.",
     rating: "4.9",
     reviews: "850"
   }
@@ -77,16 +79,49 @@ const Page = () => {
         </AnimatePresence>
 
         {/* Testimonial Overlay */}
-        <div className="absolute bottom-12 left-12 z-20 max-w-lg p-10 rounded-lg bg-black/40 backdrop-blur-xl border border-white/10">
-          <h2 className="text-4xl font-serif italic mb-4 leading-tight">“{slides[current].title}”</h2>
-          <p className="text-gray-300 font-light mb-6 leading-relaxed">"{slides[current].desc}"</p>
-          <div className="flex items-center gap-3">
-            <div className="flex -space-x-2">
-              {[1, 2, 3].map(i => <div key={i} className="w-8 h-8 rounded-full bg-zinc-800 border border-zinc-900" />)}
-            </div>
-            <span className="text-sm font-bold">{slides[current].rating} <span className="text-zinc-500 font-normal">({slides[current].reviews})</span></span>
-          </div>
-        </div>
+    <div className="absolute bottom-12 left-12 z-20 max-w-xl rounded-3xl border border-white/10 bg-black/40 p-8 backdrop-blur-xl transition-all duration-500 ease-in-out">
+  <div className="flex flex-col gap-6">
+    
+    {/* Header Section: Logo & Branding */}
+    <div className="flex items-center gap-6 border-b border-white/10 pb-6">
+      {/* Logo */}
+      <div className="flex-shrink-0 border-r border-white/10 pr-6">
+        <Image
+          src={rinLogo}
+          alt="Serin Beauty"
+          width={140}
+          height={50}
+          priority
+          className="object-contain"
+        />
+      </div>
+
+      {/* Brand & Tagline */}
+      <div className="flex flex-col justify-center">
+        <h1 className="text-3xl font-black tracking-widest text-white leading-none mb-1">
+          RIN
+        </h1>
+        <p className="text-xs font-medium uppercase tracking-wider text-amber-400/90 max-w-[200px]">
+          Japanese Food <span className="block text-white/60 normal-case italic font-normal mt-0.5">Eat in & Take away</span>
+        </p>
+      </div>
+    </div>
+
+    {/* Content Section */}
+    <div className="space-y-3">
+      {/* Dynamic Title */}
+      <h2 className="font-serif text-4xl italic font-light leading-tight text-white tracking-wide">
+        {slides[current].title}
+      </h2>
+
+      {/* Dynamic Description */}
+      <p className="text-sm md:text-base leading-relaxed text-white/80 font-light">
+        {slides[current].desc}
+      </p>
+    </div>
+
+  </div>
+</div>
       </div>
 
      {/* RIGHT: Scrollable Side Panel - FULL WIDTH ON MOBILE, 30% ON LG */}
@@ -120,8 +155,8 @@ const Page = () => {
             {/* Label tab — sits on top */}
             <div className="absolute top-0 left-0 z-20 flex flex-col items-start">
               <div className="flex items-start">
-                <div className="bg-white py-5 px-6 rounded-tl-2xl rounded-br-2xl text-[11px] tracking-[0.25em] uppercase text-[#1B3A6B] font-bold flex items-center gap-3 transition-all duration-300 group-hover:pr-14">
-                  <span className="whitespace-nowrap">Our Restaurant</span>
+                <div className="bg-white py-3 px-2 rounded-tl-2xl rounded-br-2xl text-[15px]  text-[#1B3A6B] font-bold flex items-center gap-3 transition-all duration-300 group-hover:pr-14">
+                  <span className="whitespace-nowrap">Restaurant</span>
                   <span className="opacity-0 -translate-x-3 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0 font-light">
                     →
                   </span>
@@ -176,8 +211,8 @@ const Page = () => {
             {/* Label tab — sits on top */}
             <div className="absolute top-0 left-0 z-20 flex flex-col items-start">
               <div className="flex items-start">
-                <div className="bg-white py-5 px-6 rounded-tl-2xl rounded-br-2xl text-[11px] tracking-[0.25em] uppercase text-[#1B3A6B] font-bold flex items-center gap-3 transition-all duration-300 group-hover:pr-14">
-                  <span className="whitespace-nowrap">Our Menu</span>
+                <div className="bg-white py-3 px-2 rounded-tl-2xl rounded-br-2xl text-[15px]  text-[#1B3A6B] font-bold flex items-center gap-1 transition-all duration-300 group-hover:pr-14">
+                  <span className="whitespace-nowrap">Menu</span>
                   <span className="opacity-0 -translate-x-3 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0 font-light">
                     →
                   </span>
@@ -237,14 +272,26 @@ const Page = () => {
           </div>
         </div>
 
-        {/* Social Links Grid */}
-        <div className="grid grid-cols-2 gap-4 flex-shrink-0">
-          <div className="bg-white p-6 rounded-2xl flex items-center justify-center text-center group cursor-pointer border border-zinc-100 shadow-sm transition-all hover:bg-zinc-50">
-            <span className="text-sm font-semibold text-[#1B3A6B]/80 group-hover:text-[#1B3A6B] transition-colors">X / Twitter</span>
-          </div>
-          <div className="bg-white p-6 rounded-2xl flex items-center justify-center text-center group cursor-pointer border border-zinc-100 shadow-sm transition-all hover:bg-zinc-50">
-            <span className="text-sm font-semibold text-[#1B3A6B]/80 group-hover:text-[#1B3A6B] transition-colors">Instagram</span>
-          </div>
+        {/* Social Links */}
+        <div className="grid grid-cols-1 gap-3 flex-shrink-0">
+          <a
+            href="https://www.facebook.com/rintasmania/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-[#1877F2] text-white p-5 rounded-2xl flex items-center justify-between group shadow-sm hover:bg-[#1877F2]/90 transition-all"
+            aria-label="RIN on Facebook"
+          >
+            <span className="text-sm font-bold">Follow on Facebook</span>
+            <span className="text-white/70 text-xs">@rintasmania</span>
+          </a>
+          <a
+            href="tel:+61427634574"
+            className="bg-white border border-zinc-100 p-5 rounded-2xl flex items-center justify-between group shadow-sm hover:bg-zinc-50 transition-all"
+            aria-label="Call RIN Japanese Restaurant"
+          >
+            <span className="text-sm font-semibold text-[#1B3A6B]">+61 427 634 574</span>
+            <span className="text-xs text-zinc-400">Call us</span>
+          </a>
         </div>
 
         {/* Footer Navigation */}

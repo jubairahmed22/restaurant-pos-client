@@ -45,25 +45,17 @@ export default function CheckoutPage() {
         quantity: item.quantity
       }));
 
-      // Step 1: Initialize the core order instance record
-      const orderRes = await OrderService.createOrder({
+      // Create order
+      await OrderService.createOrder({
         items: formattedItems,
         subtotal,
         deliveryCharge: delivery,
         total,
-        shippingAddress: address
+        shippingAddress: address,
+        fullName: user?.fullName || user?.name || '',
+        phone: user?.phone || '',
       });
 
-      const orderId = orderRes.data._id;
-
-      // Step 2: Request the tokenized client secret key mapping from Stripe
-      const intentRes = await OrderService.createPaymentIntent(orderId);
-      const clientSecret = intentRes.clientSecret;
-
-      // Step 3: Fast pipeline resolution emulation for development
-      // (Directly switches to the validation route endpoint instantly)
-      await OrderService.confirmPayment(orderId, 'ch_mock_' + Math.random().toString(36).substr(2, 9));
-      
       clearCart();
       toast.success('Transaction approved! Kitchen execution dispatched.');
       router.push('/orders/success');

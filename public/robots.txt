@@ -1,0 +1,16 @@
+# RIN Japanese Restaurant – robots.txt
+User-agent: *
+Allow: /
+
+# Block private/admin routes from crawlers
+Disallow: /dashboard/
+Disallow: /dashboard
+Disallow: /login
+Disallow: /register
+Disallow: /checkout
+Disallow: /orders
+Disallow: /cart
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://rinrestaurant.com.au/sitemap.xml

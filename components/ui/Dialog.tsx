@@ -75,10 +75,12 @@ export const Dialog = ({
 
 export const DialogContent = ({
   children,
+  className,
 }: {
   children: React.ReactNode;
+  className?: string;
 }) => {
-  return <div className="p-6">{children}</div>;
+  return <div className={`p-6 ${className ?? ""}`.trim()}>{children}</div>;
 };
 
 /* =========================

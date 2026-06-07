@@ -19,6 +19,13 @@ export interface CustomerInfo {
   address: string;
 }
 
+interface ConfirmDialogProps {
+  total: number;
+  onConfirm: () => void;
+  onCancel: () => void;
+  isSubmitting: boolean;
+}
+
 const EMPTY_CUSTOMER: CustomerInfo = { fullName: '', email: '', phone: '', address: '' };
 const CART_KEY = 'menu-cart';
 

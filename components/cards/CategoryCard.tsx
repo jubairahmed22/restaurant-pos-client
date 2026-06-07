@@ -9,7 +9,7 @@ interface CategoryCardProps {
     options?: string;
     rating?: string;
   };
-  onDelete: (id: string) => void;
+  onDelete?: (id: string) => void;
 }
 
 const CategoryCard = ({ cat, onDelete }: CategoryCardProps) => {
