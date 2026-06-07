@@ -79,52 +79,52 @@ const Page = () => {
         </AnimatePresence>
 
         {/* Testimonial Overlay */}
-    <div className="absolute bottom-12 left-12 z-20 max-w-xl rounded-3xl border border-white/10 bg-black/40 p-8 backdrop-blur-xl transition-all duration-500 ease-in-out">
-  <div className="flex flex-col gap-6">
-    
-    {/* Header Section: Logo & Branding */}
-    <div className="flex items-center gap-6 border-b border-white/10 pb-6">
-      {/* Logo */}
-      <div className="flex-shrink-0 border-r border-white/10 pr-6">
-        <Image
-          src={rinLogo}
-          alt="Serin Beauty"
-          width={140}
-          height={50}
-          priority
-          className="object-contain"
-        />
+        <div className="absolute bottom-12 left-12 z-20 max-w-xl rounded-3xl border border-white/10 bg-black/40 p-8 backdrop-blur-xl transition-all duration-500 ease-in-out">
+          <div className="flex flex-col gap-6">
+
+            {/* Header Section: Logo & Branding */}
+            <div className="flex items-center gap-6 border-b border-white/10 pb-6">
+              {/* Logo */}
+              <div className="flex-shrink-0 border-r border-white/10 pr-6">
+                <Image
+                  src={rinLogo}
+                  alt="Serin Beauty"
+                  width={140}
+                  height={50}
+                  priority
+                  className="object-contain"
+                />
+              </div>
+
+              {/* Brand & Tagline */}
+              <div className="flex flex-col justify-center">
+                <h1 className="text-3xl font-black tracking-widest text-white leading-none mb-1">
+                  RIN
+                </h1>
+                <p className="text-xs font-medium uppercase tracking-wider text-amber-400/90 max-w-[200px]">
+                  Japanese Food <span className="block text-white/60 normal-case italic font-normal mt-0.5">Eat in & Take away</span>
+                </p>
+              </div>
+            </div>
+
+            {/* Content Section */}
+            <div className="space-y-3">
+              {/* Dynamic Title */}
+              <h2 className="font-serif text-4xl italic font-light leading-tight text-white tracking-wide">
+                {slides[current].title}
+              </h2>
+
+              {/* Dynamic Description */}
+              <p className="text-sm md:text-base leading-relaxed text-white/80 font-light">
+                {slides[current].desc}
+              </p>
+            </div>
+
+          </div>
+        </div>
       </div>
 
-      {/* Brand & Tagline */}
-      <div className="flex flex-col justify-center">
-        <h1 className="text-3xl font-black tracking-widest text-white leading-none mb-1">
-          RIN
-        </h1>
-        <p className="text-xs font-medium uppercase tracking-wider text-amber-400/90 max-w-[200px]">
-          Japanese Food <span className="block text-white/60 normal-case italic font-normal mt-0.5">Eat in & Take away</span>
-        </p>
-      </div>
-    </div>
-
-    {/* Content Section */}
-    <div className="space-y-3">
-      {/* Dynamic Title */}
-      <h2 className="font-serif text-4xl italic font-light leading-tight text-white tracking-wide">
-        {slides[current].title}
-      </h2>
-
-      {/* Dynamic Description */}
-      <p className="text-sm md:text-base leading-relaxed text-white/80 font-light">
-        {slides[current].desc}
-      </p>
-    </div>
-
-  </div>
-</div>
-      </div>
-
-     {/* RIGHT: Scrollable Side Panel - FULL WIDTH ON MOBILE, 30% ON LG */}
+      {/* RIGHT: Scrollable Side Panel - FULL WIDTH ON MOBILE, 30% ON LG */}
       <div className='w-full lg:w-[30%] h-auto lg:h-screen bg-zinc-50/50 flex flex-col gap-4 overflow-y-auto p-4 no-scrollbar border-l border-zinc-100'>
 
         {/* Restaurant Card */}
@@ -241,20 +241,20 @@ const Page = () => {
 
         {/* Reservation Button */}
         <Link href="/reservation" className="block w-full">
-  <button className="w-full cursor-pointer bg-[#1B3A6B] py-4 lg:py-3 px-8 rounded-2xl flex items-center justify-between group flex-shrink-0 shadow-lg shadow-[#1B3A6B]/10 border border-[#1B3A6B] hover:bg-[#1B3A6B]/90 transition-all duration-300 focus:outline-none active:scale-[0.98]">
-    
-    {/* TEXT: Now white with refined tracking */}
-    <span className="text-white text-sm font-bold uppercase tracking-wider">
-      Make a Reservation
-    </span>
+          <button className="w-full cursor-pointer bg-[#1B3A6B] py-4 lg:py-3 px-8 rounded-2xl flex items-center justify-between group flex-shrink-0 shadow-lg shadow-[#1B3A6B]/10 border border-[#1B3A6B] hover:bg-[#1B3A6B]/90 transition-all duration-300 focus:outline-none active:scale-[0.98]">
 
-    {/* ICON BOX: Semi-transparent white background for a subtle "glass" look */}
-    <div className="p-2 rounded-xl bg-white/10 text-white transition-all duration-300 group-hover:bg-white/20 group-hover:scale-110">
-      <Calendar size={18} />
-    </div>
-    
-  </button>
-</Link>
+            {/* TEXT: Now white with refined tracking */}
+            <span className="text-white text-sm font-bold uppercase tracking-wider">
+              Make a Reservation
+            </span>
+
+            {/* ICON BOX: Semi-transparent white background for a subtle "glass" look */}
+            <div className="p-2 rounded-xl bg-white/10 text-white transition-all duration-300 group-hover:bg-white/20 group-hover:scale-110">
+              <Calendar size={18} />
+            </div>
+
+          </button>
+        </Link>
 
         {/* Opening Hours Section */}
         <div className="w-full bg-white p-6 lg:p-8 rounded-2xl flex flex-col gap-6 flex-shrink-0 shadow-sm border border-zinc-100">
@@ -269,7 +269,7 @@ const Page = () => {
                 </span>
               </div>
             ))}
-          </div>
+          </div>asdfa
         </div>
 
         {/* Social Links */}
@@ -278,7 +278,7 @@ const Page = () => {
             href="https://www.facebook.com/rintasmania/"
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-[#1877F2] text-white p-5 rounded-2xl flex items-center justify-between group shadow-sm hover:bg-[#1877F2]/90 transition-all"
+            className="bg-[#1B3A6B] text-white p-5 rounded-2xl flex items-center justify-between group shadow-sm hover:bg-[#1B3A6B]/90 transition-all"
             aria-label="RIN on Facebook"
           >
             <span className="text-sm font-bold">Follow on Facebook</span>

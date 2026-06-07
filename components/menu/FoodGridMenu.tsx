@@ -75,13 +75,11 @@ export default function FoodGridMenu({
       {/* ─── MENU EXPLORER ─── */}
       <div className="space-y-16 mt-8">
         {isLoading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
-            {[...Array(8)].map((_, i) => (
-              <div
-                key={i}
-                className="h-64 rounded-3xl bg-white animate-pulse border border-slate-200 shadow-sm"
-              />
-            ))}
+          <div className="flex items-center justify-center py-32">
+            <div
+              className="w-12 h-12 rounded-full border-4 border-t-transparent animate-spin"
+              style={{ borderColor: '#1B3A6B', borderTopColor: 'transparent' }}
+            />
           </div>
         ) : (
           groupedFoods.map((group: any) => (
@@ -94,6 +92,7 @@ export default function FoodGridMenu({
                 <h2 className="text-2xl lg:text-3xl font-serif italic text-[#1B3A6B]">
                   {group.title}
                 </h2>
+                
                 <div className="h-[1px] flex-1 bg-gradient-to-r from-slate-200 to-transparent" />
                 <span className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em]">
                   {group.foods.length} Dishes

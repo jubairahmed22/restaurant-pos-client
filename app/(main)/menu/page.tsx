@@ -61,6 +61,7 @@ function MenuPageInner() {
       FoodService.getAllFoods(
         `search=${search}&category=${category}&page=${page}`
       ),
+    placeholderData: (prev) => prev,
   });
 
   const { data: categoryRes } = useQuery({
