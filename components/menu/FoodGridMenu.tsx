@@ -73,7 +73,7 @@ export default function FoodGridMenu({
       </div>
 
       {/* ─── MENU EXPLORER ─── */}
-      <div className="space-y-16 mt-8">
+      <div className="space-y-1 mt-1">
         {isLoading ? (
           <div className="flex items-center justify-center py-32">
             <div
@@ -100,7 +100,7 @@ export default function FoodGridMenu({
               </div>
 
               {/* Responsive Grid */}
-              <div className="grid gap-6 sm:gap-8 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+              <div className="grid gap-4 sm:gap-4 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
                 {group.foods.map((item: any) => (
                   <FoodCardMenu key={item._id} item={item} onAdd={onAdd} />
                 ))}

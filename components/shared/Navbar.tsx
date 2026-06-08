@@ -195,9 +195,7 @@ export default function Navbar() {
         <h2 className="font-serif text-3xl tracking-tight text-[#1B3A6B]">
           RIN
         </h2>
-        <p className="text-xs uppercase tracking-[0.3em] text-zinc-400">
-          Beauty & Care
-        </p>
+  
       </div>
 
       <button

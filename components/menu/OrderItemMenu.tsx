@@ -7,10 +7,10 @@ export default function OrderItemMenu({
   item,
   onIncrease,
   onDecrease,
-  onRemove,
+  onRemove,asdf
 }: any) {
   return (
-    <div className="group relative overflow-hidden rounded-3xl border border-slate-100 bg-white p-4 transition-all duration-300 hover:border-slate-200 hover:bg-slate-50 shadow-sm">
+    <div className="group relative overflow-hidden rounded-xl border border-slate-100 bg-white p-4 transition-all duration-300 hover:border-slate-200 hover:bg-slate-50 shadow-sm">
 
       {/* Subtle Premium Overlay on Hover */}
       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 bg-gradient-to-r from-slate-100/50 via-transparent to-slate-100/30" />

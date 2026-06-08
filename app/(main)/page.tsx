@@ -88,7 +88,7 @@ const Page = () => {
               <div className="flex-shrink-0 border-r border-white/10 pr-6">
                 <Image
                   src={rinLogo}
-                  alt="Serin Beauty"
+                  alt=""
                   width={140}
                   height={50}
                   priority
