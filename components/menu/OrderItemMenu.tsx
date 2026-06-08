@@ -4,8 +4,8 @@ import React from 'react';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 
 export default function OrderItemMenu({
-  item,
-  onIncrease,asdfsad
+  item,asdfas
+  onIncrease,
   onDecrease,
   onRemove,
 }: any) {
