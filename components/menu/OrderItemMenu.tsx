@@ -3,7 +3,7 @@
 import React from 'react';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 
-export default function OrderItemMenu({ asdfa
+export default function OrderItemMenu({
   item,
   onIncrease,
   onDecrease,
