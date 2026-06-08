@@ -7,7 +7,7 @@ export default function OrderItemMenu({
   item,
   onIncrease,
   onDecrease,
-  onRemove,asdf
+  onRemove,
 }: any) {
   return (
     <div className="group relative overflow-hidden rounded-xl border border-slate-100 bg-white p-4 transition-all duration-300 hover:border-slate-200 hover:bg-slate-50 shadow-sm">
