@@ -46,7 +46,7 @@ export default function FoodCardMenu({ item, onAdd }: any) {
               {item.description}
             </p>
           )}
-        </div>sadfds
+        </div>
 
         <p className="text-slate-800 font-black text-[17px] mt-1">
           AUD {Number(item.price).toFixed(2)}
