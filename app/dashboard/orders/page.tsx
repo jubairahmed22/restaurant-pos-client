@@ -198,6 +198,8 @@ type Order = {
   orderStatus: 'placed' | 'preparing' | 'dispatched' | 'delivered' | 'cancelled';
   shippingAddress: string;
   createdAt: string;
+  pickupDisplayDate?: string | null;
+  pickupDisplayTime?: string | null;
 };
 
 type QuickFilter = '' | 'today' | 'yesterday' | 'last7days' | 'last30days';
@@ -550,6 +552,18 @@ function AdminOrderManagementInner() {
           <span className="text-xs text-slate-400">{item.phone}</span>
         </div>
       ),
+    },
+    {
+      header: 'Pickup', accessorKey: 'pickupDisplayDate',
+      cell: (item: Order) =>
+        item.pickupDisplayDate ? (
+          <div className="flex flex-col">
+            <span className="text-xs font-semibold text-[#C05428]">{item.pickupDisplayDate}</span>
+            <span className="text-[11px] text-slate-400">{item.pickupDisplayTime}</span>
+          </div>
+        ) : (
+          <span className="text-xs text-slate-300">—</span>
+        ),
     },
     {
       header: 'Total', accessorKey: 'total',

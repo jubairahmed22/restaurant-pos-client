@@ -124,7 +124,7 @@ function SeatModal({
           <button
             onClick={() => onConfirm(partySize, serverName || 'Staff')}
             disabled={isPending}
-            className="flex-1 py-2.5 bg-[#6366F1] text-white rounded-xl text-sm font-semibold hover:bg-indigo-700 disabled:opacity-60 transition shadow-sm"
+            className="flex-1 py-2.5 bg-[#1B3A6B] text-white rounded-xl text-sm font-semibold hover:bg-indigo-700 disabled:opacity-60 transition shadow-sm"
           >
             {isPending ? 'Seating…' : 'Seat Table'}
           </button>
@@ -312,7 +312,7 @@ export default function LiveFloorPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-96">
-        <div className="w-8 h-8 border-2 border-[#6366F1] border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-[#1B3A6B] border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
@@ -368,7 +368,7 @@ export default function LiveFloorPage() {
             onClick={() => setFilter(f)}
             className={`px-3 py-1.5 rounded-full text-xs font-semibold transition ${
               filter === f
-                ? 'bg-[#6366F1] text-white'
+                ? 'bg-[#1B3A6B] text-white'
                 : 'bg-white text-slate-500 border border-slate-200 hover:border-slate-400'
             }`}
           >

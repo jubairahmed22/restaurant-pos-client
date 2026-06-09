@@ -15,6 +15,7 @@ import {
   X,
   ChevronRight,
   ChevronDown,
+  CreditCard,
 } from 'lucide-react';
 
 import { usePathname, useRouter } from 'next/navigation';
@@ -47,12 +48,16 @@ export default function DashboardLayout({
       href: '/dashboard',
       badge: '9+',
     },
-
-    {
-      label: 'POS',
-      icon: Utensils,
-      href: '/dashboard/pos',
+        {
+      label: 'TABLES',
+      icon: LayoutGrid,
+      href: '/dashboard/tables',
     },
+    // {
+    //   label: 'POS',
+    //   icon: Utensils,
+    //   href: '/dashboard/pos',
+    // },
 
     {
       label: 'ORDERS',
@@ -76,11 +81,10 @@ export default function DashboardLayout({
       icon: FolderTree,
       href: '/dashboard/categories',
     },
-
     {
-      label: 'TABLES',
-      icon: LayoutGrid,
-      href: '/dashboard/tables',
+      label: 'TRANSACTIONS',
+      icon: CreditCard,
+      href: '/dashboard/transactions',
     },
   ];
 
@@ -96,10 +100,10 @@ export default function DashboardLayout({
   };
 
   return (
-    <div className="min-h-screen font-inter bg-[#F8F9FD] flex flex-col">
+    <div className="min-h-screen font-inter  flex flex-col">
 
       {/* HEADER */}
-      <header className="h-16 bg-[#6366F1] flex items-center justify-between px-4 md:px-6 sticky top-0 z-[60] shadow-md">
+      <header className="h-16 bg-[#1B3A6B] flex items-center justify-between px-4 md:px-6 sticky top-0 z-[60] shadow-md">
 
         {/* LEFT */}
         <div className="flex items-center gap-4 md:gap-8">
@@ -140,7 +144,7 @@ export default function DashboardLayout({
             <button className="p-2 hover:bg-white/10 rounded-full transition relative">
               <Bell size={18} />
 
-              <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-[9px] flex items-center justify-center rounded-full font-bold border border-[#6366F1]">
+              <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-[9px] flex items-center justify-center rounded-full font-bold border border-[#1B3A6B]">
                 2
               </span>
             </button>
@@ -280,8 +284,8 @@ export default function DashboardLayout({
                   }
                   className={`flex items-center justify-between px-4 py-3.5 rounded-2xl transition-all group ${
                     isActive
-                      ? 'bg-[#6366F1] text-white font-bold'
-                      : 'text-slate-400 hover:bg-slate-50 hover:text-slate-700'
+                      ? 'bg-[#1B3A6B] text-white font-bold'
+                      : 'text-slate-600 hover:bg-slate-50 hover:text-[#1B3A6B]'
                   }`}
                 >
                   <div className="flex items-center gap-3">
@@ -291,7 +295,7 @@ export default function DashboardLayout({
                       className={
                         isActive
                           ? 'text-white'
-                          : 'text-slate-300 group-hover:text-indigo-400'
+                          : 'text-slate-500 group-hover:text-[#1B3A6B]'
                       }
                     />
 

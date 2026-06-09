@@ -11,7 +11,7 @@ export const useSocket = (roomName?: string) => {
   useEffect(() => {
     // Initialise Socket connection
     const socketInstance = io(
-      process.env.NEXT_PUBLIC_SOCKET_URL || 'https://ortazz.com.au',
+      process.env.NEXT_PUBLIC_SOCKET_URL || 'http://localhost:51000',
       {
         withCredentials: true,
         transports: ['polling', 'websocket'], // polling first for shared hosting

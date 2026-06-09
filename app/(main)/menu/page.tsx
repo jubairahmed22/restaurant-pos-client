@@ -3,7 +3,7 @@
 import { Suspense, useState, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
-import { X, ChevronRight } from "lucide-react";
+import { X, ChevronRight, ShoppingBag } from "lucide-react";
 
 import { FoodService } from "@/services/food.service";
 import { CategoryService } from "@/services/category.service";
@@ -11,6 +11,9 @@ import { CategoryService } from "@/services/category.service";
 import FoodGridMenu from "@/components/menu/FoodGridMenu";
 import CheckoutPanelMenu from "@/components/menu/CheckoutPanelMenu";
 import { AnimatePresence, motion } from "framer-motion";
+import PickupTimeModal from "@/components/pickup/PickupTimeModal";
+import PickupBar from "@/components/pickup/PickupBar";
+import { usePickupStore } from "@/store/pickupStore";
 
 /* ─── Local Storage Key ─── */
 const CART_KEY = "menu-cart";
@@ -40,6 +43,10 @@ function MenuPageInner() {
   const page = searchParams.get("page") || "1";
   const search = searchParams.get("search") || "";
   const category = searchParams.get("category") || "";
+
+  /* ─── Pickup modal state ─── */
+  const [pickupOpen, setPickupOpen] = useState(false);
+  const { isSet: pickupIsSet } = usePickupStore();
 
   /* ─── Cart State — initialized from localStorage ─── */
   const [cart, setCartRaw] = useState<any[]>(() => loadCart());
@@ -118,8 +125,29 @@ function MenuPageInner() {
   return (
     <div className="min-h-screen w-full flex flex-col xl:flex-row bg-[#F8FAFC] text-slate-800 font-sans selection:bg-[#1B3A6B]/10 overflow-hidden">
 
+      <PickupTimeModal isOpen={pickupOpen} onClose={() => setPickupOpen(false)} />
+
       {/* LEFT: Explorer Section (68% Split Area) */}
       <main className="relative w-full xl:w-[68%] h-screen flex flex-col border-r border-slate-200 bg-[#F8FAFC]">
+
+        {/* Pickup bar — left section top */}
+        {pickupIsSet ? (
+          <div className="px-6 lg:px-10 pt-4 shrink-0">
+            <PickupBar onEdit={() => setPickupOpen(true)} />
+          </div>
+        ) : (
+          <div className="px-6 lg:px-10 pt-4 shrink-0">
+            <button
+              onClick={() => setPickupOpen(true)}
+              className="w-full flex items-center justify-between px-5 py-3 rounded-2xl text-white text-sm font-bold shadow-md transition-all hover:opacity-90 active:scale-[0.98]"
+              style={{ background: '#C05428' }}
+            >
+              <span>Schedule your pickup time</span>
+              <ShoppingBag size={16} />
+            </button>
+          </div>
+        )}
+
         {/* Content Area — extra bottom padding on mobile so FAB doesn't cover content */}
         <div className="flex-1 overflow-y-auto px-6 lg:px-10 no-scrollbar">
           <div className="max-w-[1400px] mx-auto">

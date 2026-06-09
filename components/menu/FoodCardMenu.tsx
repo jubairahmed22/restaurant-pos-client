@@ -1,81 +1,57 @@
 'use client';
 
-import React from 'react';
 import { Plus } from 'lucide-react';
 
+const PLACEHOLDER =
+  'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80';
+
 export default function FoodCardMenu({ item, onAdd }: any) {
+  const imgSrc = item.image || PLACEHOLDER;
+
   return (
-    <div className="flex flex-col gap-2 rounded ">
+    <div className="flex flex-col  rounded-2xl overflow-hidden  cursor-pointer group">
 
-      {/* ── IMAGE CARD ── */}
-      <div className="relative rounded-xl overflow-hidden aspect-square bg-slate-100 group">
-
-        {/* Food image — full bleed */}
+      {/* ── IMAGE ── */}
+      <div className="relative w-full aspect-4/3 overflow-hidden bg-slate-100">
         <img
-          src={item.image}
+          src={imgSrc}
           alt={item.title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          onError={(e) => { (e.currentTarget as HTMLImageElement).src = PLACEHOLDER; }}
         />
-
-        {/* Dark gradient overlay — bottom half only */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
         {/* + button — top right */}
         <button
           onClick={() => onAdd(item)}
           aria-label={`Add ${item.title} to cart`}
-          className="
-            absolute top-3 right-3
-            w-11 h-11
-            bg-white rounded-full
-            flex items-center justify-center
-            shadow-md
-            hover:bg-slate-100
-            active:scale-95
-            transition-all duration-150
-            z-10
-          "
+          className="absolute top-3 right-3 w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-slate-50 active:scale-95 transition-all duration-150 z-10"
         >
-          <Plus size={22} strokeWidth={2.5} className="text-slate-800" />
+          <Plus size={20} strokeWidth={2.5} className="text-slate-800" />
         </button>
+      </div>
 
-        {/* Bottom overlay — price + title */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 flex flex-col gap-0.5 z-10">
-
-          {/* Price badge */}
-          <span
-            className="
-              self-start
-              bg-white text-slate-800
-              text-sm font-semibold
-              px-3 py-1 rounded-full text-[12px]
-              shadow-sm
-              mb-1
-            "
-          >
-            ${Number(item.price).toFixed(2)}
-          </span>
-
-          {/* Title */}
-          <h3
-            className="
-              text-white content font-bold
-              text-md 
-            "
-          >
+      {/* ── CONTENT ── */}
+      <div className="flex flex-col gap-1 py-3">
+        {/* fixed 2-line height — stays constant whether title is 1 or 2 lines */}
+        <div className=" overflow-hidden">
+          <h3 className="text-slate-900 font-bold text-[15px] leading-snug line-clamp-2">
             {item.title}
           </h3>
         </div>
-      </div>
 
-      {/* ── DESCRIPTION below card ── */}
-      {item.description && (
-        <p className='text-gray-50 font-semibold text-[14px]'>
-          {item.description.split(' ').length > 10
-            ? item.description.split(' ').slice(0, 5).join(' ') + '..'
-            : item.description}
+        {/* fixed 2-line height — always rendered so price never shifts up */}
+        <div className=" overflow-hidden">
+          {item.description && (
+            <p className="text-slate-500 text-[13px] leading-relaxed line-clamp-1">
+              {item.description}
+            </p>
+          )}
+        </div>asdfd
+
+        <p className="text-slate-800 font-black text-[17px] mt-1">
+          AUD {Number(item.price).toFixed(2)}
         </p>
-      )}
+      </div>
     </div>
   );
 }

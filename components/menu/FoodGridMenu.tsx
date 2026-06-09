@@ -88,7 +88,7 @@ export default function FoodGridMenu({
               className="animate-in fade-in slide-in-from-bottom-4 duration-700"
             >
               {/* Category Header */}
-              <div className="flex items-center gap-4 mb-8">
+              <div className="flex items-center gap-6 mb-10">
                 <h2 className="text-2xl lg:text-3xl font-serif italic text-[#1B3A6B]">
                   {group.title}
                 </h2>
@@ -100,7 +100,7 @@ export default function FoodGridMenu({
               </div>
 
               {/* Responsive Grid */}
-              <div className="grid gap-4 sm:gap-4 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+              <div className="grid gap-4 grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
                 {group.foods.map((item: any) => (
                   <FoodCardMenu key={item._id} item={item} onAdd={onAdd} />
                 ))}
@@ -109,7 +109,7 @@ export default function FoodGridMenu({
           ))
         )}
 
-        {/* Empty State */}
+      {/* Empty State */}
         {!isLoading && groupedFoods.length === 0 && (
           <div className="flex flex-col items-center justify-center py-32 text-center">
             <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">

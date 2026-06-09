@@ -95,28 +95,7 @@ const Page = () => {
         </AnimatePresence>
 
         {/* Testimonial card */}
-        <div className="absolute bottom-4 left-4 right-4 lg:bottom-12 lg:left-12 z-20 max-w-lg p-5 lg:p-8 rounded-3xl bg-white/70 backdrop-blur-xl border border-white/60 shadow-xl">
-          {/* Logo + brand */}
-          <div className="flex items-center gap-4 mb-4 pb-4 border-b border-[#1B3A6B]/10">
-            <div className="relative w-16 h-10 flex-shrink-0">
-              <Image src={rinLogo} alt="RIN Logo" fill className="object-contain" priority />
-            </div>
-            <div>
-              <p className="text-[11px] font-black uppercase tracking-widest text-[#1B3A6B]">RIN Japanese Restaurant</p>
-              <p className="text-[10px] text-amber-600 font-semibold">Eat In &amp; Take Away · Hobart, TAS</p>
-            </div>
-          </div>
-          <h2 className="text-xl lg:text-3xl font-serif italic mb-2 lg:mb-3 leading-tight text-[#1B3A6B]">
-            &ldquo;{slides[current].title}&rdquo;
-          </h2>
-          <p className="hidden md:block text-slate-600 font-medium mb-4 text-xs lg:text-sm leading-relaxed">
-            &ldquo;{slides[current].desc}&rdquo;
-          </p>
-          <div className="flex items-center gap-2 text-xs">
-            <span className="font-bold text-[#1B3A6B]">★ {slides[current].rating}</span>
-            <span className="text-slate-400">({slides[current].reviews} reviews)</span>
-          </div>
-        </div>
+    
       </div>
 
       {/* ── RIGHT: Info panel ─────────────────────────── */}
@@ -198,7 +177,7 @@ const Page = () => {
             href={FACEBOOK}
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-[#1877F2] text-white p-4 rounded-2xl flex items-center justify-between group shadow-sm hover:bg-[#1877F2]/90 transition-all"
+            className="bg-[#1B3A6B] text-white p-4 rounded-2xl flex items-center justify-between group shadow-sm hover:bg-[#1B3A6B]/90 transition-all"
             aria-label="RIN on Facebook"
           >
             <div className="flex items-center gap-3">

@@ -208,7 +208,7 @@ function PaymentSuccess({ tableLabel, total, onDone }: { tableLabel: string; tot
       <h2 className="text-3xl font-bold text-slate-800 mb-2">Payment Complete</h2>
       <p className="text-slate-400 mb-1">Table {tableLabel} · {fmt(total)}</p>
       <p className="text-sm text-slate-300 mb-8">2 copies sent to printer</p>
-      <button onClick={onDone} className="px-8 py-3 bg-[#6366F1] text-white rounded-2xl font-semibold text-base hover:bg-indigo-700 transition">
+      <button onClick={onDone} className="px-8 py-3 bg-[#1B3A6B] text-white rounded-2xl font-semibold text-base hover:bg-indigo-700 transition">
         Back to Floor Plan
       </button>
     </motion.div>

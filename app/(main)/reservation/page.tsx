@@ -121,18 +121,9 @@ export default function BookingPage() {
         </AnimatePresence>
 
         {/* Floating Review Card Overlay Block */}
-        <div className="absolute bottom-4 left-4 right-4 lg:bottom-12 lg:left-12 z-20 max-w-lg p-6 lg:p-10 rounded-xl bg-black/40 backdrop-blur-xl border border-white/10 text-white">
-          <h2 className="text-xl lg:text-4xl font-serif italic mb-2 lg:mb-4 leading-tight">"{slides[current].title}"</h2>
-          <p className="hidden md:block text-gray-300 font-light mb-4 lg:mb-6 text-sm lg:text-base leading-relaxed">"{slides[current].desc}"</p>
-          <div className="flex items-center gap-3">
-            <div className="flex -space-x-2">
-              {[1,2,3].map(i => <div key={i} className="w-6 h-6 lg:w-8 lg:h-8 rounded-full bg-zinc-800 border border-zinc-900" />)}
-            </div>
-            <span className="text-xs lg:text-sm font-bold">
-              {slides[current].rating}{' '}
-              <span className="text-zinc-400 font-normal">({slides[current].reviews})</span>
-            </span>
-          </div>
+        <div className="absolute bottom-4 left-4 right-4 lg:bottom-12 lg:left-12 z-20 max-w-lg p-6 lg:p-10 rounded-xl  text-white">
+
+
         </div>
       </div>
 
@@ -273,13 +264,17 @@ export default function BookingPage() {
 
         {/* SUB FOOTER SECTION LINK WRAPPER */}
         <div className="w-full bg-white py-12 px-8 rounded-2xl flex flex-col items-center gap-12 flex-shrink-0 mb-4 border border-slate-200 shadow-sm">
-          <div className="flex flex-col items-center gap-6">
-            <h3 className="text-xl font-serif italic text-[#1B3A6B]">Menu</h3>
-            <div className="flex flex-col items-center gap-4 text-slate-500 font-bold text-[13px]">
-              {["Home","Menu","About","Restaurant","Reservation"].map(link => (
-                <a key={link} href="#" className="hover:text-[#1B3A6B] transition-colors uppercase tracking-tight">{link}</a>
-              ))}
-            </div>
+                    <div className="flex flex-col items-center gap-3.5 text-slate-500 font-bold text-xs lg:text-sm tracking-wide">
+            {[
+              { label: 'Home',        href: '/' },
+              { label: 'Menu',        href: '/menu' },
+              { label: 'Restaurant',  href: '/restaurant' },
+              { label: 'Reservation', href: '/reservation' },
+            ].map(({ label, href }) => (
+              <Link key={label} href={href} className="hover:text-[#1B3A6B] transition-colors">
+                {label}
+              </Link>
+            ))}
           </div>
           
           <Link target='_blank' href="https://www.linkedin.com/in/jubairahmed10/">

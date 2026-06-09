@@ -104,7 +104,7 @@ function FloorPlanRow({
   return (
     <div className="flex items-center justify-between py-4 group">
       <div className="flex-1 min-w-0 cursor-pointer" onClick={onOpen}>
-        <p className="text-sm font-semibold text-slate-800 group-hover:text-[#6366F1] transition">
+        <p className="text-sm font-semibold text-slate-800 group-hover:text-[#1B3A6B] transition">
           {plan.name}
         </p>
         <p className="text-xs text-slate-400 mt-0.5">
@@ -115,7 +115,7 @@ function FloorPlanRow({
       <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition">
         <button
           onClick={onOpen}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-50 text-[#6366F1] text-xs font-semibold hover:bg-indigo-100 transition"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-50 text-[#1B3A6B] text-xs font-semibold hover:bg-indigo-100 transition"
         >
           Open Floor
         </button>

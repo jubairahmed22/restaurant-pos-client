@@ -5,8 +5,11 @@
   "framework": "nextjs",
   "env": {
     "NEXT_PUBLIC_SITE_URL": "https://rinrestaurant.com.au",
-    "NEXT_PUBLIC_SOCKET_URL": "https://ortazz.com.au",
-    "BACKEND_URL": "https://ortazz.com.au"
+    "NEXT_PUBLIC_SOCKET_URL": "http://localhost:51000",
+    "BACKEND_URL": "http://localhost:51000",
+    "NEXT_PUBLIC_SQUARE_APP_ID": "sandbox-sq0idb-BPP7uIptRW1BWqgh1mgztn",
+    "NEXT_PUBLIC_SQUARE_LOCATION_ID": "LFR4MK10W9Nww",
+    "NEXT_PUBLIC_SQUARE_ENV": "sandbox"
   },
   "headers": [
     {

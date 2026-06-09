@@ -2,7 +2,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar } from 'lucide-react';
+import { Calendar, ShoppingBag } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 // Assets
 import slideOne from '../../app/assest/slideOne.avif';
@@ -11,6 +12,9 @@ import menu from '../../app/assest/menu.avif';
 import ourRestaourant from '../../app/assest/our-restaourant.avif';
 import Link from 'next/link';
 import rinLogo from '../../app/assest/Rin_Logo.png';
+
+import PickupTimeModal from '@/components/pickup/PickupTimeModal';
+import { usePickupStore } from '@/store/pickupStore';
 
 
 const slides = [
@@ -42,8 +46,11 @@ const openingHours = [
 ];
 
 const Page = () => {
-  const [current, setCurrent] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
+  const router = useRouter();
+  const [current,      setCurrent]      = useState(0);
+  const [isPaused,     setIsPaused]     = useState(false);
+  const [pickupOpen,   setPickupOpen]   = useState(false);
+  const { isSet } = usePickupStore();
 
   const nextSlide = useCallback(() => {
     setCurrent((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
@@ -55,8 +62,22 @@ const Page = () => {
     return () => clearInterval(timer);
   }, [nextSlide, isPaused]);
 
+  // Auto-open pickup modal on first visit
+  useEffect(() => {
+    if (!isSet) {
+      const t = setTimeout(() => setPickupOpen(true), 400);
+      return () => clearTimeout(t);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <div className='min-h-screen w-full flex flex-col lg:flex-row bg-white text-white font-sans selection:bg-white/20 pt-20 lg:pt-0'>
+
+      <PickupTimeModal
+        isOpen={pickupOpen}
+        onClose={() => setPickupOpen(false)}
+        onConfirm={() => router.push('/menu')}
+      />
 
       {/* LEFT: Premium Slider - HIDDEN ON MOBILE/TABLET (md/sm), VISIBLE ON LG */}
       <div
@@ -77,6 +98,16 @@ const Page = () => {
             <div className="absolute inset-0 bg-black/20" />
           </motion.div>
         </AnimatePresence>
+
+        {/* Pickup button — left slider overlay */}
+        <button
+          onClick={() => setPickupOpen(true)}
+          className="absolute top-6 left-6 z-20 flex items-center gap-2 px-5 py-3 rounded-2xl text-sm font-bold text-white shadow-lg backdrop-blur-sm border border-white/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+          style={{ background: '#C05428' }}
+        >
+          <ShoppingBag size={16} />
+          Order Pickup
+        </button>
 
         {/* Testimonial Overlay */}
         <div className="absolute bottom-12 left-12 z-20 max-w-xl rounded-3xl border border-white/10 bg-black/40 p-8 backdrop-blur-xl transition-all duration-500 ease-in-out">
@@ -239,6 +270,20 @@ const Page = () => {
           </div>
         </Link>
 
+        {/* Pickup Button */}
+        <button
+          onClick={() => setPickupOpen(true)}
+          className="w-full flex items-center justify-between px-8 py-4 lg:py-3 rounded-2xl border flex-shrink-0 shadow-lg transition-all duration-300 focus:outline-none active:scale-[0.98] hover:opacity-90"
+          style={{ background: '#C05428', borderColor: '#C05428' }}
+        >
+          <span className="text-white text-sm font-bold uppercase tracking-wider">
+            {isSet ? 'Change Pickup Time' : 'Order Pickup'}
+          </span>
+          <div className="p-2 rounded-xl bg-white/15 text-white transition-all duration-300 group-hover:bg-white/25">
+            <ShoppingBag size={18} />
+          </div>
+        </button>
+
         {/* Reservation Button */}
         <Link href="/reservation" className="block w-full">
           <button className="w-full cursor-pointer bg-[#1B3A6B] py-4 lg:py-3 px-8 rounded-2xl flex items-center justify-between group flex-shrink-0 shadow-lg shadow-[#1B3A6B]/10 border border-[#1B3A6B] hover:bg-[#1B3A6B]/90 transition-all duration-300 focus:outline-none active:scale-[0.98]">
@@ -296,15 +341,18 @@ const Page = () => {
 
         {/* Footer Navigation */}
         <div className="w-full bg-white py-12 px-8 rounded-2xl flex flex-col items-center gap-12 flex-shrink-0 mb-4 shadow-sm border border-zinc-100">
-          <div className="flex flex-col items-center gap-6">
-            <h3 className="text-xl font-serif font-bold text-[#1B3A6B] tracking-tight">Navigation</h3>
-            <div className="flex flex-col items-center gap-4 text-zinc-600 font-medium text-[15px]">
-              {["Home", "Menu", "About", "Restaurant", "Reservation"].map((link) => (
-                <a key={link} href="#" className="hover:text-[#1B3A6B] transition-colors">{link}</a>
-              ))}
-            </div>
+                    <div className="flex flex-col items-center gap-3.5 text-slate-500 font-bold text-xs lg:text-sm tracking-wide">
+            {[
+              { label: 'Home',        href: '/' },
+              { label: 'Menu',        href: '/menu' },
+              { label: 'Restaurant',  href: '/restaurant' },
+              { label: 'Reservation', href: '/reservation' },
+            ].map(({ label, href }) => (
+              <Link key={label} href={href} className="hover:text-[#1B3A6B] transition-colors">
+                {label}
+              </Link>
+            ))}
           </div>
-
           <div className="pt-8 border-t border-zinc-100 w-full flex flex-col items-center gap-4">
             <Link target='_blank' href="https://www.linkedin.com/in/jubairahmed10/">
               <div className="bg-[#1B3A6B] text-white px-6 py-2.5 rounded-full flex items-center gap-2 text-[12px] font-bold uppercase tracking-wider hover:bg-[#1B3A6B]/90 transition-colors shadow-sm">
