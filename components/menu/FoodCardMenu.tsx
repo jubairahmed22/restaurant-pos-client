@@ -38,7 +38,7 @@ export default function FoodCardMenu({ item, onAdd }: any) {
             {item.title}
           </h3>
         </div>
-
+sadfsad
         {/* fixed 2-line height — always rendered so price never shifts up */}
         <div className=" overflow-hidden">
           {item.description && (
