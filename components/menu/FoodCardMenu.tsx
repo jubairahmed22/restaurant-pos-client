@@ -44,7 +44,7 @@ export default function FoodCardMenu({ item, onAdd }: any) {
           {item.description && (
             <p className="text-slate-500 text-[13px] leading-relaxed line-clamp-1">
               {item.description}
-            </p>asdfasdf
+            </p>
           )}
         </div>
 
