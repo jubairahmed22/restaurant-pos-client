@@ -2,12 +2,13 @@
 
 import React, { useState, useRef, useEffect, useCallback, useId } from 'react';
 import {
-  ShoppingCart, User, Phone, MapPin, Mail,
+  ShoppingCart, User, Phone, Mail,
   Trash2, ChevronRight, CheckCircle2, X, Printer,
   CreditCard, ShieldCheck, Loader2, ArrowLeft, Lock,
 } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import OrderItemMenu from './OrderItemMenu';
+import AddressAutocomplete from '@/components/shared/AddressAutocomplete';
 import api from '@/services/axios';
 import { usePickupStore } from '@/store/pickupStore';
 
@@ -227,6 +228,7 @@ function SquarePaymentStep({
         await loadSquareSDK();
         if (destroyed) return;
 
+        console.log('[Square] init — appId:', appId, '| locationId:', locationId, '| env:', process.env.NEXT_PUBLIC_SQUARE_ENV);
         const payments = window.Square!.payments(appId, locationId);
         card = await payments.card({
           // Square sandbox validates as US ZIP (5-digit). Pre-fill a valid value
@@ -682,10 +684,11 @@ export default function CheckoutPanelMenu({
                   value={customer.email}     onChange={(v: string) => handleField('email', v)}
                   type="email"
                 />
-                <TransparentInput
-                  icon={<MapPin size={14} />} placeholder="Delivery Address"
-                  value={customer.address}   onChange={(v: string) => handleField('address', v)}
-                  isTextArea
+                <AddressAutocomplete
+                  value={customer.address}
+                  onChange={(v) => handleField('address', v)}
+                  placeholder="Delivery Address (Australian)"
+                  rows={2}
                 />
               </div>
             </div>
@@ -707,39 +710,46 @@ export default function CheckoutPanelMenu({
             </div>
 
             {/* Actions */}
-            <div className="flex flex-col gap-3 mt-4">
-              <div className="grid grid-cols-5 gap-3">
-                <button
-                  onClick={() => { clearCartAndStorage(); setCustomer(EMPTY_CUSTOMER); }}
-                  className="col-span-1 h-14 rounded-2xl bg-rose-50 border border-rose-100 flex items-center justify-center text-rose-500 hover:bg-rose-100 transition-all cursor-pointer"
-                >
-                  <Trash2 size={18} />
-                </button>
-                <button
-                  onClick={handleProceedToPayment}
-                  disabled={cart.length === 0}
-                  className="col-span-4 h-14 bg-[#1B3A6B] text-white rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-[#14305a] transition-all disabled:opacity-40 cursor-pointer shadow-md shadow-[#1B3A6B]/10"
-                >
-                  <CreditCard size={16} />
-                  <span className="text-xs uppercase tracking-widest font-bold">Pay with Card</span>
-                  <ChevronRight size={16} />
-                </button>
-              </div>
+            <div className="flex flex-col gap-2.5 mt-4">
+
+              {/* Primary CTA — Pay with Card */}
               <button
-                onClick={handlePayInRestaurant}
-                disabled={cart.length === 0 || isPayingAtRest}
-                className="w-full h-14 rounded-2xl text-white font-bold flex items-center justify-center gap-2 transition-all disabled:opacity-40 cursor-pointer shadow-md"
-                style={{ background: '#C05428' }}
+                onClick={handleProceedToPayment}
+                disabled={cart.length === 0}
+                className="w-full h-14 bg-[#1B3A6B] text-white rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-[#14305a] transition-all disabled:opacity-40 cursor-pointer shadow-md shadow-[#1B3A6B]/10"
               >
-                {isPayingAtRest ? (
-                  <Loader2 size={18} className="animate-spin" />
-                ) : (
-                  <>
-                    <ShieldCheck size={16} />
-                    <span className="text-xs uppercase tracking-widest font-bold">Pay in Restaurant</span>
-                  </>
-                )}
+                <CreditCard size={16} />
+                <span className="text-xs uppercase tracking-widest font-bold">Pay with Card</span>
+                <ChevronRight size={16} />
               </button>
+
+              {/* Secondary row — Pay in Restaurant + Clear */}
+              <div className="grid grid-cols-1 gap-2.5">
+                <button
+                  onClick={handlePayInRestaurant}
+                  disabled={cart.length === 0 || isPayingAtRest}
+                  className="h-12 rounded-2xl text-white font-bold flex items-center justify-center gap-2 transition-all disabled:opacity-40 cursor-pointer shadow-sm hover:opacity-90"
+                  style={{ background: '#C05428' }}
+                >
+                  {isPayingAtRest ? (
+                    <Loader2 size={16} className="animate-spin" />
+                  ) : (
+                    <>
+                      <ShieldCheck size={15} />
+                      <span className="text-[11px] uppercase tracking-widest font-bold">Pay in Restaurant</span>
+                    </>
+                  )}
+                </button>
+                <div className='flex  justify-start'>
+                  <button
+                  onClick={() => { clearCartAndStorage(); setCustomer(EMPTY_CUSTOMER); }}
+                  className="h-12  rounded-2xl  flex items-center justify-center text-rose-400  transition-all cursor-pointer shrink-0"
+                >
+                <Trash2 size={16} /> Clear
+                </button>
+                </div>
+              </div>
+
             </div>
           </>
         )}

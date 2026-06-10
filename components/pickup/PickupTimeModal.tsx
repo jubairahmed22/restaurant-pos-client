@@ -1,8 +1,11 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, X, Clock, Zap } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { ChevronLeft, ChevronRight, X, Clock, Zap, SkipForward, CalendarClock, UtensilsCrossed } from 'lucide-react';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { usePickupStore } from '@/store/pickupStore';
+import rinLogo from '@/app/assest/Rin_Logo.png';
 
 // ─── Restaurant opening hours (day-of-week 0=Sun) ────────────────────────────
 const OPENING: Record<number, { open: number; close: number } | null> = {
@@ -16,7 +19,7 @@ const OPENING: Record<number, { open: number; close: number } | null> = {
 };
 
 const DAY_ABBR = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-const PICKUP_COLOR = '#C05428';
+const PICKUP_COLOR = '#1B3A6B';
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -50,22 +53,20 @@ function generateSlots(date: Date): string[] {
 
   const now = new Date();
   const isToday = date.toDateString() === now.toDateString();
-
   let startMin = hours.open * 60;
 
   if (isToday) {
     const nowMin = now.getHours() * 60 + now.getMinutes();
-    const buffered = nowMin + 15;
-    const rounded = Math.ceil(buffered / 5) * 5;
+    const rounded = Math.ceil((nowMin + 15) / 5) * 5;
     startMin = Math.max(startMin, rounded);
   }
 
   const endMin = hours.close * 60 - 15;
   const slots: string[] = [];
-  for (let m = startMin; m <= endMin; m += 5) {
-    const h = Math.floor(m / 60);
-    const min = m % 60;
-    slots.push(`${String(h).padStart(2, '0')}:${String(min).padStart(2, '0')}`);
+  for (let min = startMin; min <= endMin; min += 5) {
+    const hh = Math.floor(min / 60);
+    const mm = min % 60;
+    slots.push(`${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`);
   }
   return slots;
 }
@@ -81,97 +82,122 @@ function groupByHour(slots: string[]) {
   return map;
 }
 
-// ─── Build 7-day list starting today ─────────────────────────────────────────
 function buildDays() {
-  const days: { date: Date; ymd: string; label: string; sub: string; isOpen: boolean }[] = [];
+  const days: { date: Date; ymd: string; label: string; isOpen: boolean }[] = [];
   const today = new Date();
   for (let i = 0; i < 7; i++) {
     const d = new Date(today);
     d.setDate(today.getDate() + i);
     const dow = d.getDay();
-    const open = OPENING[dow] !== null;
     days.push({
-      date:  d,
-      ymd:   toLocalYMD(d),
-      label: i === 0 ? 'Today' : DAY_ABBR[dow],
-      sub:   `${String(d.getDate()).padStart(2, '0')} ${d.toLocaleString('en-AU', { month: 'short' })}`,
-      isOpen: open,
+      date:   d,
+      ymd:    toLocalYMD(d),
+      label:  i === 0 ? 'Today' : DAY_ABBR[dow],
+      isOpen: OPENING[dow] !== null,
     });
   }
   return days;
 }
 
-// ─── Component ────────────────────────────────────────────────────────────────
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+type View = 'landing' | 'pickup-options' | 'asap' | 'preorder';
 
 interface Props {
-  isOpen:   boolean;
-  onClose:  () => void;
-  onConfirm?: () => void; // optional: called after store is updated
+  isOpen:     boolean;
+  onClose:    () => void;
+  onConfirm?: () => void;
 }
 
+// ─── Back button (top-level so React compiler doesn't flag it) ───────────────
+
+function BackBtn({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      className="absolute top-4 left-4 z-10 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 transition"
+    >
+      <ChevronLeft size={16} />
+    </button>
+  );
+}
+
+// ─── Outer wrapper: unmounts inner on close so state resets automatically ────
+
 export default function PickupTimeModal({ isOpen, onClose, onConfirm }: Props) {
+  if (!isOpen) return null;
+  return <PickupTimeModalContent onClose={onClose} onConfirm={onConfirm} />;
+}
+
+// ─── Inner component — always mounts fresh ────────────────────────────────────
+
+function PickupTimeModalContent({ onClose, onConfirm }: Omit<Props, 'isOpen'>) {
+  const router     = useRouter();
   const { setPickup } = usePickupStore();
 
-  const [mode,         setMode]        = useState<'asap' | 'preorder'>('asap');
-  const [carouselStart, setCarouselStart] = useState(0);
-  const [selectedYmd,  setSelectedYmd]  = useState<string>('');
-  const [selectedTime, setSelectedTime] = useState<string>('');
-
-  const days = useMemo(buildDays, []);
+  const days    = useMemo(() => buildDays(), []);
   const VISIBLE = 4;
 
-  // Default to first open day
-  useEffect(() => {
-    if (!isOpen) return;
-    const first = days.find(d => d.isOpen);
-    if (first) setSelectedYmd(first.ymd);
-  }, [isOpen, days]);
+  const [view,          setView]          = useState<View>('landing');
+  const [carouselStart, setCarouselStart] = useState(0);
+  const [selectedYmd,   setSelectedYmd]   = useState<string>(
+    () => days.find(d => d.isOpen)?.ymd ?? ''
+  );
+  const [selectedTime,  setSelectedTime]  = useState<string>('');
 
-  const selectedDay = days.find(d => d.ymd === selectedYmd);
-  const slots       = useMemo(() => selectedDay ? generateSlots(selectedDay.date) : [], [selectedDay]);
-  const grouped     = useMemo(() => groupByHour(slots), [slots]);
+  const selectedDay  = days.find(d => d.ymd === selectedYmd);
+  const slots        = useMemo(() => (selectedDay ? generateSlots(selectedDay.date) : []), [selectedDay]);
+  const grouped      = useMemo(() => groupByHour(slots), [slots]);
+  const visibleDays  = days.slice(carouselStart, carouselStart + VISIBLE);
 
-  // Reset selected time when day/mode changes
-  useEffect(() => { setSelectedTime(''); }, [selectedYmd, mode]);
+  // ── Navigation helpers (clear time in event handler, not effect) ──────────
 
-  if (!isOpen) return null;
+  const enterPreorder = () => {
+    setSelectedTime('');
+    setView('preorder');
+  };
 
-  const visibleDays = days.slice(carouselStart, carouselStart + VISIBLE);
+  const selectDate = (ymd: string) => {
+    setSelectedYmd(ymd);
+    setSelectedTime('');
+  };
 
-  const handleConfirm = () => {
-    if (mode === 'asap') {
-      const now = new Date();
-      const dow = now.getDay();
-      const displayDate = `${DAY_ABBR[dow]} ${String(now.getDate()).padStart(2, '0')}`;
-      setPickup({
-        date:        toLocalYMD(now),
-        time:        'asap',
-        displayDate,
-        displayTime: 'ASAP',
-        isAsap:      true,
-      });
-      onConfirm?.();
-      onClose();
-      return;
-    }
+  // ── Confirm handlers ──────────────────────────────────────────────────────
 
+  const confirmAsap = () => {
+    const now = new Date();
+    const dow = now.getDay();
+    setPickup({
+      date:        toLocalYMD(now),
+      time:        'asap',
+      displayDate: `${DAY_ABBR[dow]} ${String(now.getDate()).padStart(2, '0')}`,
+      displayTime: 'ASAP',
+      isAsap:      true,
+    });
+    onConfirm?.();
+    onClose();
+  };
+
+  const confirmPreorder = () => {
     if (!selectedTime) return;
     const d = days.find(d2 => d2.ymd === selectedYmd);
     if (!d) return;
     const dow = d.date.getDay();
-    const displayDate = `${DAY_ABBR[dow]} ${String(d.date.getDate()).padStart(2, '0')}`;
     setPickup({
       date:        selectedYmd,
       time:        selectedTime,
-      displayDate,
+      displayDate: `${DAY_ABBR[dow]} ${String(d.date.getDate()).padStart(2, '0')}`,
       displayTime: format24to12(selectedTime),
       isAsap:      false,
     });
     onConfirm?.();
     onClose();
   };
+asdfsa
+  const skipToMenu = () => { onClose(); router.push('/menu'); };
+  const goReservation = () => { onClose(); router.push('/reservation'); };
 
-  const canConfirm = mode === 'asap' || !!selectedTime;
+  // ── Render ────────────────────────────────────────────────────────────────
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
@@ -185,44 +211,133 @@ export default function PickupTimeModal({ isOpen, onClose, onConfirm }: Props) {
           <X size={15} />
         </button>
 
-        {/* Title */}
-        <div className="pt-7 pb-4 px-6 text-center shrink-0">
-          <h2 className="text-xl font-bold text-slate-800">Time of preorder</h2>
-        </div>
+        {/* ══════════ LANDING ══════════ */}
+        {view === 'landing' && (
+          <div className="flex flex-col items-center px-6 pt-10 pb-8 gap-8">
 
-        {/* ASAP / Pre-Order tabs */}
-        <div className="flex gap-2 px-6 mb-4 shrink-0">
-          <button
-            onClick={() => setMode('asap')}
-            className={`flex-1 flex items-center justify-center gap-2 h-11 rounded-2xl text-sm font-bold transition-all ${
-              mode === 'asap'
-                ? 'text-white shadow-md'
-                : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
-            }`}
-            style={mode === 'asap' ? { background: PICKUP_COLOR } : {}}
-          >
-            <Zap size={15} />
-            ASAP
-          </button>
-          <button
-            onClick={() => setMode('preorder')}
-            className={`flex-1 flex items-center justify-center gap-2 h-11 rounded-2xl text-sm font-bold transition-all ${
-              mode === 'preorder'
-                ? 'text-white shadow-md'
-                : 'bg-slate-100 text-slate-500 hover:bg-slate-200'
-            }`}
-            style={mode === 'preorder' ? { background: PICKUP_COLOR } : {}}
-          >
-            <Clock size={15} />
-            Pre-Order
-          </button>
-        </div>
+            {/* Logo + name */}
+            <div className="flex items-center gap-4">
+              <div className="relative w-24 h-12">
+                <Image src={rinLogo} alt="RIN Logo" fill className="object-contain" priority />
+              </div>
+              <div className="border-l border-slate-200 pl-4">
+                <p className="text-2xl font-black tracking-[0.25em] text-[#1B3A6B]">RIN</p>
+                <p className="text-[10px] uppercase tracking-[0.2em] text-amber-500 font-bold">Japanese Food</p>
+              </div>
+            </div>
 
-        {/* ── Pre-Order date + time picker ── */}
-        {mode === 'preorder' && (
+            <p className="text-slate-500 text-sm text-center leading-relaxed -mt-2">
+              How would you like to enjoy your meal today?
+            </p>
+
+            <div className="grid grid-cols-1 gap-3 w-full">
+              <button
+                onClick={() => setView('pickup-options')}
+                className="flex flex-row items-center justify-center gap-3 py-4 rounded-2xl border-2 border-[#1B3A6B] bg-[#1B3A6B] text-white hover:bg-[#14305a] transition-all shadow-md"
+              >
+                <UtensilsCrossed size={26} />
+                <span className="text-sm font-bold tracking-wide">Pick Up</span>
+              </button>
+              <button
+                onClick={goReservation}
+                className="flex flex-row items-center justify-center gap-3 py-4 rounded-2xl border-2 border-[#1B3A6B] text-[#1B3A6B] hover:bg-[#1B3A6B]/5 transition-all"
+              >
+                <CalendarClock size={26} />
+                <span className="text-sm font-bold tracking-wide">Reservation</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ══════════ PICKUP OPTIONS ══════════ */}
+        {view === 'pickup-options' && (
           <>
+            <BackBtn onClick={() => setView('landing')} />
+            <div className="flex flex-col items-center px-6 pt-10 pb-8 gap-4">
+              <h2 className="text-lg font-bold text-slate-800 mb-2">Choose pickup type</h2>
+
+              <button
+                onClick={enterPreorder}
+                className="w-full flex items-center gap-4 px-5 py-5 rounded-2xl border-2 border-slate-200 hover:border-[#1B3A6B] hover:bg-[#1B3A6B]/5 transition-all group"
+              >
+                <div className="w-11 h-11 rounded-xl bg-[#1B3A6B]/10 flex items-center justify-center shrink-0 group-hover:bg-[#1B3A6B]/15 transition">
+                  <Clock size={22} className="text-[#1B3A6B]" />
+                </div>
+                <div className="text-left">
+                  <p className="font-bold text-slate-800 text-sm">Pre Order</p>
+                  <p className="text-xs text-slate-400 mt-0.5">Schedule a specific pickup time</p>
+                </div>
+                <ChevronRight size={18} className="ml-auto text-slate-300 group-hover:text-[#1B3A6B] transition" />
+              </button>
+
+              <button
+                onClick={() => setView('asap')}
+                className="w-full flex items-center gap-4 px-5 py-5 rounded-2xl border-2 border-slate-200 hover:border-[#1B3A6B] hover:bg-[#1B3A6B]/5 transition-all group"
+              >
+                <div className="w-11 h-11 rounded-xl bg-amber-50 flex items-center justify-center shrink-0 group-hover:bg-amber-100 transition">
+                  <Zap size={22} className="text-amber-500" />
+                </div>
+                <div className="text-left">
+                  <p className="font-bold text-slate-800 text-sm">ASAP</p>
+                  <p className="text-xs text-slate-400 mt-0.5">Order now, pick up as soon as ready</p>
+                </div>
+                <ChevronRight size={18} className="ml-auto text-slate-300 group-hover:text-[#1B3A6B] transition" />
+              </button>
+
+              <button
+                onClick={skipToMenu}
+                className="w-full flex items-center gap-4 px-5 py-5 rounded-2xl border-2 border-dashed border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all group"
+              >
+                <div className="w-11 h-11 rounded-xl bg-slate-100 flex items-center justify-center shrink-0 group-hover:bg-slate-200 transition">
+                  <SkipForward size={22} className="text-slate-400" />
+                </div>
+                <div className="text-left">
+                  <p className="font-bold text-slate-500 text-sm">Skip to Menu</p>
+                  <p className="text-xs text-slate-400 mt-0.5">Browse without scheduling a time</p>
+                </div>
+                <ChevronRight size={18} className="ml-auto text-slate-200 group-hover:text-slate-400 transition" />
+              </button>
+            </div>
+          </>
+        )}
+
+        {/* ══════════ ASAP ══════════ */}
+        {view === 'asap' && (
+          <>
+            <BackBtn onClick={() => setView('pickup-options')} />
+            <div className="flex flex-col items-center px-6 pt-14 pb-4 text-center">
+              <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4" style={{ background: `${PICKUP_COLOR}15` }}>
+                <Zap size={28} style={{ color: PICKUP_COLOR }} />
+              </div>
+              <h2 className="text-lg font-bold text-slate-800">ASAP Pickup</h2>
+              <p className="text-slate-400 text-sm mt-2 leading-relaxed max-w-xs">
+                Your order will be prepared immediately and ready for pickup as soon as possible.
+              </p>
+            </div>
+            <div className="px-6 pb-6 pt-4 shrink-0">
+              <button
+                onClick={confirmAsap}
+                className="w-full h-13 rounded-2xl text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg transition-all hover:opacity-90"
+                style={{ background: PICKUP_COLOR }}
+              >
+                <Zap size={16} />
+                Confirm ASAP Pickup
+              </button>
+            </div>
+          </>
+        )}
+
+        {/* ══════════ PRE-ORDER ══════════ */}
+        {view === 'preorder' && (
+          <>
+            <BackBtn onClick={() => setView('pickup-options')} />
+
+            <div className="pt-14 pb-2 px-6 text-center shrink-0">
+              <h2 className="text-lg font-bold text-slate-800">Select pickup time</h2>
+            </div>
+
             {/* Date Carousel */}
-            <div className="flex items-center gap-2 px-4 mb-4 shrink-0">
+            <div className="flex items-center gap-2 px-4 my-4 shrink-0">
               <button
                 onClick={() => setCarouselStart(s => Math.max(0, s - 1))}
                 disabled={carouselStart === 0}
@@ -234,11 +349,10 @@ export default function PickupTimeModal({ isOpen, onClose, onConfirm }: Props) {
               <div className="flex gap-2 flex-1 overflow-hidden">
                 {visibleDays.map(day => {
                   const isSelected = day.ymd === selectedYmd;
-                  const isToday    = day.label === 'Today';
                   return (
                     <button
                       key={day.ymd}
-                      onClick={() => day.isOpen && setSelectedYmd(day.ymd)}
+                      onClick={() => day.isOpen && selectDate(day.ymd)}
                       disabled={!day.isOpen}
                       className={`flex-1 flex flex-col items-center justify-center py-3 rounded-2xl transition-all text-center ${
                         !day.isOpen
@@ -283,15 +397,10 @@ export default function PickupTimeModal({ isOpen, onClose, onConfirm }: Props) {
               ) : (
                 Array.from(grouped.entries()).map(([hourLabel, hourSlots]) => (
                   <div key={hourLabel}>
-                    {/* Hour group header */}
                     <div className="flex items-center gap-3 mb-3">
                       <div className="w-4 h-0.5 rounded" style={{ background: PICKUP_COLOR }} />
-                      <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                        {hourLabel}
-                      </span>
+                      <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">{hourLabel}</span>
                     </div>
-
-                    {/* Slots in this hour */}
                     <div className="space-y-2 pl-1">
                       {hourSlots.map(slot => {
                         const isChosen = slot === selectedTime;
@@ -299,21 +408,20 @@ export default function PickupTimeModal({ isOpen, onClose, onConfirm }: Props) {
                           <button
                             key={slot}
                             onClick={() => setSelectedTime(slot)}
-                            className="w-full flex items-center gap-3 py-2.5 px-3 rounded-xl hover:bg-slate-50 transition group"
+                            className="w-full flex items-center gap-3 py-2.5 px-3 rounded-xl hover:bg-slate-50 transition"
                           >
-                            {/* Radio circle */}
                             <div
                               className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
                                 isChosen ? 'border-transparent' : 'border-slate-300'
                               }`}
                               style={isChosen ? { borderColor: PICKUP_COLOR } : {}}
                             >
-                              {isChosen && (
-                                <div className="w-2.5 h-2.5 rounded-full" style={{ background: PICKUP_COLOR }} />
-                              )}
+                              {isChosen && <div className="w-2.5 h-2.5 rounded-full" style={{ background: PICKUP_COLOR }} />}
                             </div>
-                            <span className={`text-sm font-medium ${isChosen ? 'font-bold' : 'text-slate-700'}`}
-                              style={isChosen ? { color: PICKUP_COLOR } : {}}>
+                            <span
+                              className={`text-sm ${isChosen ? 'font-bold' : 'font-medium text-slate-700'}`}
+                              style={isChosen ? { color: PICKUP_COLOR } : {}}
+                            >
                               {format24to12(slot)}
                             </span>
                           </button>
@@ -324,43 +432,21 @@ export default function PickupTimeModal({ isOpen, onClose, onConfirm }: Props) {
                 ))
               )}
             </div>
+
+            <div className="px-6 pb-6 pt-3 shrink-0">
+              <button
+                onClick={confirmPreorder}
+                disabled={!selectedTime}
+                className="w-full h-13 rounded-2xl text-white font-bold text-sm flex items-center justify-center gap-2 transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-lg hover:opacity-90"
+                style={{ background: PICKUP_COLOR }}
+              >
+                <Clock size={16} />
+                {selectedTime ? `Confirm ${format24to12(selectedTime)}` : 'Select a time'}
+              </button>
+            </div>
           </>
         )}
 
-        {/* ASAP message */}
-        {mode === 'asap' && (
-          <div className="flex-1 flex flex-col items-center justify-center px-6 py-8 text-center">
-            <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4" style={{ background: `${PICKUP_COLOR}15` }}>
-              <Zap size={28} style={{ color: PICKUP_COLOR }} />
-            </div>
-            <p className="font-bold text-slate-700 text-base">Pick up as soon as ready</p>
-            <p className="text-slate-400 text-sm mt-2 leading-relaxed max-w-xs">
-              Your order will be prepared immediately and ready for pickup as soon as possible.
-            </p>
-          </div>
-        )}
-
-        {/* Confirm button */}
-        <div className="px-6 pb-6 pt-3 shrink-0">
-          <button
-            onClick={handleConfirm}
-            disabled={!canConfirm}
-            className="w-full h-13 rounded-2xl text-white font-bold text-sm flex items-center justify-center gap-2 transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-lg"
-            style={{ background: PICKUP_COLOR, height: '52px' }}
-          >
-            {mode === 'asap' ? (
-              <>
-                <Zap size={16} />
-                Confirm ASAP Pickup
-              </>
-            ) : (
-              <>
-                <Clock size={16} />
-                {selectedTime ? `Confirm ${format24to12(selectedTime)}` : 'Select a time'}
-              </>
-            )}
-          </button>
-        </div>
       </div>
     </div>
   );

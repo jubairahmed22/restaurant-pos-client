@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const BACKEND = (process.env.BACKEND_URL || 'http://localhost:51000').replace(/\/$/, '');
+const BACKEND = (process.env.BACKEND_URL || 'https://ortazz.com.au').replace(/\/$/, '');
 
 async function handler(req: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
   const { path } = await params;

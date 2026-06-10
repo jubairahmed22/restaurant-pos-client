@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useCartStore } from '@/store/cartStore';
 import { useAuthStore } from '@/store/authStore';
 import Navbar from '@/components/shared/Navbar';
+import AddressAutocomplete from '@/components/shared/AddressAutocomplete';
 import api from '@/services/axios';
 import toast from 'react-hot-toast';
 import { CreditCard, Truck, User, Phone, Mail, ShieldCheck, Loader2 } from 'lucide-react';
@@ -241,13 +242,11 @@ export default function CheckoutPage() {
                     <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
                       Address <span className="text-red-400">*</span>
                     </label>
-                    <textarea
+                    <AddressAutocomplete
                       value={shippingAddress}
-                      onChange={e => setShippingAddress(e.target.value)}
-                      required
+                      onChange={setShippingAddress}
                       rows={3}
-                      placeholder="Street, Suburb, State, Postcode — e.g. 123 Collins St, Melbourne VIC 3000"
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 outline-none focus:border-[#1B3A6B] focus:ring-4 focus:ring-[#1B3A6B]/5 transition resize-none"
+                      placeholder="Street, Suburb, State — e.g. 123 Collins St, Melbourne VIC"
                     />
                   </div>
                 </div>

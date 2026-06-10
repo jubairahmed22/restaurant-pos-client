@@ -130,23 +130,7 @@ function MenuPageInner() {
       {/* LEFT: Explorer Section (68% Split Area) */}
       <main className="relative w-full xl:w-[68%] h-screen flex flex-col border-r border-slate-200 bg-[#F8FAFC]">
 
-        {/* Pickup bar — left section top */}
-        {pickupIsSet ? (
-          <div className="px-6 lg:px-10 pt-4 shrink-0">
-            <PickupBar onEdit={() => setPickupOpen(true)} />
-          </div>
-        ) : (
-          <div className="px-6 lg:px-10 pt-4 shrink-0">
-            <button
-              onClick={() => setPickupOpen(true)}
-              className="w-full flex items-center justify-between px-5 py-3 rounded-2xl text-white text-sm font-bold shadow-md transition-all hover:opacity-90 active:scale-[0.98]"
-              style={{ background: '#C05428' }}
-            >
-              <span>Schedule your pickup time</span>
-              <ShoppingBag size={16} />
-            </button>
-          </div>
-        )}
+
 
         {/* Content Area — extra bottom padding on mobile so FAB doesn't cover content */}
         <div className="flex-1 overflow-y-auto px-6 lg:px-10 no-scrollbar">
@@ -159,6 +143,8 @@ function MenuPageInner() {
               updateURL={updateURL}
               onAdd={addToCart}
               isLoading={isLoading}
+              pickupIsSet={pickupIsSet}
+              onPickupOpen={() => setPickupOpen(true)}
             />
           </div>
         </div>

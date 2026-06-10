@@ -1,4 +1,5 @@
 import Navbar from '@/components/shared/Navbar';
+import MobileBackButton from '@/components/shared/MobileBackButton';
 
 export default function MainLayout({
   children,
@@ -8,7 +9,7 @@ export default function MainLayout({
   return (
     <>
       <Navbar />
-
+      <MobileBackButton />
       <main>{children}</main>
     </>
   );

@@ -18,6 +18,7 @@ import toast from 'react-hot-toast';
 import rinLogo from '../../app/assest/Rin_Logo.png';
 import Image from 'next/image';
 
+
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
@@ -190,12 +191,16 @@ export default function Navbar() {
 >
   <div className="flex h-full flex-col">
     {/* Header */}
-    <div className="flex items-center justify-between border-b border-zinc-100 px-8 py-6">
-      <div>
-        <h2 className="font-serif text-3xl tracking-tight text-[#1B3A6B]">
-          RIN
-        </h2>
-  
+    <div className="flex items-center justify-between border-b border-zinc-100 px-6 py-4">
+      <div className="flex items-center gap-3">
+        <div className="relative w-16 h-9 shrink-0">
+          <Image src={rinLogo} alt="RIN Logo" fill className="object-contain" />
+        </div>
+        <div>
+          <p className="text-[10px] font-black uppercase tracking-[0.18em] text-slate-400 leading-tight">
+            Authentic Japanese Cuisine
+          </p>
+        </div>
       </div>
 
       <button

@@ -3,7 +3,7 @@
 import { ChevronDown, Edit2 } from 'lucide-react';
 import { usePickupStore } from '@/store/pickupStore';
 
-const PICKUP_COLOR = '#C05428';
+const PICKUP_COLOR = '#1B3A6B';
 
 interface Props {
   onEdit: () => void;

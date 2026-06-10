@@ -558,7 +558,7 @@ function AdminOrderManagementInner() {
       cell: (item: Order) =>
         item.pickupDisplayDate ? (
           <div className="flex flex-col">
-            <span className="text-xs font-semibold text-[#C05428]">{item.pickupDisplayDate}</span>
+            <span className="text-xs font-semibold text-[#1B3A6B]">{item.pickupDisplayDate}</span>
             <span className="text-[11px] text-slate-400">{item.pickupDisplayTime}</span>
           </div>
         ) : (
