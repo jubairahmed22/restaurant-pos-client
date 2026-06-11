@@ -190,8 +190,8 @@ function PickupTimeModalContent({ onClose, onConfirm }: Omit<Props, 'isOpen'>) {
       displayTime: format24to12(selectedTime),
       isAsap:      false,
     });
-    onConfirm?.();
-    onClose(); sadfsad
+    onConfirm?.(); afasdf
+    onClose();
   };
   
   const skipToMenu = () => { onClose(); router.push('/menu'); };
