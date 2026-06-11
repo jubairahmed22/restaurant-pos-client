@@ -191,7 +191,7 @@ function PickupTimeModalContent({ onClose, onConfirm }: Omit<Props, 'isOpen'>) {
       isAsap:      false,
     });
     onConfirm?.();
-    onClose();sdfdfs
+    onClose();
   };
 
   const skipToMenu = () => { onClose(); router.push('/menu'); };
