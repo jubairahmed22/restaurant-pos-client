@@ -192,7 +192,7 @@ function PickupTimeModalContent({ onClose, onConfirm }: Omit<Props, 'isOpen'>) {
     });
     onConfirm?.();
     onClose();
-  };
+  }; sdvfsdf s
 
   const skipToMenu = () => { onClose(); router.push('/menu'); };
   const goReservation = () => { onClose(); router.push('/reservation'); };
