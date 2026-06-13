@@ -126,7 +126,7 @@ function MenuPageInner() {
     <div className="min-h-screen w-full flex flex-col xl:flex-row bg-[#F8FAFC] text-slate-800 font-sans selection:bg-[#1B3A6B]/10 overflow-hidden">
 
       <PickupTimeModal isOpen={pickupOpen} onClose={() => setPickupOpen(false)} />
-sadfas
+
       {/* LEFT: Explorer Section (68% Split Area) */}
       <main className="relative w-full xl:w-[68%] h-screen flex flex-col border-r border-slate-200 bg-[#F8FAFC]">
 
