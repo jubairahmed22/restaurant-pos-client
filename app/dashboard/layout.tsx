@@ -6,7 +6,6 @@ import {
   ShoppingBag,
   FolderTree,
   PlusCircle,
-  Utensils,
   LayoutGrid,
   LogOut,
   Bell,
@@ -16,6 +15,10 @@ import {
   ChevronRight,
   ChevronDown,
   CreditCard,
+  Tag,
+  Package,
+  Percent,
+  ShoppingCart,
 } from 'lucide-react';
 
 import { usePathname, useRouter } from 'next/navigation';
@@ -85,6 +88,28 @@ export default function DashboardLayout({
       label: 'TRANSACTIONS',
       icon: CreditCard,
       href: '/dashboard/transactions',
+    },
+
+    // ── Shop ──────────────────────────────
+    {
+      label: 'SHOP CATEGORIES',
+      icon: Tag,
+      href: '/dashboard/shop/categories',
+    },
+    {
+      label: 'SHOP PRODUCTS',
+      icon: Package,
+      href: '/dashboard/shop/products',
+    },
+    {
+      label: 'SHOP OFFERS',
+      icon: Percent,
+      href: '/dashboard/shop/offers',
+    },
+    {
+      label: 'SHOP ORDERS',
+      icon: ShoppingCart,
+      href: '/dashboard/shop/orders',
     },
   ];
 

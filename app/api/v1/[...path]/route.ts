@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const BACKEND = (process.env.BACKEND_URL || 'https://ortazz.com.au').replace(/\/$/, '');
+const BACKEND = (process.env.BACKEND_URL || 'http://localhost:51000').replace(/\/$/, '');
 
 async function handler(req: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
   const { path } = await params;
@@ -8,14 +8,26 @@ async function handler(req: NextRequest, { params }: { params: Promise<{ path: s
   const search    = req.nextUrl.search ?? '';
   const targetURL = `${BACKEND}/api/v1/${pathname}${search}`;
 
-  // Forward only safe headers — deliberately omit Origin so backend CORS never fires
-  const forwardHeaders: Record<string, string> = {
-    'Content-Type': req.headers.get('content-type') || 'application/json',
-  };
+  const contentType = req.headers.get('content-type') || '';
+
+  // Forward Authorization header if present
+  const forwardHeaders: Record<string, string> = {};
   const auth = req.headers.get('authorization');
   if (auth) forwardHeaders['Authorization'] = auth;
 
-  const body = ['GET', 'HEAD'].includes(req.method) ? undefined : await req.text();
+  let body: BodyInit | undefined;
+
+  if (['GET', 'HEAD'].includes(req.method)) {
+    body = undefined;
+  } else if (contentType.includes('multipart/form-data')) {
+    // Must preserve binary data — forward raw bytes, keep Content-Type (with boundary)
+    forwardHeaders['Content-Type'] = contentType;
+    body = await req.arrayBuffer();
+  } else {
+    // JSON or other text-based bodies
+    forwardHeaders['Content-Type'] = contentType || 'application/json';
+    body = await req.text();
+  }
 
   let res: Response;
   try {
@@ -23,7 +35,6 @@ async function handler(req: NextRequest, { params }: { params: Promise<{ path: s
       method:  req.method,
       headers: forwardHeaders,
       body,
-      // No redirect follow — pass through as-is
       redirect: 'manual',
     });
   } catch (err) {
@@ -31,8 +42,8 @@ async function handler(req: NextRequest, { params }: { params: Promise<{ path: s
     return NextResponse.json({ success: false, error: 'Backend unreachable' }, { status: 502 });
   }
 
-  const contentType = res.headers.get('content-type') || '';
-  const data = contentType.includes('application/json')
+  const resContentType = res.headers.get('content-type') || '';
+  const data = resContentType.includes('application/json')
     ? await res.json()
     : await res.text();
 

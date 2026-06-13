@@ -33,6 +33,7 @@ export default function Navbar() {
 
   const navLinks = [
     { label: 'Menu', href: '/menu' },
+    { label: 'Shop', href: '/shop' },
     { label: 'Reservation', href: '/reservation' },
     // { label: 'About', href: '/about' },
     { label: 'Restaurant', href: '/restaurant' },
