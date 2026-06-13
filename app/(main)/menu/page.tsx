@@ -129,7 +129,7 @@ function MenuPageInner() {
 
       {/* LEFT: Explorer Section (68% Split Area) */}
       <main className="relative w-full xl:w-[68%] h-screen flex flex-col border-r border-slate-200 bg-[#F8FAFC]">
-
+sdfasdfsa
 
 
         {/* Content Area — extra bottom padding on mobile so FAB doesn't cover content */}
