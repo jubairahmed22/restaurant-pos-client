@@ -131,7 +131,7 @@ function MenuPageInner() {
       <main className="relative w-full xl:w-[68%] h-screen flex flex-col border-r border-slate-200 bg-[#F8FAFC]">
 
 
-sadfsad
+
         {/* Content Area — extra bottom padding on mobile so FAB doesn't cover content */}
         <div className="flex-1 overflow-y-auto px-6 lg:px-10 no-scrollbar">
           <div className="max-w-[1400px] mx-auto">
