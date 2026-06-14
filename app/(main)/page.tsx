@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, ShoppingBag, Store } from 'lucide-react';
-import { useRouter } from 'next/navigation';asdfsad
+import { useRouter } from 'next/navigation';
 
 // Assets
 import slideOne from '../../app/assest/food4.jpg';
