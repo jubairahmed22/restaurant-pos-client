@@ -17,8 +17,9 @@ import {
   CreditCard,
   Tag,
   Package,
-  Percent,
   ShoppingCart,
+  Store,
+  Receipt,
 } from 'lucide-react';
 
 import { usePathname, useRouter } from 'next/navigation';
@@ -35,83 +36,31 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const router = useRouter();
 
-  const [isSidebarOpen, setIsSidebarOpen] =
-    useState(false);
-
-  const [isProfileOpen, setIsProfileOpen] =
-    useState(false);
+  const [isSidebarOpen,  setIsSidebarOpen]  = useState(false);
+  const [isProfileOpen,  setIsProfileOpen]  = useState(false);
+  const [isShopOpen,     setIsShopOpen]     = useState(() => pathname.startsWith('/dashboard/shop'));
 
   // AUTH USER
   const { user, logout } = useAuthStore();
 
-  const menuItems = [
-    {
-      label: 'DASHBOARD',
-      icon: LayoutDashboard,
-      href: '/dashboard',
-      badge: '9+',
-    },
-        {
-      label: 'TABLES',
-      icon: LayoutGrid,
-      href: '/dashboard/tables',
-    },
-    // {
-    //   label: 'POS',
-    //   icon: Utensils,
-    //   href: '/dashboard/pos',
-    // },
-
-    {
-      label: 'ORDERS',
-      icon: ShoppingBag,
-      href: '/dashboard/orders',
-    },
-    {
-      label: 'Reservation',
-      icon: ShoppingBag,
-      href: '/dashboard/reservation-list',
-    },
-
-    {
-      label: 'FOOD ITEMS',
-      icon: PlusCircle,
-      href: '/dashboard/foods',
-    },
-
-    {
-      label: 'CATEGORIES',
-      icon: FolderTree,
-      href: '/dashboard/categories',
-    },
-    {
-      label: 'TRANSACTIONS',
-      icon: CreditCard,
-      href: '/dashboard/transactions',
-    },
-
-    // ── Shop ──────────────────────────────
-    {
-      label: 'SHOP CATEGORIES',
-      icon: Tag,
-      href: '/dashboard/shop/categories',
-    },
-    {
-      label: 'SHOP PRODUCTS',
-      icon: Package,
-      href: '/dashboard/shop/products',
-    },
-    {
-      label: 'SHOP OFFERS',
-      icon: Percent,
-      href: '/dashboard/shop/offers',
-    },
-    {
-      label: 'SHOP ORDERS',
-      icon: ShoppingCart,
-      href: '/dashboard/shop/orders',
-    },
+  const mainItems = [
+    { label: 'DASHBOARD',    icon: LayoutDashboard, href: '/dashboard',            badge: '9+' },
+    { label: 'TABLES',       icon: LayoutGrid,      href: '/dashboard/tables' },
+    { label: 'ORDERS',       icon: ShoppingBag,     href: '/dashboard/orders' },
+    { label: 'RESERVATION',  icon: ShoppingBag,     href: '/dashboard/reservation-list' },
+    { label: 'FOOD ITEMS',   icon: PlusCircle,      href: '/dashboard/foods' },
+    { label: 'CATEGORIES',   icon: FolderTree,      href: '/dashboard/categories' },
+    { label: 'TRANSACTIONS', icon: CreditCard,      href: '/dashboard/transactions' },
   ];
+
+  const shopItems = [
+    { label: 'CATEGORIES',   icon: Tag,         href: '/dashboard/shop/categories' },
+    { label: 'PRODUCTS',     icon: Package,     href: '/dashboard/shop/products' },
+    { label: 'ORDERS',       icon: ShoppingCart,href: '/dashboard/shop/orders' },
+    { label: 'TRANSACTIONS', icon: Receipt,     href: '/dashboard/shop/transactions' },
+  ];
+
+  const isShopActive = pathname.startsWith('/dashboard/shop');
 
   const toggleSidebar = () =>
     setIsSidebarOpen(!isSidebarOpen);
@@ -293,20 +242,17 @@ export default function DashboardLayout({
           {/* NAV */}
           <nav className="flex-1 overflow-y-auto p-4 space-y-1.5">
 
-            {menuItems.map((item) => {
+            {/* ── Main items ── */}
+            {mainItems.map((item) => {
               const isActive =
                 pathname === item.href ||
                 (item.href !== '/dashboard' && pathname.startsWith(item.href));
-
               const Icon = item.icon;
-
               return (
                 <Link
-                  key={item.label}
+                  key={item.href}
                   href={item.href}
-                  onClick={() =>
-                    setIsSidebarOpen(false)
-                  }
+                  onClick={() => setIsSidebarOpen(false)}
                   className={`flex items-center justify-between px-4 py-3.5 rounded-2xl transition-all group ${
                     isActive
                       ? 'bg-[#1B3A6B] text-white font-bold'
@@ -314,42 +260,69 @@ export default function DashboardLayout({
                   }`}
                 >
                   <div className="flex items-center gap-3">
-
-                    <Icon
-                      size={19}
-                      className={
-                        isActive
-                          ? 'text-white'
-                          : 'text-slate-500 group-hover:text-[#1B3A6B]'
-                      }
-                    />
-
-                    <span className="text-[11px] font-black tracking-[0.05em] uppercase">
-                      {item.label}
-                    </span>
+                    <Icon size={19} className={isActive ? 'text-white' : 'text-slate-500 group-hover:text-[#1B3A6B]'} />
+                    <span className="text-[11px] font-black tracking-wider uppercase">{item.label}</span>
                   </div>
-
                   {item.badge ? (
-                    <span
-                      className={`text-[10px] font-black px-1.5 py-0.5 rounded-md ${
-                        isActive
-                          ? 'bg-white/20 text-white'
-                          : 'bg-emerald-50 text-emerald-500 border border-emerald-100'
-                      }`}
-                    >
+                    <span className={`text-[10px] font-black px-1.5 py-0.5 rounded-md ${isActive ? 'bg-white/20 text-white' : 'bg-emerald-50 text-emerald-500 border border-emerald-100'}`}>
                       {item.badge}
                     </span>
                   ) : (
-                    isActive && (
-                      <ChevronRight
-                        size={14}
-                        className="opacity-50"
-                      />
-                    )
+                    isActive && <ChevronRight size={14} className="opacity-50" />
                   )}
                 </Link>
               );
             })}
+
+            {/* ── Divider ── */}
+            <div className="pt-1 pb-0.5">
+              <div className="h-px bg-slate-100" />
+            </div>
+
+            {/* ── Shop group ── */}
+            <button
+              onClick={() => setIsShopOpen(v => !v)}
+              className={`w-full flex items-center justify-between px-4 py-3.5 rounded-2xl transition-all group ${
+                isShopActive
+                  ? 'bg-[#C05428]/10 text-[#C05428]'
+                  : 'text-slate-600 hover:bg-slate-50 hover:text-[#C05428]'
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <Store size={19} className={isShopActive ? 'text-[#C05428]' : 'text-slate-500 group-hover:text-[#C05428]'} />
+                <span className="text-[11px] font-black tracking-wider uppercase">Shop</span>
+              </div>
+              <ChevronDown
+                size={15}
+                className={`transition-transform duration-200 ${isShopOpen ? 'rotate-180' : ''} ${isShopActive ? 'text-[#C05428]' : 'text-slate-400'}`}
+              />
+            </button>
+
+            {/* ── Shop sub-items ── */}
+            {isShopOpen && (
+              <div className="ml-3 pl-3 border-l-2 border-[#C05428]/20 space-y-0.5">
+                {shopItems.map((item) => {
+                  const isActive = pathname === item.href || pathname.startsWith(item.href);
+                  const Icon = item.icon;
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setIsSidebarOpen(false)}
+                      className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all group ${
+                        isActive
+                          ? 'bg-[#C05428] text-white font-bold'
+                          : 'text-slate-500 hover:bg-orange-50 hover:text-[#C05428]'
+                      }`}
+                    >
+                      <Icon size={16} className={isActive ? 'text-white' : 'text-slate-400 group-hover:text-[#C05428]'} />
+                      <span className="text-[11px] font-black tracking-wider uppercase">{item.label}</span>
+                      {isActive && <ChevronRight size={12} className="ml-auto opacity-60" />}
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
           </nav>
 
           {/* FOOTER */}

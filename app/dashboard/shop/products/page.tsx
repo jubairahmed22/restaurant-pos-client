@@ -1,8 +1,8 @@
 'use client';
 
-import React, { Suspense, useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Pencil, Trash2, Star, Search, X, Package } from 'lucide-react';
+import { Plus, Pencil, Trash2, Star, Search, X, Package, ShieldCheck, ShieldOff } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
 import {
@@ -10,6 +10,7 @@ import {
   getShopCategories,
   deleteShopProduct,
   toggleFeatured,
+  toggleAvailable,
   bulkDiscount,
 } from '@/services/shop.service';
 
@@ -27,7 +28,9 @@ interface ShopProduct {
   discountPercent: number;
   isFeatured: boolean;
   isActive: boolean;
+  isAvailable: boolean;
   stock: number;
+  attributes?: { name: string; options: { label: string }[] }[];
 }
 
 function ProductsInner() {
@@ -69,8 +72,23 @@ function ProductsInner() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ['shop-products-admin'] }),
   });
 
+  const availableMutation = useMutation({
+    mutationFn: (id: string) => toggleAvailable(id),
+    onSuccess: (_, id) => {
+      qc.invalidateQueries({ queryKey: ['shop-products-admin'] });
+      qc.invalidateQueries({ queryKey: ['shop-products-public'] });
+      const product = products.find(p => p._id === id);
+      toast.success(product?.isAvailable ? 'Marked unavailable' : 'Marked available');
+    },
+  });
+
   const bulkMutation = useMutation({
-    mutationFn: () => bulkDiscount({ productIds: selectedIds, discountType: bulkForm.discountType, discountValue: Number(bulkForm.discountValue), discountEndDate: bulkForm.discountEndDate || undefined }),
+    mutationFn: () => bulkDiscount({
+      productIds: selectedIds,
+      discountType: bulkForm.discountType,
+      discountValue: Number(bulkForm.discountValue),
+      discountEndDate: bulkForm.discountEndDate || undefined,
+    }),
     onSuccess: () => {
       toast.success(`Discount applied to ${selectedIds.length} products`);
       qc.invalidateQueries({ queryKey: ['shop-products-admin'] });
@@ -110,7 +128,12 @@ function ProductsInner() {
       <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-          <input className="w-full h-9 pl-9 pr-3 text-sm border border-slate-200 rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-100" placeholder="Search products…" value={search} onChange={e => { setSearch(e.target.value); setPage(1); }} />
+          <input
+            className="w-full h-9 pl-9 pr-3 text-sm border border-slate-200 rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+            placeholder="Search by title, SKU, description…"
+            value={search}
+            onChange={e => { setSearch(e.target.value); setPage(1); }}
+          />
         </div>
         <select className="h-9 px-3 text-sm border border-slate-200 rounded-lg bg-slate-50 focus:outline-none" value={categoryFilter} onChange={e => { setCategoryFilter(e.target.value); setPage(1); }}>
           <option value="">All Categories</option>
@@ -126,83 +149,120 @@ function ProductsInner() {
       {/* Table */}
       <div className="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-sm min-w-[700px]">
+          <table className="w-full text-sm min-w-[820px]">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-50">
-                <th className="px-4 py-3 w-8"><input type="checkbox" checked={selectedIds.length === products.length && products.length > 0} onChange={e => setSelectedIds(e.target.checked ? products.map(p => p._id) : [])} className="rounded" /></th>
+                <th className="px-4 py-3 w-8">
+                  <input type="checkbox" checked={selectedIds.length === products.length && products.length > 0} onChange={e => setSelectedIds(e.target.checked ? products.map(p => p._id) : [])} className="rounded" />
+                </th>
                 <th className="text-left px-4 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Product</th>
                 <th className="text-left px-4 py-3 text-xs font-bold uppercase tracking-wider text-slate-500 hidden lg:table-cell">Category</th>
+                <th className="text-left px-4 py-3 text-xs font-bold uppercase tracking-wider text-slate-500 hidden md:table-cell">Variants</th>
                 <th className="text-left px-4 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Price</th>
                 <th className="text-left px-4 py-3 text-xs font-bold uppercase tracking-wider text-slate-500 hidden md:table-cell">Stock</th>
-                <th className="text-left px-4 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Featured</th>
+                <th className="text-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Available</th>
+                <th className="text-center px-4 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Featured</th>
                 <th className="text-right px-4 py-3 text-xs font-bold uppercase tracking-wider text-slate-500">Actions</th>
               </tr>
             </thead>
             <tbody>
               {isLoading && Array.from({ length: 6 }).map((_, i) => (
                 <tr key={i} className="border-b border-slate-50">
-                  <td colSpan={7} className="px-4 py-4"><div className="h-4 bg-slate-100 rounded animate-pulse w-3/4" /></td>
+                  <td colSpan={9} className="px-4 py-4"><div className="h-4 bg-slate-100 rounded animate-pulse w-3/4" /></td>
                 </tr>
               ))}
-              {!isLoading && products.map(p => (
-                <tr key={p._id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
-                  <td className="px-4 py-3">
-                    <input type="checkbox" checked={selectedIds.includes(p._id)} onChange={() => toggleSelect(p._id)} className="rounded" />
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-3">
-                      {p.images?.[0] ? (
-                        <img src={p.images[0]} alt={p.title} className="w-10 h-10 rounded-lg object-cover shrink-0" />
-                      ) : (
-                        <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
-                          <Package size={16} className="text-slate-400" />
+              {!isLoading && products.map(p => {
+                const totalVariants = p.attributes?.reduce((s, a) => s + (a.options?.length || 0), 0) ?? 0;
+                const attrNames = p.attributes?.map(a => a.name).join(', ') || '';
+                return (
+                  <tr key={p._id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
+                    <td className="px-4 py-3">
+                      <input type="checkbox" checked={selectedIds.includes(p._id)} onChange={() => toggleSelect(p._id)} className="rounded" />
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center gap-3">
+                        {p.images?.[0] ? (
+                          <img src={p.images[0]} alt={p.title} className="w-10 h-10 rounded-lg object-cover shrink-0" />
+                        ) : (
+                          <div className="w-10 h-10 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
+                            <Package size={16} className="text-slate-400" />
+                          </div>
+                        )}
+                        <div className="min-w-0">
+                          <p className="font-semibold text-slate-800 line-clamp-1">{p.title}</p>
+                          <p className="text-[11px] text-slate-400 truncate">{p.slug}</p>
                         </div>
-                      )}
-                      <div>
-                        <p className="font-semibold text-slate-800 line-clamp-1">{p.title}</p>
-                        <p className="text-[11px] text-slate-400">{p.slug}</p>
                       </div>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 hidden lg:table-cell">
-                    <span className="text-xs text-slate-600">{p.category?.name || '—'}</span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex flex-col gap-0.5">
-                      <span className="font-bold text-[#1B3A6B]">AUD {(p.finalPrice ?? p.price).toFixed(2)}</span>
-                      {p.discountType !== 'none' && (
-                        <>
-                          <span className="text-[11px] text-slate-400 line-through">AUD {p.price.toFixed(2)}</span>
-                          <span className="text-[10px] bg-red-50 text-red-600 px-1.5 py-0.5 rounded-full w-fit font-semibold">{p.discountPercent}% off</span>
-                        </>
+                    </td>
+                    <td className="px-4 py-3 hidden lg:table-cell">
+                      <span className="text-xs text-slate-600">{p.category?.name || '—'}</span>
+                    </td>
+                    <td className="px-4 py-3 hidden md:table-cell">
+                      {totalVariants > 0 ? (
+                        <div>
+                          <span className="text-xs font-semibold text-[#1B3A6B]">{totalVariants} options</span>
+                          <p className="text-[10px] text-slate-400 truncate max-w-[100px]">{attrNames}</p>
+                        </div>
+                      ) : (
+                        <span className="text-xs text-slate-400">—</span>
                       )}
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 hidden md:table-cell">
-                    <span className={`text-xs font-semibold ${p.stock <= 5 ? 'text-red-600' : 'text-slate-600'}`}>{p.stock}</span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <button
-                      onClick={() => featuredMutation.mutate(p._id)}
-                      className={`p-1.5 rounded-lg transition-colors ${p.isFeatured ? 'bg-amber-50 text-amber-500' : 'bg-slate-100 text-slate-400 hover:text-amber-400'}`}
-                    >
-                      <Star size={14} fill={p.isFeatured ? 'currentColor' : 'none'} />
-                    </button>
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center justify-end gap-2">
-                      <Link href={`/dashboard/shop/products/${p._id}/edit`} className="p-2 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-[#1B3A6B] transition-colors">
-                        <Pencil size={14} />
-                      </Link>
-                      <button onClick={() => setDeleteId(p._id)} className="p-2 rounded-lg hover:bg-red-50 text-slate-500 hover:text-red-500 transition-colors">
-                        <Trash2 size={14} />
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex flex-col gap-0.5">
+                        <span className="font-bold text-[#1B3A6B]">AUD {(p.finalPrice ?? p.price).toFixed(2)}</span>
+                        {p.discountType !== 'none' && (
+                          <>
+                            <span className="text-[11px] text-slate-400 line-through">AUD {p.price.toFixed(2)}</span>
+                            <span className="text-[10px] bg-red-50 text-red-600 px-1.5 py-0.5 rounded-full w-fit font-semibold">{p.discountPercent}% off</span>
+                          </>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 hidden md:table-cell">
+                      <span className={`text-xs font-semibold ${p.stock <= 5 ? 'text-red-600' : 'text-slate-600'}`}>{p.stock}</span>
+                    </td>
+                    {/* Available toggle */}
+                    <td className="px-4 py-3 text-center">
+                      <button
+                        onClick={() => availableMutation.mutate(p._id)}
+                        disabled={availableMutation.isPending}
+                        title={p.isAvailable !== false ? 'Click to mark unavailable' : 'Click to mark available'}
+                        className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold transition-colors ${
+                          p.isAvailable !== false
+                            ? 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100 border border-emerald-200'
+                            : 'bg-slate-100 text-slate-400 hover:bg-slate-200 border border-slate-200'
+                        }`}
+                      >
+                        {p.isAvailable !== false
+                          ? <><ShieldCheck size={11} /> Yes</>
+                          : <><ShieldOff size={11} /> No</>
+                        }
                       </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    {/* Featured toggle */}
+                    <td className="px-4 py-3 text-center">
+                      <button
+                        onClick={() => featuredMutation.mutate(p._id)}
+                        className={`p-1.5 rounded-lg transition-colors ${p.isFeatured ? 'bg-amber-50 text-amber-500' : 'bg-slate-100 text-slate-400 hover:text-amber-400'}`}
+                      >
+                        <Star size={14} fill={p.isFeatured ? 'currentColor' : 'none'} />
+                      </button>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center justify-end gap-2">
+                        <Link href={`/dashboard/shop/products/${p._id}/edit`} className="p-2 rounded-lg hover:bg-slate-100 text-slate-500 hover:text-[#1B3A6B] transition-colors">
+                          <Pencil size={14} />
+                        </Link>
+                        <button onClick={() => setDeleteId(p._id)} className="p-2 rounded-lg hover:bg-red-50 text-slate-500 hover:text-red-500 transition-colors">
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
               {!isLoading && products.length === 0 && (
-                <tr><td colSpan={7} className="px-5 py-12 text-center text-slate-400 text-sm">No products found.</td></tr>
+                <tr><td colSpan={9} className="px-5 py-12 text-center text-slate-400 text-sm">No products found.</td></tr>
               )}
             </tbody>
           </table>
@@ -227,7 +287,7 @@ function ProductsInner() {
             <h3 className="font-bold text-slate-800 mb-2">Delete Product?</h3>
             <p className="text-sm text-slate-500 mb-5">This cannot be undone.</p>
             <div className="flex gap-3">
-              <button onClick={() => deleteMutation.mutate(deleteId)} disabled={deleteMutation.isPending} className="flex-1 py-2.5 bg-red-500 text-white rounded-xl text-sm font-semibold hover:bg-red-600 disabled:opacity-50">
+              <button onClick={() => deleteMutation.mutate(deleteId!)} disabled={deleteMutation.isPending} className="flex-1 py-2.5 bg-red-500 text-white rounded-xl text-sm font-semibold hover:bg-red-600 disabled:opacity-50">
                 {deleteMutation.isPending ? 'Deleting…' : 'Delete'}
               </button>
               <button onClick={() => setDeleteId(null)} className="flex-1 py-2.5 border border-slate-200 rounded-xl text-sm text-slate-600 hover:bg-slate-50">Cancel</button>

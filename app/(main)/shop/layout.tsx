@@ -1,4 +1,5 @@
-import React from 'react';
+import { Suspense } from 'react';
+import ShopShell from '@/components/shop/ShopShell';
 
 export const metadata = {
   title: 'Shop | RIN Japanese Food',
@@ -6,5 +7,9 @@ export const metadata = {
 };
 
 export default function ShopLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>;
+  return (
+    <Suspense>
+      <ShopShell>{children}</ShopShell>
+    </Suspense>
+  );
 }

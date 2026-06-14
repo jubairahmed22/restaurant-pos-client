@@ -1,12 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useCartStore } from '@/store/cartStore';
+import { useShopCartStore } from '@/store/shopCartStore';
 import { useAuthStore } from '@/store/authStore';
 import {
-  ShoppingCart,
   User,
   LogOut,
   LayoutDashboard,
@@ -21,9 +20,27 @@ import Image from 'next/image';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [menuCartCount, setMenuCartCount] = useState(0);
   const pathname = usePathname();
-  const cartItems = useCartStore((state) => state.items);
+  const shopItems = useShopCartStore((state) => state.items);
   const { user, logout } = useAuthStore();
+
+  /* Read menu cart count from localStorage['menu-cart'] */
+  useEffect(() => {
+    const read = () => {
+      try {
+        const items: { qty: number }[] = JSON.parse(localStorage.getItem('menu-cart') || '[]');
+        setMenuCartCount(items.reduce((a, i) => a + (i.qty || 0), 0));
+      } catch { setMenuCartCount(0); }
+    };
+    read();
+    window.addEventListener('menu-cart-updated', read);
+    window.addEventListener('storage', read);
+    return () => {
+      window.removeEventListener('menu-cart-updated', read);
+      window.removeEventListener('storage', read);
+    };
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -39,7 +56,7 @@ export default function Navbar() {
     { label: 'Restaurant', href: '/restaurant' },
   ];
 
-  const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+  const shopCartCount = shopItems.reduce((acc, item) => acc + item.qty, 0);
 
   return (
     <>
@@ -90,21 +107,27 @@ export default function Navbar() {
           <nav className="hidden xl:flex items-center gap-4">
             {navLinks.map((item) => {
               const isActive = pathname === item.href;
+              const badge = item.href === '/menu' ? menuCartCount : item.href === '/shop' ? shopCartCount : 0;
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`relative py-1 text-[14px] font-bold transition-colors duration-300 group whitespace-nowrap ${
+                  className={`relative py-1 pr-3 text-[14px] font-bold transition-colors duration-300 group whitespace-nowrap ${
                     isActive ? 'text-[#1B3A6B]' : 'text-[#1B3A6B]/80 hover:text-[#1B3A6B]'
                   }`}
                 >
                   {item.label}
-                  <span 
+                  {badge > 0 && (
+                    <span className="absolute -top-2 right-0 bg-rose-600 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                      {badge > 9 ? '9+' : badge}
+                    </span>
+                  )}
+                  <span
                     className={`absolute bottom-0 left-0 h-[2px] w-full bg-[#1B3A6B] transition-transform duration-300 ease-out ${
-                      isActive 
-                        ? 'scale-x-100' 
+                      isActive
+                        ? 'scale-x-100'
                         : 'scale-x-0 origin-right group-hover:scale-x-100 group-hover:origin-left'
-                    }`} 
+                    }`}
                   />
                 </Link>
               );
@@ -162,18 +185,6 @@ export default function Navbar() {
               </div>
             )}
 
-            {/* CART */}
-            <Link
-              href="/menu"
-              className="relative flex z-50 items-center justify-center w-10 h-10 rounded-full bg-zinc-100 hover:bg-zinc-200 text-[#1B3A6B] transition"
-            >
-              <ShoppingCart size={18} />
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-rose-600 text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-white">
-                  {cartCount}
-                </span>
-              )}
-            </Link>
           </div>
         </div>
       </header>
@@ -217,21 +228,27 @@ export default function Navbar() {
       <div className="space-y-2">
         {navLinks.map((item) => {
           const isActive = pathname === item.href;
+          const badge = item.href === '/menu' ? menuCartCount : item.href === '/shop' ? shopCartCount : 0;
 
           return (
             <Link
               key={item.href}
               href={item.href}
               onClick={() => setIsOpen(false)}
-              className={`group flex items-center rounded-2xl px-5 py-3 transition-all duration-300 ${
+              className={`group flex items-center justify-between rounded-2xl px-5 py-3 transition-all duration-300 ${
                 isActive
                   ? "bg-[#1B3A6B] text-white shadow-lg"
                   : "text-[#1B3A6B]/70 hover:bg-zinc-50 hover:text-[#1B3A6B]"
               }`}
             >
-              <span className="text-[15px] font-medium">
-                {item.label}
-              </span>
+              <span className="text-[15px] font-medium">{item.label}</span>
+              {badge > 0 && (
+                <span className={`text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center ${
+                  isActive ? 'bg-white text-[#1B3A6B]' : 'bg-rose-600 text-white'
+                }`}>
+                  {badge > 9 ? '9+' : badge}
+                </span>
+              )}
             </Link>
           );
         })}

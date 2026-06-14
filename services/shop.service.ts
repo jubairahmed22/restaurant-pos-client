@@ -47,6 +47,10 @@ export const toggleFeatured = async (id: string) => {
   const { data } = await api.patch(`/shop/products/${id}/featured`);
   return data;
 };
+export const toggleAvailable = async (id: string) => {
+  const { data } = await api.patch(`/shop/products/${id}/available`);
+  return data;
+};
 export const bulkDiscount = async (body: { productIds: string[]; discountType: string; discountValue: number; discountEndDate?: string }) => {
   const { data } = await api.post('/shop/products/bulk-discount', body);
   return data;
@@ -67,6 +71,12 @@ export const updateShopOffer = async (id: string, body: Record<string, unknown>)
 };
 export const deleteShopOffer = async (id: string) => {
   const { data } = await api.delete(`/shop/offers/${id}`);
+  return data;
+};
+
+// ─── Stats ─────────────────────────────────────────────────────────────────────
+export const getShopStats = async () => {
+  const { data } = await api.get('/shop/stats');
   return data;
 };
 

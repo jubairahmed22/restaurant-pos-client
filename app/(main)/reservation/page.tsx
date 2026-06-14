@@ -9,6 +9,7 @@ import toast from 'react-hot-toast';
 
 import slideOne from '../../assest/slideOne.avif';
 import slideTwo from '../../assest/slideTwo.avif';
+import RightPanelFooterCard from '@/components/shared/RightPanelFooterCard';
 
 // ─── STYLING CONFIGURATIONS ──────────────────────────────────────────────────
 const inputCls = "w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm font-medium text-[#1B3A6B] placeholder-slate-400 focus:outline-none focus:border-[#1B3A6B] focus:bg-white transition-all duration-200";
@@ -291,29 +292,7 @@ export default function BookingPage() {
 
 
         {/* SUB FOOTER SECTION LINK WRAPPER */}
-        <div className="w-full bg-white py-12 px-8 rounded-2xl flex flex-col items-center gap-12 flex-shrink-0 mb-4 border border-slate-200 shadow-sm">
-                    <div className="flex flex-col items-center gap-3.5 text-slate-500 font-bold text-xs lg:text-sm tracking-wide">
-            {[
-              { label: 'Home',        href: '/' },
-              { label: 'Menu',        href: '/menu' },
-              { label: 'Restaurant',  href: '/restaurant' },
-              { label: 'Reservation', href: '/reservation' },
-            ].map(({ label, href }) => (
-              <Link key={label} href={href} className="hover:text-[#1B3A6B] transition-colors">
-                {label}
-              </Link>
-            ))}
-          </div>
-          
-          <Link target='_blank' href="https://www.linkedin.com/in/jubairahmed10/">
-            <div className="pt-8 border-t border-slate-100 w-full flex flex-col items-center gap-4">
-              <div className="bg-[#1B3A6B] text-white px-6 py-2.5 rounded-full flex items-center gap-2 text-[10px] font-bold uppercase tracking-wide shadow-lg shadow-[#1B3A6B]/20">
-                <span className="rotate-45 block">▲</span> Made by Jubair Ahmed
-              </div>
-            </div>
-          </Link>
-        </div>
-
+        <RightPanelFooterCard></RightPanelFooterCard>
         {/* GLOBAL EMBEDDED ADJUSTMENTS OVERRIDE MARKUP */}
         <style jsx global>{`
           .no-scrollbar::-webkit-scrollbar { display: none; }

@@ -2,19 +2,20 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Calendar, ShoppingBag } from 'lucide-react';
+import { Calendar, ShoppingBag, Store } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-
+sadfs
 // Assets
-import slideOne from '../../app/assest/slideOne.avif';
-import slideTwo from '../../app/assest/slideTwo.avif';
-import menu from '../../app/assest/menu.avif';
-import ourRestaourant from '../../app/assest/our-restaourant.avif';
+import slideOne from '../../app/assest/food4.jpg';
+import slideTwo from '../../app/assest/food3.jpg';
+import menu from '../../app/assest/food5.jpg';
+import ourRestaourant from '../../app/assest/food1.jpg';
 import Link from 'next/link';
 import rinLogo from '../../app/assest/Rin_Logo.png';
 
 import PickupTimeModal from '@/components/pickup/PickupTimeModal';
 import { usePickupStore } from '@/store/pickupStore';
+import RightPanelFooterCard from '@/components/shared/RightPanelFooterCard';
 
 
 const slides = [
@@ -47,9 +48,9 @@ const openingHours = [
 
 const Page = () => {
   const router = useRouter();
-  const [current,      setCurrent]      = useState(0);
-  const [isPaused,     setIsPaused]     = useState(false);
-  const [pickupOpen,   setPickupOpen]   = useState(false);
+  const [current, setCurrent] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+  const [pickupOpen, setPickupOpen] = useState(false);
   const { isSet } = usePickupStore();
 
   const nextSlide = useCallback(() => {
@@ -102,68 +103,68 @@ const Page = () => {
 
 
         {/* Testimonial Overlay */}
-       {/* Premium Testimonial Overlay */}
-<div className="absolute bottom-8 left-8 z-20 max-w-2xl overflow-hidden rounded-[32px] border border-white/15 bg-gradient-to-br from-black/70 via-black/50 to-black/30 p-8 md:p-10 backdrop-blur-2xl shadow-[0_20px_80px_rgba(0,0,0,0.45)]">
+        {/* Premium Testimonial Overlay */}
+        <div className="absolute bottom-8 left-8 z-20 max-w-2xl overflow-hidden rounded-[32px] border border-white/15 bg-gradient-to-br from-black/70 via-black/50 to-black/30 p-8 md:p-10 backdrop-blur-2xl shadow-[0_20px_80px_rgba(0,0,0,0.45)]">
 
-  {/* Decorative Glow */}
-  <div className="absolute -top-20 -right-20 h-48 w-48 rounded-full bg-amber-500/10 blur-3xl" />
-  <div className="absolute -bottom-20 -left-20 h-48 w-48 rounded-full bg-[#1B3A6B]/20 blur-3xl" />
+          {/* Decorative Glow */}
+          <div className="absolute -top-20 -right-20 h-48 w-48 rounded-full bg-amber-500/10 blur-3xl" />
+          <div className="absolute -bottom-20 -left-20 h-48 w-48 rounded-full bg-[#1B3A6B]/20 blur-3xl" />
 
-  <div className="relative flex flex-col gap-8">
+          <div className="relative flex flex-col gap-8">
 
-    {/* Top Section */}
-    <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between border-b border-white/10 pb-6">
+            {/* Top Section */}
+            <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between border-b border-white/10 pb-6">
 
-      {/* Branding */}
-      <div className="flex items-center gap-6">
+              {/* Branding */}
+              <div className="flex items-center gap-6">
 
-        <div className="flex-shrink-0 border-r border-white/10 pr-6">
-          <Image
-            src={rinLogo}
-            alt="RIN Japanese Food"
-            width={150}
-            height={55}
-            priority
-            className="object-contain"
-          />
-        </div>
+                <div className="flex-shrink-0 border-r border-white/10 pr-6">
+                  <Image
+                    src={rinLogo}
+                    alt="RIN Japanese Food"
+                    width={150}
+                    height={55}
+                    priority
+                    className="object-contain"
+                  />
+                </div>
 
-        <div>
-          <h1 className="text-4xl font-black tracking-[0.3em] text-white">
-            RIN
-          </h1>
+                <div>
+                  <h1 className="text-4xl font-black tracking-[0.3em] text-white">
+                    RIN
+                  </h1>
 
-          <div className="mt-2 flex items-center gap-2">
-            <div className="h-[1px] w-8 bg-amber-400" />
-            <p className="text-xs uppercase tracking-[0.25em] text-amber-400">
-              Japanese Food
-            </p>
-          </div>
+                  <div className="mt-2 flex items-center gap-2">
+                    <div className="h-[1px] w-8 bg-amber-400" />
+                    <p className="text-xs uppercase tracking-[0.25em] text-amber-400">
+                      Japanese Food
+                    </p>
+                  </div>
 
-          <p className="mt-1 text-sm italic text-white/60">
-            Eat In • Take Away • Fresh Daily
-          </p>
-        </div>
+                  <p className="mt-1 text-sm italic text-white/60">
+                    Eat In • Take Away • Fresh Daily
+                  </p>
+                </div>
 
-      </div>
+              </div>
 
-      {/* CTA */}
-      <button
-        onClick={() => setPickupOpen(true)}
-        className="group flex items-center justify-center gap-2 rounded-2xl px-6 py-4 text-sm font-semibold text-white border-white border-2 transition-all duration-300 hover:scale-105 hover:shadow-xl"
-       
-      >
-        <ShoppingBag
-          size={18}
-          className="transition-transform duration-300 group-hover:translate-y-[-2px]"
-        />
-        Order Pickup
-      </button>
+              {/* CTA */}
+              <button
+                onClick={() => setPickupOpen(true)}
+                className="group flex items-center justify-center gap-2 rounded-2xl px-6 py-4 text-sm font-semibold text-white border-white border-2 transition-all duration-300 hover:scale-105 hover:shadow-xl"
 
-    </div>
+              >
+                <ShoppingBag
+                  size={18}
+                  className="transition-transform duration-300 group-hover:translate-y-[-2px]"
+                />
+                Order Pickup
+              </button>
 
-    {/* Content */}
-    {/* <div className="space-y-5">
+            </div>
+
+            {/* Content */}
+            {/* <div className="space-y-5">
 
       <span className="inline-block rounded-full border border-amber-400/20 bg-amber-400/10 px-2 py-1 text-[10px] uppercase tracking-[0.25em] text-amber-300">
         Featured Experience
@@ -179,34 +180,34 @@ const Page = () => {
 
     </div> */}
 
-    {/* Bottom Stats */}
-    <div className="flex flex-wrap items-center gap-8">
+            {/* Bottom Stats */}
+            <div className="flex flex-wrap items-center gap-8">
 
-      <div>
-        <p className="text-2xl font-bold text-white">4.9★</p>
-        <p className="text-xs uppercase tracking-wider text-white/50">
-          Customer Rating
-        </p>
-      </div>
+              <div>
+                <p className="text-2xl font-bold text-white">4.9★</p>
+                <p className="text-xs uppercase tracking-wider text-white/50">
+                  Customer Rating
+                </p>
+              </div>
 
-      <div>
-        <p className="text-2xl font-bold text-white">100%</p>
-        <p className="text-xs uppercase tracking-wider text-white/50">
-          Fresh Ingredients
-        </p>
-      </div>
+              <div>
+                <p className="text-2xl font-bold text-white">100%</p>
+                <p className="text-xs uppercase tracking-wider text-white/50">
+                  Fresh Ingredients
+                </p>
+              </div>
 
-      <div>
-        <p className="text-2xl font-bold text-white">Daily</p>
-        <p className="text-xs uppercase tracking-wider text-white/50">
-          Authentic Taste
-        </p>
-      </div>
+              <div>
+                <p className="text-2xl font-bold text-white">Daily</p>
+                <p className="text-xs uppercase tracking-wider text-white/50">
+                  Authentic Taste
+                </p>
+              </div>
 
-    </div>
+            </div>
 
-  </div>
-</div>
+          </div>
+        </div>
       </div>
 
       {/* RIGHT: Scrollable Side Panel - FULL WIDTH ON MOBILE, 30% ON LG */}
@@ -324,38 +325,54 @@ const Page = () => {
           </div>
         </Link>
 
-       <div className='grid sm:grid-cols-1 lg:grid-cols-2 gap-5'>
-         {/* Pickup Button */}
-        <button
-          onClick={() => setPickupOpen(true)}
-          className="w-full flex items-center justify-between px-4 py-4 lg:py-3 rounded-2xl border flex-shrink-0 shadow-lg transition-all duration-300 focus:outline-none active:scale-[0.98] hover:opacity-90"
-          style={{ background: '#1B3A6B', borderColor: '#1B3A6B' }}
-        >
-          <span className="text-white text-[12px] font-bold uppercase tracking-wider">
-            {isSet ? 'Change Pickup schedule' : 'Order Pickup'}
-          </span>
-          <div className="p-2 rounded-xl bg-white/15 text-white transition-all duration-300 group-hover:bg-white/25">
-            <ShoppingBag size={18} />
-          </div>
-        </button>
 
-        {/* Reservation Button */}
-        <Link href="/reservation" className="block w-full">
-          <button className="w-full cursor-pointer bg-[#1B3A6B] py-4 lg:py-3 px-8 rounded-2xl flex items-center justify-between group flex-shrink-0 shadow-lg shadow-[#1B3A6B]/10 border border-[#1B3A6B] hover:bg-[#1B3A6B]/90 transition-all duration-300 focus:outline-none active:scale-[0.98]">
 
-            {/* TEXT: Now white with refined tracking */}
+        <div className='grid sm:grid-cols-1 lg:grid-cols-2 gap-5'>
+          {/* Pickup Button */}
+          <button
+            onClick={() => setPickupOpen(true)}
+            className="w-full flex items-center justify-between px-4 py-4 lg:py-3 rounded-2xl border flex-shrink-0 shadow-lg transition-all duration-300 focus:outline-none active:scale-[0.98] hover:opacity-90"
+            style={{ background: '#1B3A6B', borderColor: '#1B3A6B' }}
+          >
             <span className="text-white text-[12px] font-bold uppercase tracking-wider">
-              Make a Reservation
+              {isSet ? 'Change Pickup schedule' : 'Order Pickup'}
             </span>
-
-            {/* ICON BOX: Semi-transparent white background for a subtle "glass" look */}
-            <div className="p-2 rounded-xl bg-white/10 text-white transition-all duration-300 group-hover:bg-white/20 group-hover:scale-110">
-              <Calendar size={18} />
+            <div className="p-2 rounded-xl bg-white/15 text-white transition-all duration-300 group-hover:bg-white/25">
+              <ShoppingBag size={18} />
             </div>
-
           </button>
+
+          {/* Reservation Button */}
+          <Link href="/reservation" className="block w-full">
+            <button className="w-full cursor-pointer bg-[#1B3A6B] py-4 lg:py-3 px-8 rounded-2xl flex items-center justify-between group flex-shrink-0 shadow-lg shadow-[#1B3A6B]/10 border border-[#1B3A6B] hover:bg-[#1B3A6B]/90 transition-all duration-300 focus:outline-none active:scale-[0.98]">
+
+              {/* TEXT: Now white with refined tracking */}
+              <span className="text-white text-[12px] font-bold uppercase tracking-wider">
+                Make a Reservation
+              </span>
+
+              {/* ICON BOX: Semi-transparent white background for a subtle "glass" look */}
+              <div className="p-2 rounded-xl bg-white/10 text-white transition-all duration-300 group-hover:bg-white/20 group-hover:scale-110">
+                <Calendar size={18} />
+              </div>
+
+            </button>
+          </Link>
+        </div>
+        {/* Visit Shop Button */}
+        <Link
+          href="/shop"
+          className="w-full flex items-center justify-between px-4 py-4 lg:py-3 rounded-2xl  border border-gray-300 bg-white flex-shrink-0 shadow-lg transition-all duration-300 active:scale-[0.98] hover:opacity-90"
+        // style={{ background: '#C05428', borderColor: '#C05428' }}
+        >
+          <span className="text-black text-[12px] font-bold uppercase tracking-wider">
+            Visit our Shop
+          </span>
+          <div className="p-2 rounded-xl bg-white/15 text-black transition-all duration-300">
+            <Store size={18} />
+          </div>
         </Link>
-       </div>
+
 
         {/* Opening Hours Section */}
         <div className="w-full bg-white p-6 lg:p-8 rounded-2xl flex flex-col gap-6 flex-shrink-0 shadow-sm border border-zinc-100">
@@ -384,7 +401,7 @@ const Page = () => {
               aria-label="RIN on Facebook"
             >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-                <path d="M24 12.073C24 5.404 18.627 0 12 0S0 5.404 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.235 2.686.235v2.97h-1.513c-1.491 0-1.956.93-1.956 1.886v2.268h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/>
+                <path d="M24 12.073C24 5.404 18.627 0 12 0S0 5.404 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.235 2.686.235v2.97h-1.513c-1.491 0-1.956.93-1.956 1.886v2.268h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z" />
               </svg>
               <span className="text-lg font-bold leading-none">Facebook</span>
             </a>
@@ -393,11 +410,11 @@ const Page = () => {
               target="_blank"
               rel="noopener noreferrer"
               className="text-[#1B3A6B] p-5 rounded-2xl flex flex-row items-center gap-2 shadow-sm hover:opacity-90 transition-all"
-       
+
               aria-label="RIN on Instagram"
             >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
               </svg>
               <span className="text-lg font-bold leading-none">Instagram</span>
             </a>
@@ -412,27 +429,9 @@ const Page = () => {
           </a>
         </div>
 
-        {/* Footer Navigation */}
-        <div className="w-full bg-white py-12 px-8 rounded-2xl flex flex-col items-center gap-12 flex-shrink-0 mb-4 shadow-sm border border-zinc-100">
-                    <div className="flex flex-col items-center gap-3.5 text-slate-500 font-bold text-xs lg:text-sm tracking-wide">
-            {[
-              { label: 'Home',        href: '/' },
-              { label: 'Menu',        href: '/menu' },
-              { label: 'Restaurant',  href: '/restaurant' },
-              { label: 'Reservation', href: '/reservation' },
-            ].map(({ label, href }) => (
-              <Link key={label} href={href} className="hover:text-[#1B3A6B] transition-colors">
-                {label}
-              </Link>
-            ))}
-          </div>
-          <div className="pt-8 border-t border-zinc-100 w-full flex flex-col items-center gap-4">
-            <Link target='_blank' href="https://www.linkedin.com/in/jubairahmed10/">
-              <div className="bg-[#1B3A6B] text-white px-6 py-2.5 rounded-full flex items-center gap-2 text-[12px] font-bold uppercase tracking-wider hover:bg-[#1B3A6B]/90 transition-colors shadow-sm">
-                <span className="rotate-45 block text-[10px]">▲</span> Made by Jubair Ahmed
-              </div>
-            </Link>
-          </div>
+        {/* Footer Card */}
+        <div className="mb-4">
+          <RightPanelFooterCard />
         </div>
 
       </div>

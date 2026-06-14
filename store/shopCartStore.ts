@@ -54,6 +54,6 @@ export const useShopCartStore = create<ShopCartState>()(
       get itemCount() { return get().items.reduce((s, i) => s + i.qty, 0); },
       get subtotal()  { return get().items.reduce((s, i) => s + i.price * i.qty, 0); },
     }),
-    { name: 'rin-shop-cart' }
+    { name: 'shop-item' }
   )
 );

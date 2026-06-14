@@ -14,6 +14,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import PickupTimeModal from "@/components/pickup/PickupTimeModal";
 import PickupBar from "@/components/pickup/PickupBar";
 import { usePickupStore } from "@/store/pickupStore";
+import RightPanelFooterCard from "@/components/shared/RightPanelFooterCard";
 
 /* ─── Local Storage Key ─── */
 const CART_KEY = "menu-cart";
@@ -57,6 +58,7 @@ function MenuPageInner() {
     setCartRaw((prev) => {
       const next = typeof updater === "function" ? updater(prev) : updater;
       saveCart(next);
+      window.dispatchEvent(new Event("menu-cart-updated"));
       return next;
     });
   };
@@ -128,7 +130,7 @@ function MenuPageInner() {
       <PickupTimeModal isOpen={pickupOpen} onClose={() => setPickupOpen(false)} />
 
       {/* LEFT: Explorer Section (68% Split Area) */}
-      <main className="relative w-full xl:w-[68%] h-screen flex flex-col border-r border-slate-200 bg-[#F8FAFC]">
+      <main className="relative w-full lg:w-[70%] h-screen flex flex-col border-r border-slate-200 bg-[#F8FAFC]">
 
 
 
@@ -188,9 +190,9 @@ function MenuPageInner() {
       </main>
 
       {/* RIGHT: Order Intelligence (32% Sidebar Panel Layout) — desktop only */}
-      <aside className="hidden xl:flex w-[32%] h-screen bg-white flex-col relative border-l border-slate-100 shadow-sm">
-        <div className="flex-1 overflow-y-auto p-6 lg:p-8 no-scrollbar relative z-10 flex flex-col">
-          <div className="flex items-center justify-between mb-8 shrink-0">
+      <aside className="hidden lg:flex w-[30%] h-screen bg-white flex-col relative border-l border-slate-100 shadow-sm">
+        <div className="flex-1 overflow-y-auto p-6 lg:p-8 no-scrollbar relative z-10 flex flex-col gap-6">
+          <div className="flex items-center justify-between shrink-0">
             <h2 className="text-2xl font-serif italic text-[#1B3A6B]">
               Current Order
             </h2>
@@ -198,7 +200,7 @@ function MenuPageInner() {
               Draft #2026
             </div>
           </div>
-          
+
           <div className="flex-1">
             <CheckoutPanelMenu
               cart={cart}
@@ -212,6 +214,9 @@ function MenuPageInner() {
               clearCart={() => setCart([])}
             />
           </div>
+
+          {/* Footer card */}
+          <RightPanelFooterCard />
         </div>
       </aside>
 

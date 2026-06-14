@@ -7,6 +7,7 @@ import {
   DollarSign, ShoppingCart, Package,
   Users, Clock3, CheckCircle2,
   TrendingUp, ArrowUpRight, ArrowDownRight,
+  Store, Tag, Truck,
 } from 'lucide-react';
 import {
   ResponsiveContainer, LineChart, Line,
@@ -14,7 +15,7 @@ import {
   PieChart, Pie, Cell, BarChart, Bar,
 } from 'recharts';
 import { AnalyticsService } from '@/services/analytics.service';
-import { KpiCard } from '@/components/cards/KpiCard';
+import { getShopStats } from '@/services/shop.service';
 
 // ─────────────────────────────────────────────
 // CUSTOM CHART COMPONENTS
@@ -80,12 +81,24 @@ export default function AnalyticsOverview() {
     queryFn: AnalyticsService.getStats,
   });
 
-  const stats         = data?.data;
-  const summary       = stats?.summary        || {};
-  const salesChart    = stats?.salesChart     || [];
-  const orderStatusStats = stats?.orderStatusStats || [];
-  const topFoods      = stats?.topFoods       || [];
-  const recentOrders  = stats?.recentOrders   || [];
+  const { data: shopData, isLoading: shopLoading } = useQuery({
+    queryKey: ['shop-stats'],
+    queryFn: getShopStats,
+    staleTime: 60_000,
+  });
+
+  const stats            = data?.data;
+  const summary          = stats?.summary           || {};
+  const salesChart       = stats?.salesChart        || [];
+  const orderStatusStats = stats?.orderStatusStats  || [];
+  const topFoods         = stats?.topFoods          || [];
+  const recentOrders     = stats?.recentOrders      || [];
+
+  const shopStats        = shopData?.data;
+  const shopSummary      = shopStats?.summary       || {};
+  const shopRecentOrders = shopStats?.recentOrders  || [];
+  const shopStatusStats  = shopStats?.orderStatusStats || [];
+  const shopTopProducts  = shopStats?.topProducts   || [];
 
   const cards = [
     {
@@ -325,6 +338,163 @@ export default function AnalyticsOverview() {
                 </div>
               );
             })}
+          </div>
+        </div>
+      </div>
+
+      {/* ── SHOP ANALYTICS DIVIDER ─────────────────────────────────── */}
+      <div className="flex items-center gap-4 pt-4">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-2xl bg-[#C05428]/10 flex items-center justify-center">
+            <Store size={18} className="text-[#C05428]" />
+          </div>
+          <div>
+            <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#C05428] leading-none">Online Store</p>
+            <h2 className="text-xl font-extrabold text-[#1e2661] leading-tight">Shop Analytics</h2>
+          </div>
+        </div>
+        <div className="flex-1 h-px bg-slate-200" />
+      </div>
+
+      {/* ── SHOP KPI GRID ──────────────────────────────────────────── */}
+      <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-4 gap-4">
+        {[
+          { title: 'Total Revenue',    value: `$${(shopSummary.totalRevenue   || 0).toFixed(2)}`,   icon: DollarSign,   accent: 'from-[#C05428] to-orange-500', light: 'bg-orange-50 text-[#C05428]' },
+          { title: 'Monthly Revenue',  value: `$${(shopSummary.monthlyRevenue || 0).toFixed(2)}`,   icon: TrendingUp,   accent: 'from-amber-500 to-amber-600',   light: 'bg-amber-50 text-amber-600'  },
+          { title: "Today's Revenue",  value: `$${(shopSummary.todayRevenue   || 0).toFixed(2)}`,   icon: DollarSign,   accent: 'from-yellow-400 to-yellow-500', light: 'bg-yellow-50 text-yellow-600'},
+          { title: 'Total Orders',     value: shopSummary.totalOrders     || 0,                      icon: ShoppingCart, accent: 'from-sky-500 to-sky-600',       light: 'bg-sky-50 text-sky-600'      },
+          { title: 'Pending',          value: shopSummary.pendingOrders   || 0,                      icon: Clock3,       accent: 'from-amber-400 to-amber-500',   light: 'bg-amber-50 text-amber-600'  },
+          { title: 'Shipped',          value: shopSummary.shippedOrders   || 0,                      icon: Truck,        accent: 'from-violet-500 to-violet-600', light: 'bg-violet-50 text-violet-600'},
+          { title: 'Total Products',   value: shopSummary.totalProducts   || 0,                      icon: Package,      accent: 'from-emerald-500 to-emerald-600', light: 'bg-emerald-50 text-emerald-600'},
+          { title: 'Categories',       value: shopSummary.totalCategories || 0,                      icon: Tag,          accent: 'from-teal-500 to-teal-600',     light: 'bg-teal-50 text-teal-600'    },
+        ].map((card, i) => {
+          const Icon = card.icon;
+          return (
+            <div
+              key={i}
+              className="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 group relative overflow-hidden"
+            >
+              <div className={`absolute -top-6 -right-6 w-20 h-20 rounded-full bg-gradient-to-br ${card.accent} opacity-[0.07] group-hover:opacity-[0.12] transition-opacity duration-300`} />
+              <div className={`w-10 h-10 rounded-2xl ${card.light} flex items-center justify-center mb-4`}>
+                <Icon size={18} />
+              </div>
+              <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">{card.title}</p>
+              <p className="text-2xl font-extrabold text-[#1e2661] leading-none">
+                {shopLoading ? <span className="inline-block w-16 h-7 bg-slate-100 rounded-lg animate-pulse" /> : card.value}
+              </p>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* ── SHOP CHARTS ROW ────────────────────────────────────────── */}
+      <div className="grid grid-cols-1 xl:grid-cols-[1fr_1fr_1.2fr] gap-5">
+
+        {/* ORDER STATUS PIE */}
+        <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+          <div className="mb-5">
+            <p className="text-[11px] font-bold tracking-widest uppercase text-[#C05428] mb-1">Breakdown</p>
+            <h3 className="text-base font-extrabold text-[#1e2661]">Order Status</h3>
+          </div>
+          <div className="h-[160px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie data={shopStatusStats} dataKey="total" nameKey="_id" cx="50%" cy="50%" innerRadius={45} outerRadius={72} paddingAngle={3} strokeWidth={0}>
+                  {shopStatusStats.map((_: any, i: number) => (
+                    <Cell key={i} fill={['#C05428','#1B3A6B','#f59e0b','#22c55e','#ef4444'][i % 5]} />
+                  ))}
+                </Pie>
+                <Tooltip content={<CustomPieTooltip />} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="space-y-1.5 mt-3">
+            {shopStatusStats.slice(0, 5).map((d: any, i: number) => {
+              const total = shopStatusStats.reduce((s: number, x: any) => s + (x.total || 0), 0);
+              const pct   = total > 0 ? Math.round((d.total / total) * 100) : 0;
+              const color = ['#C05428','#1B3A6B','#f59e0b','#22c55e','#ef4444'][i % 5];
+              return (
+                <div key={i} className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full shrink-0" style={{ background: color }} />
+                    <span className="text-[11px] font-semibold text-slate-500 capitalize">{d._id}</span>
+                  </div>
+                  <span className="text-[11px] font-bold text-[#1e2661]">{d.total} <span className="text-slate-400 font-medium">({pct}%)</span></span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* TOP PRODUCTS BAR */}
+        <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm">
+          <div className="mb-5">
+            <p className="text-[11px] font-bold tracking-widest uppercase text-[#C05428] mb-1">Bestsellers</p>
+            <h3 className="text-base font-extrabold text-[#1e2661]">Top Products</h3>
+          </div>
+          <div className="h-[220px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={shopTopProducts} layout="vertical" margin={{ top: 0, right: 10, left: 0, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={false} />
+                <XAxis type="number" tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 600 }} axisLine={false} tickLine={false} />
+                <YAxis type="category" dataKey="_id" tick={{ fontSize: 10, fill: '#94a3b8', fontWeight: 600 }} axisLine={false} tickLine={false} width={80} />
+                <Tooltip content={<CustomBarTooltip />} cursor={{ fill: '#f8f9fd' }} />
+                <Bar dataKey="totalSold" radius={[0, 6, 6, 0]} maxBarSize={18}>
+                  {shopTopProducts.map((_: any, i: number) => (
+                    <Cell key={i} fill={i === 0 ? '#C05428' : '#1B3A6B'} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        {/* RECENT SHOP ORDERS */}
+        <div className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm flex flex-col">
+          <div className="flex items-center justify-between mb-5">
+            <div>
+              <p className="text-[11px] font-bold tracking-widest uppercase text-[#C05428] mb-1">Latest</p>
+              <h3 className="text-base font-extrabold text-[#1e2661]">Recent Shop Orders</h3>
+            </div>
+            <span className="text-xs font-bold text-[#C05428] bg-orange-50 px-3 py-1.5 rounded-xl border border-orange-100">
+              {shopRecentOrders.length} orders
+            </span>
+          </div>
+          <div className="flex-1 space-y-2 overflow-y-auto custom-scrollbar">
+            {shopLoading
+              ? Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="h-14 bg-slate-50 rounded-2xl animate-pulse" />
+                ))
+              : shopRecentOrders.length === 0
+              ? <div className="flex items-center justify-center h-32 text-slate-300 text-sm">No shop orders yet</div>
+              : shopRecentOrders.map((order: any) => {
+                  const statusColors: Record<string, string> = {
+                    placed: 'bg-sky-50 text-sky-600', processing: 'bg-amber-50 text-amber-600',
+                    shipped: 'bg-violet-50 text-violet-600', delivered: 'bg-emerald-50 text-emerald-600',
+                    cancelled: 'bg-red-50 text-red-500',
+                  };
+                  const sc = statusColors[order.orderStatus] || statusColors['placed'];
+                  return (
+                    <div key={order._id} className="flex items-center justify-between px-4 py-3 rounded-2xl border border-slate-100 hover:border-orange-100 hover:bg-orange-50/20 transition-all duration-200">
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-orange-100 to-orange-200 flex items-center justify-center shrink-0">
+                          <span className="text-[#C05428] font-extrabold text-[11px]">
+                            {order.fullName?.charAt(0)?.toUpperCase() || '?'}
+                          </span>
+                        </div>
+                        <div className="min-w-0">
+                          <p className="font-bold text-[#1e2661] text-sm truncate leading-none mb-0.5">{order.fullName}</p>
+                          <p className="text-[10px] font-mono text-slate-400 truncate">#{order.orderId}</p>
+                        </div>
+                      </div>
+                      <div className="flex flex-col items-end gap-1 shrink-0 ml-2">
+                        <p className="font-extrabold text-[#1e2661] text-sm">${order.total}</p>
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-lg ${sc}`}>{order.orderStatus}</span>
+                      </div>
+                    </div>
+                  );
+                })
+            }
           </div>
         </div>
       </div>
