@@ -3,10 +3,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, ShoppingBag, Store } from 'lucide-react';
-import { useRouter } from 'next/navigation';asdfasd
+import { useRouter } from 'next/navigation';
 
 // Assets
-import slideOne from '../../app/assest/food4.jpg';
+import slideOne from '../../app/assest/food4.jpg';asdfasd
 import slideTwo from '../../app/assest/food3.jpg';
 import menu from '../../app/assest/food5.jpg';
 import ourRestaourant from '../../app/assest/food1.jpg';
