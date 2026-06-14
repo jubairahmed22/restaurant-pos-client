@@ -6,7 +6,7 @@ import { Calendar, ShoppingBag, Store } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 // Assets
-import slideOne from '../../app/assest/food4.jpg';asdfsad
+import slideOne from '../../app/assest/food4.jpg';
 import slideTwo from '../../app/assest/food3.jpg';
 import menu from '../../app/assest/food5.jpg';
 import ourRestaourant from '../../app/assest/food1.jpg';
