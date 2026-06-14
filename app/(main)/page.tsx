@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 
 // Assets
 import slideOne from '../../app/assest/food4.jpg';
-import slideTwo from '../../app/assest/food3.jpg';
+import slideTwo from '../../app/assest/food3.jpg';sadfsad
 import menu from '../../app/assest/food5.jpg';
 import ourRestaourant from '../../app/assest/food1.jpg';
 import Link from 'next/link';
