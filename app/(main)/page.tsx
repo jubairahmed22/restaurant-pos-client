@@ -16,7 +16,7 @@ import rinLogo from '../../app/assest/Rin_Logo.png';
 import PickupTimeModal from '@/components/pickup/PickupTimeModal';
 import { usePickupStore } from '@/store/pickupStore';
 import RightPanelFooterCard from '@/components/shared/RightPanelFooterCard';
-sadfsdf
+
 
 const slides = [
   {
