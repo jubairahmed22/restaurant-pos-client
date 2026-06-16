@@ -17,7 +17,7 @@ import PickupTimeModal from '@/components/pickup/PickupTimeModal';
 import { usePickupStore } from '@/store/pickupStore';
 import RightPanelFooterCard from '@/components/shared/RightPanelFooterCard';
 
-
+fasdfsad
 const slides = [
   {
     id: 1,
