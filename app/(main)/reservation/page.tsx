@@ -104,7 +104,7 @@ function ReviewCard({ r }: { r: Review }) {
 function BlogCard({ b }: { b: Blog }) {
   const ytId = b.videoLink ? getYouTubeId(b.videoLink) : null;
 
-  return ( asdfsdf
+  return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
