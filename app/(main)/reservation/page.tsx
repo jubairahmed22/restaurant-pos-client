@@ -103,7 +103,7 @@ function ReviewCard({ r }: { r: Review }) {
 /* ── Blog card — glass, fixed width for horizontal slider ───────────────── */
 function BlogCard({ b }: { b: Blog }) {
   const ytId = b.videoLink ? getYouTubeId(b.videoLink) : null;
-
+sdfasdfa
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
