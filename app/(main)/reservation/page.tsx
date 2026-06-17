@@ -95,7 +95,7 @@ function ReviewCard({ r }: { r: Review }) {
         {r.description && (
           <p className="text-white/50 text-[10px] mt-1.5 leading-relaxed line-clamp-2">{r.description}</p>
         )}
-      </div> asdfasdf
+      </div>
     </motion.a>
   );
 }
