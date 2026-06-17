@@ -97,7 +97,7 @@ function ReviewCard({ r }: { r: Review }) {
         )}
       </div>
     </motion.a>
-  ); aefasdfa
+  );
 }
 
 /* ── Blog card — glass, fixed width for horizontal slider ───────────────── */
