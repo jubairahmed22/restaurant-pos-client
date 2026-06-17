@@ -12,9 +12,35 @@ const FacebookIcon = ({ size = 18 }: { size?: number }) => (
 );
 import Link from 'next/link';
 
-import slideOne from '../../assest/slideOne.avif';
-import slideTwo from '../../assest/slideTwo.avif';
+import slideOne from '../../assest/food10.jpg';
+import slideTwo from '../../assest/food3.jpg';
 import rinLogo  from '../../assest/Rin_Logo.png';
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://rinrestaurant.com.au';
+
+// ── GEO: FAQPage schema (AI engines index this for direct answers) ─────────────
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    { '@type': 'Question', name: 'What are the opening hours for RIN Japanese Restaurant in Hobart?',
+      acceptedAnswer: { '@type': 'Answer', text: 'RIN is open Tuesday to Saturday. Lunch service runs 11:30 am – 2:30 pm and Dinner service runs 5:00 pm – 8:30 pm. We are closed on Sundays and Mondays.' } },
+    { '@type': 'Question', name: 'Where is RIN Japanese Restaurant located?',
+      acceptedAnswer: { '@type': 'Answer', text: 'RIN is located at 196 Macquarie Street, Hobart TAS 7000, Australia — in the heart of Hobart CBD.' } },
+    { '@type': 'Question', name: 'Does RIN Japanese Restaurant offer takeaway?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Yes. RIN offers both eat-in dining and take-away. You can pre-order online and schedule a pickup time during Lunch (11:30 am – 2:30 pm) or Dinner (5:00 pm – 8:30 pm) service, Tuesday to Saturday.' } },
+    { '@type': 'Question', name: 'Can I make a reservation at RIN?',
+      acceptedAnswer: { '@type': 'Answer', text: `Yes. You can book a table online at ${SITE_URL}/reservation or by calling +61 427 634 574. Reservations are available Tuesday to Saturday during Lunch and Dinner service.` } },
+    { '@type': 'Question', name: 'What type of Japanese cuisine does RIN serve?',
+      acceptedAnswer: { '@type': 'Answer', text: 'RIN serves authentic Japanese cuisine including sushi, sashimi, ramen, tempura, teriyaki, and seasonal Japanese dishes — all crafted by experienced Japanese chefs.' } },
+    { '@type': 'Question', name: 'How do I contact RIN Japanese Restaurant?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Call us on +61 427 634 574, email rin.japanese.eatinandtakeaway@gmail.com, or find us on Facebook at facebook.com/rintasmania.' } },
+    { '@type': 'Question', name: 'Is RIN Japanese Restaurant suitable for families?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Yes. RIN welcomes families and groups. Please call or book online to arrange seating for larger parties.' } },
+    { '@type': 'Question', name: 'Does RIN accept card payments?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Yes. RIN accepts card payments via Square as well as cash. Online orders support secure card payment.' } },
+  ],
+};
 
 const PHONE      = '+61 427 634 574';
 const PHONE_HREF = 'tel:+61427634574';
@@ -64,6 +90,9 @@ const Page = () => {
 
   return (
     <div className="min-h-screen w-full flex flex-col lg:flex-row bg-slate-50 text-slate-800 font-sans selection:bg-[#1B3A6B]/10">
+
+      {/* GEO: FAQPage structured data for AI search engines */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
 
       {/* ── LEFT: Slider ──────────────────────────────── */}
       <div

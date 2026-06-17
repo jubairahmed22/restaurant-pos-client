@@ -1,11 +1,15 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import { cacheManager, CacheKeys } from '@/lib/cache-manager';
+import { captureAttribution } from '@/lib/attribution';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
+  // Capture UTM attribution on every session's first page load
+  useEffect(() => { captureAttribution(); }, []);
+
   const [queryClient] = useState(() => {
     const client = new QueryClient({
       defaultOptions: {

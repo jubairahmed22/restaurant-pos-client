@@ -6,81 +6,36 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { usePickupStore } from '@/store/pickupStore';
 import rinLogo from '@/app/assest/Rin_Logo.png';
+import {
+  isOpenDay, format24to12,
+  generatePickupSlots, type SlotItem,
+} from '@/lib/schedule';
 
-// ─── Restaurant opening hours (day-of-week 0=Sun) ────────────────────────────
-const OPENING: Record<number, { open: number; close: number } | null> = {
-  0: { open: 17, close: 22 }, // Sun
-  1: null,                     // Mon – closed
-  2: { open: 16, close: 22 }, // Tue
-  3: { open: 16, close: 22 }, // Wed
-  4: { open: 16, close: 22 }, // Thu
-  5: { open: 17, close: 22 }, // Fri
-  6: { open: 17, close: 22 }, // Sat
-};
-
-const DAY_ABBR = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const DAY_ABBR    = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const PICKUP_COLOR = '#1B3A6B';
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function toLocalYMD(d: Date) {
-  const y = d.getFullYear();
-  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const y   = d.getFullYear();
+  const m   = String(d.getMonth() + 1).padStart(2, '0');
   const day = String(d.getDate()).padStart(2, '0');
   return `${y}-${m}-${day}`;
 }
 
-function format24to12(time: string) {
-  const [h, m] = time.split(':').map(Number);
-  const period = h >= 12 ? 'pm' : 'am';
-  const h12 = h % 12 === 0 ? 12 : h % 12;
-  return `${h12}:${String(m).padStart(2, '0')} ${period}`;
-}
-
-function formatHourRange(h: number) {
-  const fmt = (n: number) => {
-    const p = n >= 12 ? 'PM' : 'AM';
-    const h12 = n % 12 === 0 ? 12 : n % 12;
-    return `${String(h12).padStart(2, '0')}:00 ${p}`;
-  };
-  return `${fmt(h)} - ${fmt(h + 1)}`;
-}
-
-function generateSlots(date: Date): string[] {
-  const dow = date.getDay();
-  const hours = OPENING[dow];
-  if (!hours) return [];
-
-  const now = new Date();
-  const isToday = date.toDateString() === now.toDateString();
-  let startMin = hours.open * 60;
-
-  if (isToday) {
-    const nowMin = now.getHours() * 60 + now.getMinutes();
-    const rounded = Math.ceil((nowMin + 15) / 5) * 5;
-    startMin = Math.max(startMin, rounded);
-  }
-
-  const endMin = hours.close * 60 - 15;
-  const slots: string[] = [];
-  for (let min = startMin; min <= endMin; min += 5) {
-    const hh = Math.floor(min / 60);
-    const mm = min % 60;
-    slots.push(`${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`);
-  }
-  return slots;
-}
-
-function groupByHour(slots: string[]) {
-  const map = new Map<string, string[]>();
+function groupBySession(slots: SlotItem[]): Map<string, SlotItem[]> {
+  const map = new Map<string, SlotItem[]>();
   for (const s of slots) {
-    const h = parseInt(s.split(':')[0]);
-    const key = formatHourRange(h);
-    if (!map.has(key)) map.set(key, []);
-    map.get(key)!.push(s);
+    if (!map.has(s.session)) map.set(s.session, []);
+    map.get(s.session)!.push(s);
   }
   return map;
 }
+
+const SESSION_META: Record<string, { hours: string; color: string }> = {
+  Lunch:  { hours: '11:30 am – 2:30 pm',  color: '#C05428' },
+  Dinner: { hours: '5:00 pm – 8:30 pm',   color: PICKUP_COLOR },
+};
 
 function buildDays() {
   const days: { date: Date; ymd: string; label: string; isOpen: boolean }[] = [];
@@ -93,7 +48,7 @@ function buildDays() {
       date:   d,
       ymd:    toLocalYMD(d),
       label:  i === 0 ? 'Today' : DAY_ABBR[dow],
-      isOpen: OPENING[dow] !== null,
+      isOpen: isOpenDay(dow),
     });
   }
   return days;
@@ -146,8 +101,8 @@ function PickupTimeModalContent({ onClose, onConfirm }: Omit<Props, 'isOpen'>) {
   const [selectedTime,  setSelectedTime]  = useState<string>('');
 
   const selectedDay  = days.find(d => d.ymd === selectedYmd);
-  const slots        = useMemo(() => (selectedDay ? generateSlots(selectedDay.date) : []), [selectedDay]);
-  const grouped      = useMemo(() => groupByHour(slots), [slots]);
+  const slots        = useMemo(() => (selectedDay ? generatePickupSlots(selectedDay.date, 15) : []), [selectedDay]);
+  const grouped      = useMemo(() => groupBySession(slots), [slots]);
   const visibleDays  = days.slice(carouselStart, carouselStart + VISIBLE);
 
   // ── Navigation helpers (clear time in event handler, not effect) ──────────
@@ -395,41 +350,47 @@ function PickupTimeModalContent({ onClose, onConfirm }: Omit<Props, 'isOpen'>) {
                     : 'No available slots for today. Please pick another day.'}
                 </div>
               ) : (
-                Array.from(grouped.entries()).map(([hourLabel, hourSlots]) => (
-                  <div key={hourLabel}>
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-4 h-0.5 rounded" style={{ background: PICKUP_COLOR }} />
-                      <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">{hourLabel}</span>
-                    </div>
-                    <div className="space-y-2 pl-1">
-                      {hourSlots.map(slot => {
-                        const isChosen = slot === selectedTime;
-                        return (
-                          <button
-                            key={slot}
-                            onClick={() => setSelectedTime(slot)}
-                            className="w-full flex items-center gap-3 py-2.5 px-3 rounded-xl hover:bg-slate-50 transition"
-                          >
-                            <div
-                              className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
-                                isChosen ? 'border-transparent' : 'border-slate-300'
-                              }`}
-                              style={isChosen ? { borderColor: PICKUP_COLOR } : {}}
+                Array.from(grouped.entries()).map(([sessionLabel, sessionSlots]) => {
+                  const meta = SESSION_META[sessionLabel as 'Lunch' | 'Dinner'];
+                  return (
+                    <div key={sessionLabel}>
+                      <div className="flex items-center gap-3 mb-3">
+                        <div className="w-4 h-0.5 rounded" style={{ background: meta?.color ?? PICKUP_COLOR }} />
+                        <div className="flex flex-col">
+                          <span className="text-xs font-bold text-slate-600 uppercase tracking-wider">{sessionLabel}</span>
+                          {meta && <span className="text-[10px] text-slate-400">{meta.hours}</span>}
+                        </div>
+                      </div>
+                      <div className="space-y-2 pl-1">
+                        {sessionSlots.map(slotItem => {
+                          const isChosen = slotItem.time === selectedTime;
+                          return (
+                            <button
+                              key={slotItem.time}
+                              onClick={() => setSelectedTime(slotItem.time)}
+                              className="w-full flex items-center gap-3 py-2.5 px-3 rounded-xl hover:bg-slate-50 transition"
                             >
-                              {isChosen && <div className="w-2.5 h-2.5 rounded-full" style={{ background: PICKUP_COLOR }} />}
-                            </div>
-                            <span
-                              className={`text-sm ${isChosen ? 'font-bold' : 'font-medium text-slate-700'}`}
-                              style={isChosen ? { color: PICKUP_COLOR } : {}}
-                            >
-                              {format24to12(slot)}
-                            </span>
-                          </button>
-                        );
-                      })}
+                              <div
+                                className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
+                                  isChosen ? 'border-transparent' : 'border-slate-300'
+                                }`}
+                                style={isChosen ? { borderColor: meta?.color ?? PICKUP_COLOR } : {}}
+                              >
+                                {isChosen && <div className="w-2.5 h-2.5 rounded-full" style={{ background: meta?.color ?? PICKUP_COLOR }} />}
+                              </div>
+                              <span
+                                className={`text-sm ${isChosen ? 'font-bold' : 'font-medium text-slate-700'}`}
+                                style={isChosen ? { color: meta?.color ?? PICKUP_COLOR } : {}}
+                              >
+                                {format24to12(slotItem.time)}
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
-                ))
+                  );
+                })
               )}
             </div>
 

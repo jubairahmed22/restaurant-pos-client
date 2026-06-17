@@ -134,12 +134,12 @@ const Page = () => {
                     RIN
                   </h1>
 
-                  <div className="mt-2 flex items-center gap-2">
+                  {/* <div className="mt-2 flex items-center gap-2">
                     <div className="h-[1px] w-8 bg-amber-400" />
                     <p className="text-xs uppercase tracking-[0.25em] text-amber-400">
                       Japanese Food
                     </p>
-                  </div>
+                  </div> */}
 
                   <p className="mt-1 text-sm italic text-white/60">
                     Eat In • Take Away • Fresh Daily

@@ -185,6 +185,10 @@ function FoodTablePageInner() {
     setValue('description', food.description);
     setValue('price', food.price);
     setValue('category', food.category?._id);
+    setValue('slug', food.slug || '');
+    setValue('seoTitle', food.seoTitle || '');
+    setValue('seoDescription', food.seoDescription || '');
+    setValue('seoKeywords', food.seoKeywords || '');
 
     setImagePreview(food.image);
 
@@ -419,6 +423,33 @@ function FoodTablePageInner() {
               )}
             </label>
 
+            {/* SEO / META TAGS */}
+            <div className="pt-2 border-t border-slate-100 space-y-3">
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                SEO / Meta Tags
+              </p>
+              <div>
+                <Label>URL Slug</Label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[11px] text-slate-400 select-none">/</span>
+                  <Input {...createRegister('slug')} placeholder="auto-generated-from-title" className="pl-5 font-mono text-xs" />
+                </div>
+                <p className="text-[10px] text-slate-400 mt-1">Leave blank to auto-generate from title</p>
+              </div>
+              <div>
+                <Label>SEO Title</Label>
+                <Input {...createRegister('seoTitle')} placeholder="e.g. Salmon Nigiri | RIN Hobart" />
+              </div>
+              <div>
+                <Label>Meta Description</Label>
+                <Input {...createRegister('seoDescription')} placeholder="Short description for search engines (50–160 chars)" />
+              </div>
+              <div>
+                <Label>Meta Keywords</Label>
+                <Input {...createRegister('seoKeywords')} placeholder="keyword1, keyword2, keyword3" />
+              </div>
+            </div>
+
             <Button>
               {createMutation.isPending
                 ? 'Saving...'
@@ -566,6 +597,24 @@ function FoodTablePageInner() {
                   </>
                 )}
               </label>
+
+              {/* SEO / META TAGS */}
+              <div className="pt-2 border-t border-slate-100 space-y-3">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                  SEO / Meta Tags
+                </p>
+                <div>
+                  <Label>URL Slug</Label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[11px] text-slate-400 select-none">/</span>
+                    <Input {...register('slug')} placeholder="auto-generated-from-title" className="pl-5 font-mono text-xs" />
+                  </div>
+                  <p className="text-[10px] text-slate-400 mt-1">Leave blank to auto-generate from title</p>
+                </div>
+                <Input {...register('seoTitle')} placeholder="SEO Title (e.g. Salmon Nigiri | RIN Hobart)" />
+                <Input {...register('seoDescription')} placeholder="Meta Description (50–160 chars)" />
+                <Input {...register('seoKeywords')} placeholder="Meta Keywords (comma separated)" />
+              </div>
 
               {/* UPDATE BUTTON */}
 

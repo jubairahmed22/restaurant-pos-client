@@ -89,12 +89,20 @@ export default function ManageCategories() {
   // Warning dialog state
   const [showDeleteWarning, setShowDeleteWarning] = useState(false);
 
-  const { register, handleSubmit, reset } = useForm<{ title: string }>();
+  type CategoryFormValues = {
+    title: string;
+    slug?: string;
+    seoTitle?: string;
+    seoDescription?: string;
+    seoKeywords?: string;
+  };
+
+  const { register, handleSubmit, reset } = useForm<CategoryFormValues>();
   const {
     register: registerEdit,
     handleSubmit: handleSubmitEdit,
     setValue: setEditValue,
-  } = useForm<{ title: string }>();
+  } = useForm<CategoryFormValues>();
 
   const { data: catRes } = useQuery({
     queryKey: ['admin-categories'],
@@ -169,16 +177,24 @@ export default function ManageCategories() {
     onError: () => toast.error('Delete failed'),
   });
 
-  const onSubmit = (data: { title: string }) => {
+  const onSubmit = (data: CategoryFormValues) => {
     const formData = new FormData();
     formData.append('title', data.title);
+    if (data.slug) formData.append('slug', data.slug);
+    formData.append('seoTitle', data.seoTitle || '');
+    formData.append('seoDescription', data.seoDescription || '');
+    formData.append('seoKeywords', data.seoKeywords || '');
     if (selectedFile) formData.append('image', selectedFile);
     createMutation.mutate(formData);
   };
 
-  const onUpdateSubmit = (data: { title: string }) => {
+  const onUpdateSubmit = (data: CategoryFormValues) => {
     const formData = new FormData();
     formData.append('title', data.title);
+    if (data.slug) formData.append('slug', data.slug);
+    formData.append('seoTitle', data.seoTitle || '');
+    formData.append('seoDescription', data.seoDescription || '');
+    formData.append('seoKeywords', data.seoKeywords || '');
     if (editFile) formData.append('image', editFile);
     updateMutation.mutate({ id: editingCategory._id, formData });
   };
@@ -186,6 +202,10 @@ export default function ManageCategories() {
   const openEditDialog = (cat: any) => {
     setEditingCategory(cat);
     setEditValue('title', cat.title);
+    setEditValue('slug', cat.slug || '');
+    setEditValue('seoTitle', cat.seoTitle || '');
+    setEditValue('seoDescription', cat.seoDescription || '');
+    setEditValue('seoKeywords', cat.seoKeywords || '');
   };
 
   return (
@@ -220,6 +240,33 @@ export default function ManageCategories() {
                 </p>
               </div>
             </div>
+            {/* SEO / Meta Tags */}
+            <div className="pt-2 border-t border-slate-100 space-y-3">
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                SEO / Meta Tags
+              </p>
+              <div>
+                <Label>URL Slug</Label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[11px] text-slate-400 select-none">/</span>
+                  <Input {...register('slug')} placeholder="auto-generated-from-title" className="pl-5 font-mono text-xs" />
+                </div>
+                <p className="text-[10px] text-slate-400 mt-1">Leave blank to auto-generate from title</p>
+              </div>
+              <div>
+                <Label>SEO Title</Label>
+                <Input {...register('seoTitle')} placeholder="e.g. Italian Pizza | RIN Hobart" />
+              </div>
+              <div>
+                <Label>Meta Description</Label>
+                <Input {...register('seoDescription')} placeholder="Short description for search engines (50–160 chars)" />
+              </div>
+              <div>
+                <Label>Meta Keywords</Label>
+                <Input {...register('seoKeywords')} placeholder="keyword1, keyword2, keyword3" />
+              </div>
+            </div>
+
             <Button className="w-full" disabled={createMutation.isPending}>
               {createMutation.isPending
                 ? <Loader2 className="animate-spin" />
@@ -316,6 +363,33 @@ export default function ManageCategories() {
                   Current: {editingCategory.image.split('/').pop()}
                 </p>
               )}
+            </div>
+
+            {/* SEO / Meta Tags */}
+            <div className="pt-2 border-t border-slate-100 space-y-3">
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                SEO / Meta Tags
+              </p>
+              <div>
+                <Label>URL Slug</Label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[11px] text-slate-400 select-none">/</span>
+                  <Input {...registerEdit('slug')} placeholder="auto-generated-from-title" className="pl-5 font-mono text-xs" />
+                </div>
+                <p className="text-[10px] text-slate-400 mt-1">Leave blank to auto-generate from title</p>
+              </div>
+              <div>
+                <Label>SEO Title</Label>
+                <Input {...registerEdit('seoTitle')} placeholder="e.g. Italian Pizza | RIN Hobart" />
+              </div>
+              <div>
+                <Label>Meta Description</Label>
+                <Input {...registerEdit('seoDescription')} placeholder="Short description for search engines (50–160 chars)" />
+              </div>
+              <div>
+                <Label>Meta Keywords</Label>
+                <Input {...registerEdit('seoKeywords')} placeholder="keyword1, keyword2, keyword3" />
+              </div>
             </div>
 
             {/* Action buttons */}

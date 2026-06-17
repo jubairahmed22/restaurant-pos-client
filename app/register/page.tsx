@@ -46,19 +46,10 @@ const slides = [
 
 const registerSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.string().email('Please enter a valid email target'),
-  password: z.string().min(
-    6,
-    'Security password must match 6 characters limit'
-  ),
-  phone: z.string().min(
-    10,
-    'Provide absolute primary routing cell identifier'
-  ),
-  address: z.string().min(
-    5,
-    'Detailed billing address description needed'
-  ),
+  email: z.string().email('Please enter a valid email address'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+  phone: z.string().min(8, 'Please enter a valid Australian phone number'),
+  address: z.string().min(5, 'Please enter your Australian address'),
 });
 
 type RegisterForm = z.infer<typeof registerSchema>;
@@ -254,16 +245,15 @@ export default function RegisterPage() {
                 <label className="block text-[10px] uppercase tracking-[0.2em] font-bold text-slate-400 ml-1">
                   Phone Number
                 </label>
-                <div className="relative group">
-                  <Phone
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#1B3A6B] transition-colors"
-                    size={18}
-                  />
+                <div className="flex items-center bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden focus-within:border-[#1B3A6B] focus-within:bg-white transition-all shadow-sm group">
+                  <span className="flex items-center gap-1.5 px-4 h-full py-3.5 border-r border-slate-200 shrink-0 text-xs font-bold text-slate-500 bg-white select-none">
+                    🇦🇺 +61
+                  </span>
                   <input
-                    type="text"
+                    type="tel"
                     {...register('phone')}
-                    placeholder="+8801XXXXXXXXX"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 pl-12 pr-4 text-[#1B3A6B] font-medium outline-none focus:border-[#1B3A6B] focus:bg-white transition-all shadow-sm"
+                    placeholder="4XX XXX XXX"
+                    className="flex-1 py-3.5 px-4 bg-transparent text-[#1B3A6B] font-medium outline-none text-sm"
                   />
                 </div>
                 {errors.phone && (
@@ -286,7 +276,7 @@ export default function RegisterPage() {
                   <input
                     type="text"
                     {...register('address')}
-                    placeholder="Dhaka, Bangladesh"
+                    placeholder="12 Collins St, Hobart TAS 7000"
                     className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 pl-12 pr-4 text-[#1B3A6B] font-medium outline-none focus:border-[#1B3A6B] focus:bg-white transition-all shadow-sm"
                   />
                 </div>

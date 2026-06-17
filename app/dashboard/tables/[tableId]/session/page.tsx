@@ -18,7 +18,7 @@ import { CategoryService }  from '@/services/category.service';
 import { useSessionItemMutation, useSendToKitchen, SessionItemPayload } from '@/hooks/useOptimisticMutation';
 
 // ── Constants ─────────────────────────────────────────────
-const TAX_RATE     = 0.095;
+const TAX_RATE     = 0.10;   // 10% GST (Australia)
 const SERVICE_RATE = 0.18;
 const ALL_CAT_ID   = '__all__';
 
@@ -131,7 +131,7 @@ function printReceipt(
         <div class="info-row"><span>Subtotal</span><span>${fmt(totals.subtotal)}</span></div>
         ${totals.discount > 0 ? `<div class="info-row disc"><span>Discount</span><span>−${fmt(totals.discount)}</span></div>` : ''}
         <div class="info-row"><span>Service (18%)</span><span>${fmt(totals.serviceChg)}</span></div>
-        <div class="info-row"><span>Tax (9.5%)</span><span>${fmt(totals.tax)}</span></div>
+        <div class="info-row"><span>GST (10%)</span><span>${fmt(totals.tax)}</span></div>
       </div>
       <div class="total-row"><span>TOTAL</span><span>${fmt(totals.total)}</span></div>
       <div class="pay-row">Payment: ${payMethod.toUpperCase()}</div>

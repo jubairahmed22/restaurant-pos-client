@@ -202,15 +202,17 @@ export default function CheckoutPage() {
                       <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
                         Phone <span className="text-red-400">*</span>
                       </label>
-                      <div className="relative">
-                        <Phone size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                      <div className="flex items-center h-11 bg-slate-50 border border-slate-200 rounded-xl overflow-hidden focus-within:border-[#1B3A6B] focus-within:ring-4 focus-within:ring-[#1B3A6B]/5 transition">
+                        <span className="flex items-center gap-1.5 px-3 h-full border-r border-slate-200 shrink-0 text-xs font-bold text-slate-500 bg-white select-none">
+                          🇦🇺 +61
+                        </span>
                         <input
                           type="tel"
                           value={phone}
                           onChange={e => setPhone(e.target.value)}
-                          placeholder="+61 4XX XXX XXX"
+                          placeholder="4XX XXX XXX"
                           required
-                          className="w-full h-11 pl-10 pr-4 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 placeholder-slate-400 outline-none focus:border-[#1B3A6B] focus:ring-4 focus:ring-[#1B3A6B]/5 transition"
+                          className="flex-1 h-full px-3 bg-transparent text-sm text-slate-800 placeholder-slate-400 outline-none"
                         />
                       </div>
                     </div>

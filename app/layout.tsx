@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from 'next';
 import { Plus_Jakarta_Sans } from 'next/font/google';
-import Script from 'next/script';
 import Providers from './providers';
 import './globals.css';
 
@@ -153,13 +152,14 @@ const jsonLd = {
   },
 
   openingHoursSpecification: [
+    // Monday — Closed
     { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Monday', opens: '00:00', closes: '00:00' },
-    { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Tuesday',   opens: '16:00', closes: '22:00' },
-    { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Wednesday', opens: '16:00', closes: '22:00' },
-    { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Thursday',  opens: '16:00', closes: '22:00' },
-    { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Friday',    opens: '17:00', closes: '22:00' },
-    { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Saturday',  opens: '17:00', closes: '22:00' },
-    { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Sunday',    opens: '17:00', closes: '22:00' },
+    // Sunday — Closed
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: 'Sunday', opens: '00:00', closes: '00:00' },
+    // Tue–Sat Lunch
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Tuesday','Wednesday','Thursday','Friday','Saturday'], opens: '11:30', closes: '14:30' },
+    // Tue–Sat Dinner
+    { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Tuesday','Wednesday','Thursday','Friday','Saturday'], opens: '17:00', closes: '20:30' },
   ],
 
   sameAs: [

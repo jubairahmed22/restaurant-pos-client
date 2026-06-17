@@ -20,6 +20,9 @@ import {
   ShoppingCart,
   Store,
   Receipt,
+  BarChart2,
+  FileText,
+  Newspaper,
 } from 'lucide-react';
 
 import { usePathname, useRouter } from 'next/navigation';
@@ -51,6 +54,9 @@ export default function DashboardLayout({
     { label: 'FOOD ITEMS',   icon: PlusCircle,      href: '/dashboard/foods' },
     { label: 'CATEGORIES',   icon: FolderTree,      href: '/dashboard/categories' },
     { label: 'TRANSACTIONS', icon: CreditCard,      href: '/dashboard/transactions' },
+    { label: 'ANALYTICS',    icon: BarChart2,       href: '/dashboard/analytics' },
+    { label: 'REPORTS',      icon: FileText,        href: '/dashboard/reports' },
+    { label: 'CONTENT',      icon: Newspaper,       href: '/dashboard/content' },
   ];
 
   const shopItems = [

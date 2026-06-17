@@ -274,11 +274,14 @@ export default function ShopCartPanel({ onClose }: Props) {
                 onChange={e => setCustomer(c => ({ ...c, fullName: e.target.value }))}
               />
             </div>
-            <div className="relative">
-              <Phone size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+            <div className="flex items-center h-10 border border-slate-200 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-[#1B3A6B]/20 bg-white">
+              <span className="flex items-center gap-1.5 px-3 h-full border-r border-slate-200 shrink-0 text-xs font-bold text-slate-500 select-none">
+                🇦🇺 +61
+              </span>
               <input
-                className="w-full h-10 pl-9 pr-3 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1B3A6B]/20 bg-white"
-                placeholder="Phone *"
+                type="tel"
+                className="flex-1 h-full px-3 text-sm outline-none text-slate-800 placeholder-slate-400 bg-transparent"
+                placeholder="4XX XXX XXX"
                 value={customer.phone}
                 onChange={e => setCustomer(c => ({ ...c, phone: e.target.value }))}
               />

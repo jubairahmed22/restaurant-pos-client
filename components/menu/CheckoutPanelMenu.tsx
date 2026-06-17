@@ -11,6 +11,8 @@ import OrderItemMenu from './OrderItemMenu';
 import AddressAutocomplete from '@/components/shared/AddressAutocomplete';
 import api from '@/services/axios';
 import { usePickupStore } from '@/store/pickupStore';
+import { getAttribution } from '@/lib/attribution';
+import { track } from '@/lib/analytics-tracker';
 
 /* ═══════════════════════════════════════════════════════════════════════════════
    TYPES
@@ -115,7 +117,7 @@ function buildReceiptHTML(
   <div class="dashed"></div>
   <table><tbody>
     <tr><td class="sl">Subtotal</td><td class="sv">A$${subtotal.toFixed(2)}</td></tr>
-    <tr><td class="sl">Tax (12.5%)</td><td class="sv">A$${tax.toFixed(2)}</td></tr>
+    <tr><td class="sl">GST (10%)</td><td class="sv">A$${tax.toFixed(2)}</td></tr>
   </tbody></table>
   <div class="solid"></div>
   <table><tbody>
@@ -146,12 +148,17 @@ function printReceipt(
    TRANSPARENT INPUT (reusable form field)
 ═══════════════════════════════════════════════════════════════════════════════ */
 
-function TransparentInput({ icon, placeholder, value, onChange, isTextArea = false, type = 'text' }: any) {
+function TransparentInput({ icon, placeholder, value, onChange, isTextArea = false, type = 'text', prefix }: any) {
   return (
     <div className="flex items-start gap-3 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus-within:border-[#1B3A6B] focus-within:bg-white transition-all group">
       <span className="mt-0.5 text-slate-400 group-focus-within:text-[#1B3A6B] transition-colors shrink-0">
         {icon}
       </span>
+      {prefix && (
+        <span className="self-center text-xs font-bold text-slate-500 shrink-0 border-r border-slate-200 pr-2.5 leading-none select-none">
+          {prefix}
+        </span>
+      )}
       {isTextArea ? (
         <textarea
           rows={2}
@@ -337,10 +344,13 @@ function SquarePaymentStep({
         subtotal,
         deliveryCharge:  tax,
         total,
+        attribution:     getAttribution(),
       });
 
       if (data.success) {
-        onSuccess(data.data?.orderId || data.data?._id || '');
+        const orderId = data.data?.orderId || data.data?._id || '';
+        track.purchase(orderId, total, 'square');
+        onSuccess(orderId);
       }
     } catch (err: any) {
       // Log full error so we can see exactly what Square / backend returned
@@ -354,6 +364,7 @@ function SquarePaymentStep({
         err.response?.data?.message ||
         err.message ||
         'Payment failed. Please try again.';
+      track.paymentFailed(msg);
       setCardError(msg);
     } finally {
       setIsProcessing(false);
@@ -436,7 +447,7 @@ function SquarePaymentStep({
               <span>Subtotal</span><span>A${subtotal.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-xs text-slate-500">
-              <span>Tax (12.5%)</span><span>A${tax.toFixed(2)}</span>
+              <span>GST (10%)</span><span>A${tax.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-sm font-bold text-[#1B3A6B] pt-1 border-t border-slate-200">
               <span>Total</span><span>A${total.toFixed(2)}</span>
@@ -611,8 +622,11 @@ export default function CheckoutPanelMenu({
         pickupTime:         pickup.time,
         pickupDisplayDate:  pickup.displayDate,
         pickupDisplayTime:  pickup.displayTime,
+        attribution:        getAttribution(),
       });
       if (data.success) {
+        const orderId = data.data?.orderId || data.data?._id || '';
+        track.purchase(orderId, total, 'cash');
         await queryClient.invalidateQueries({ queryKey: ['admin-orders'] });
         clearCartAndStorage();
         setCustomer(EMPTY_CUSTOMER);
@@ -675,7 +689,7 @@ export default function CheckoutPanelMenu({
                   value={customer.fullName}  onChange={(v: string) => handleField('fullName', v)}
                 />
                 <TransparentInput
-                  icon={<Phone size={14} />} placeholder="Phone *"
+                  icon={<Phone size={14} />} prefix="🇦🇺 +61" placeholder="4XX XXX XXX"
                   value={customer.phone}     onChange={(v: string) => handleField('phone', v)}
                   type="tel"
                 />
@@ -700,7 +714,7 @@ export default function CheckoutPanelMenu({
                 <span className="text-[#1B3A6B] font-bold">A${subtotal.toFixed(2)}</span>
               </div>
               <div className="flex justify-between text-sm text-slate-500 font-medium">
-                <span>Tax (12.5%)</span>
+                <span>GST (10%)</span>
                 <span className="text-[#1B3A6B] font-bold">A${tax.toFixed(2)}</span>
               </div>
               <div className="flex justify-between items-end pt-3 border-t border-slate-100">

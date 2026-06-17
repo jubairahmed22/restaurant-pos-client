@@ -11,6 +11,14 @@ export interface OrderItemPayload {
   quantity: number;
 }
 
+export interface OrderAttribution {
+  source:      string;
+  medium:      string;
+  campaign:    string;
+  referrer:    string;
+  landingPage: string;
+}
+
 export interface CreateOrderPayload {
   items: OrderItemPayload[];
 
@@ -23,6 +31,13 @@ export interface CreateOrderPayload {
   phone: string;
 
   shippingAddress: string;
+
+  attribution?: OrderAttribution;
+
+  pickupDate?:        string;
+  pickupTime?:        string;
+  pickupDisplayDate?: string;
+  pickupDisplayTime?: string;
 }
 
 export interface UpdateOrderStatusPayload {

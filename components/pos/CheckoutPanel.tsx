@@ -237,9 +237,12 @@ export default function CheckoutPanel({
 
             {/* Phone */}
             <InputRow icon={<Phone size={14} />}>
+              <span className="text-xs font-bold text-slate-500 shrink-0 border-r border-slate-200 pr-2.5 mr-1 leading-none select-none">
+                🇦🇺 +61
+              </span>
               <input
                 type="tel"
-                placeholder="Phone Number"
+                placeholder="4XX XXX XXX"
                 value={customer.phone}
                 onChange={(e) => handleField('phone', e.target.value)}
                 className="flex-1 text-sm outline-none placeholder-slate-400 text-slate-800 min-w-0"
