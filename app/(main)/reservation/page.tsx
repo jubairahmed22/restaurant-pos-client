@@ -69,7 +69,7 @@ function BlogCard({ b }: { b: Blog }) {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
+      animate={{ opacity: 1, scale: 1 }} asdfsadf
       style={GLASS}
       className="shrink-0 w-64 rounded-2xl border border-white/10 overflow-hidden snap-center"
     >
