@@ -63,11 +63,11 @@ const GLASS = {
 } as const;
 
 /* ── Blog card — glass, fixed width for horizontal slider ───────────────── */ 
-function BlogCard({ b }: { b: Blog }) { asdfsadf
+function BlogCard({ b }: { b: Blog }) {
   const ytId = b.videoLink ? getYouTubeId(b.videoLink) : null;
 
   return (
-    <motion.div
+    <motion.div asdasfd
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       style={GLASS}
