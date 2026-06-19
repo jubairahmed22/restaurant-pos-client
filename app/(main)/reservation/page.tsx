@@ -4,7 +4,6 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { ReservationService } from '@/services/reservationService';
-import { ReviewService, type Review } from '@/services/review.service';
 import { BlogService, type Blog } from '@/services/blog.service';
 import toast from 'react-hot-toast';
 import { generateReservationSlots, isOpenDay } from '@/lib/schedule';
@@ -62,43 +61,6 @@ const GLASS = {
   backdropFilter: 'blur(18px)',
   WebkitBackdropFilter: 'blur(18px)',
 } as const;
-
-/* ── Review card — glass, fixed width for horizontal slider ─────────────── */
-function ReviewCard({ r }: { r: Review }) {
-  return (
-    <motion.a
-      href={r.url}
-      target="_blank"
-      rel="noopener noreferrer"
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      style={GLASS}
-      className="group shrink-0 w-64 block rounded-2xl border border-white/10 overflow-hidden hover:border-white/25 transition-all snap-center"
-    >
-      {r.image && (
-        <div className="relative w-full h-36 overflow-hidden">
-          <Image src={r.image} alt={r.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" unoptimized />
-          <div className="absolute inset-0 bg-linear-to-t from-black/30 to-transparent" />
-        </div>
-      )}
-      <div className="p-3.5">
-        <div className="flex items-center gap-2 mb-2">
-          {r.favicon && (
-            <Image src={r.favicon} alt="" width={12} height={12} className="rounded-sm shrink-0" unoptimized />
-          )}
-          <span className="text-white/45 text-[9px] font-black uppercase tracking-widest truncate">
-            {r.domain || getDomain(r.url)}
-          </span>
-          <ExternalLink size={9} className="text-white/25 shrink-0 ml-auto" />
-        </div>
-        <p className="text-white font-bold text-xs leading-snug line-clamp-2">{r.title || r.url}</p>
-        {r.description && (
-          <p className="text-white/50 text-[10px] mt-1.5 leading-relaxed line-clamp-2">{r.description}</p>
-        )}
-      </div>
-    </motion.a>
-  );
-}
 
 /* ── Blog card — glass, fixed width for horizontal slider ───────────────── */
 function BlogCard({ b }: { b: Blog }) {
@@ -165,24 +127,15 @@ function BlogCard({ b }: { b: Blog }) {
   );
 }
 
-/* ── Bottom horizontal card slider ──────────────────────────────────────── */
+/* ── Bottom horizontal blog slider ──────────────────────────────────────── */
 function ContentFeed() {
-  const { data: reviews = [], isLoading: rvLoad } = useQuery({
-    queryKey: ['reviews'],
-    queryFn: ReviewService.getAll,
-    staleTime: 2 * 60 * 1000,
-  });
-
-  const { data: blogs = [], isLoading: blLoad } = useQuery({
+  const { data: blogs = [], isLoading } = useQuery({
     queryKey: ['blogs'],
     queryFn: BlogService.getAll,
     staleTime: 2 * 60 * 1000,
   });
 
-  const loading = rvLoad || blLoad;
-  const hasContent = reviews.length > 0 || blogs.length > 0;
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="px-5 pb-6 flex items-center gap-2 text-white/40 text-xs">
         <Loader2 size={13} className="animate-spin" /> Loading…
@@ -190,19 +143,93 @@ function ContentFeed() {
     );
   }
 
-  if (!hasContent) return null;
+  if (blogs.length === 0) return null;
 
   return (
     <div className="pb-5 pt-3">
-      {/* Section label */}
       <p className="text-white/35 text-[9px] font-black uppercase tracking-widest px-5 mb-3">
-        Reviews & Stories
+        Our Stories
       </p>
-
-      {/* Horizontal snap scroll */}
       <div className="flex flex-row gap-3 overflow-x-auto no-scrollbar px-5 pb-1 snap-x snap-mandatory">
-        {reviews.map(r => <ReviewCard key={r._id} r={r} />)}
         {blogs.map(b => <BlogCard key={b._id} b={b} />)}
+      </div>
+    </div>
+  );
+}
+
+/* ── Mobile/tablet blog grid (right-panel, above social links) ───────────── */
+function MobileBlogSection() {
+  const { data: blogs = [] } = useQuery({
+    queryKey: ['blogs'],
+    queryFn: BlogService.getAll,
+    staleTime: 2 * 60 * 1000,
+  });
+
+  if (blogs.length === 0) return null;
+
+  return (
+    <div className="lg:hidden w-full bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden shrink-0">
+      <p className="text-[#1B3A6B] text-[10px] font-black uppercase tracking-widest opacity-60 px-5 pt-5 pb-3">
+        Our Stories
+      </p>
+      <div className="grid grid-cols-2 gap-2 px-4 pb-4">
+        {blogs.map(b => {
+          const ytId = b.videoLink ? getYouTubeId(b.videoLink) : null;
+          const thumb = b.images[0] || (ytId ? `https://img.youtube.com/vi/${ytId}/mqdefault.jpg` : null);
+
+          return (
+            <div key={b._id} className="bg-slate-50 rounded-xl border border-slate-100 overflow-hidden">
+              {/* Thumbnail — Cloudinary image or YouTube poster */}
+              {thumb && (
+                <div className="relative w-full h-28 overflow-hidden bg-slate-200">
+                  <Image
+                    src={thumb}
+                    alt={b.title}
+                    fill
+                    className="object-cover"
+                    unoptimized
+                  />
+                  {/* Play badge for YouTube */}
+                  {ytId && !b.images[0] && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                      <div className="w-8 h-8 bg-white/90 rounded-full flex items-center justify-center shadow">
+                        <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-[#1B3A6B] ml-0.5">
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      </div>
+                    </div>
+                  )}
+                  {/* Image count badge */}
+                  {b.images.length > 1 && (
+                    <div className="absolute bottom-1.5 right-1.5 bg-black/60 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full">
+                      +{b.images.length - 1}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Video link row (non-YouTube, no image) */}
+              {!thumb && b.videoLink && (
+                <a
+                  href={b.videoLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-1.5 px-2.5 pt-2.5 text-[#1B3A6B]/60 text-[9px] hover:text-[#1B3A6B] transition-colors"
+                >
+                  <FileVideo size={11} className="shrink-0" />
+                  <span className="truncate">{getDomain(b.videoLink)}</span>
+                </a>
+              )}
+
+              <div className="p-2.5">
+                <p className="text-[#1B3A6B] font-bold text-[10px] leading-snug line-clamp-2">{b.title}</p>
+                {b.paragraph && (
+                  <p className="text-slate-400 text-[9px] mt-1 leading-relaxed line-clamp-2">{b.paragraph}</p>
+                )}
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -265,11 +292,9 @@ export default function BookingPage() {
         <Image src={heroImg} alt="RIN Restaurant" fill className="object-cover" priority />
         <div className="absolute inset-0 bg-black/45" />
 
-        {/* Bottom-fade gradient behind slider */}
-        <div className="absolute bottom-0 left-0 right-0 h-52 bg-linear-to-t from-black/70 to-transparent pointer-events-none z-10" />
-
-        {/* Horizontal card slider pinned at bottom */}
-        <div className="absolute bottom-0 left-0 right-0 z-20">
+        {/* Bottom-fade gradient + slider — desktop only */}
+        <div className="hidden lg:block absolute bottom-0 left-0 right-0 h-52 bg-linear-to-t from-black/70 to-transparent pointer-events-none z-10" />
+        <div className="hidden lg:block absolute bottom-0 left-0 right-0 z-20">
           <ContentFeed />
         </div>
       </div>
@@ -367,6 +392,9 @@ export default function BookingPage() {
             ))}
           </div>
         </div>
+
+        {/* Blogs — mobile/tablet only */}
+        <MobileBlogSection />
 
         {/* Social links */}
         <div className="flex flex-col gap-3 flex-shrink-0">

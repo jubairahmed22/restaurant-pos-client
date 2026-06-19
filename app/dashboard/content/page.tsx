@@ -32,8 +32,15 @@ function ReviewPreviewCard({ r, onDelete }: { r: Review; onDelete?: () => void }
       onClick={e => onDelete && e.preventDefault()}
     >
       {r.image && (
-        <div className="relative w-full h-44 overflow-hidden bg-slate-100">
-          <Image src={r.image} alt={r.title} fill className="object-cover" unoptimized />
+        <div className="w-full h-44 overflow-hidden bg-slate-100">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={r.image}
+            alt={r.title}
+            referrerPolicy="no-referrer"
+            className="w-full h-full object-cover"
+            onError={e => { (e.currentTarget.parentElement as HTMLElement).style.display = 'none'; }}
+          />
         </div>
       )}
       <div className="p-4">
@@ -151,7 +158,10 @@ function ReviewsTab() {
       setUrl('');
       toast.success('Review saved');
     },
-    onError: () => toast.error('Failed to save review'),
+    onError: (err: unknown) => {
+      const msg = (err as { response?: { data?: { error?: string } } })?.response?.data?.error;
+      toast.error(msg === 'Duplicate field value entered.' ? 'This URL is already saved.' : 'Failed to save review');
+    },
   });
 
   const deleteMut = useMutation({
@@ -569,7 +579,7 @@ export default function ContentPage() {
       <div className="mb-8">
         <h1 className="text-3xl font-serif italic text-[#1B3A6B]">Content</h1>
         <p className="text-slate-400 text-sm mt-1 font-medium">
-          Manage articles, reviews, and blog posts shown on the Reservation page.
+          Reviews & Articles → /restaurant page · Blogs → /reservation page
         </p>
       </div>
 
@@ -586,7 +596,7 @@ export default function ContentPage() {
           >
             {label}
             {tab === key && (
-              <span className="absolute bottom-[-2px] left-0 right-0 h-[3px] bg-[#1B3A6B] rounded-t-full" />
+              <span className="absolute -bottom-0.5 left-0 right-0 h-0.75 bg-[#1B3A6B] rounded-t-full" />
             )}
           </button>
         ))}

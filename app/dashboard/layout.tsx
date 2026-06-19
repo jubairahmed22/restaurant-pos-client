@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   LayoutDashboard,
   ShoppingBag,
@@ -9,7 +9,6 @@ import {
   LayoutGrid,
   LogOut,
   Bell,
-  Moon,
   Menu,
   X,
   ChevronRight,
@@ -23,13 +22,27 @@ import {
   BarChart2,
   FileText,
   Newspaper,
+  UtensilsCrossed,
+  CalendarCheck,
 } from 'lucide-react';
+import { io } from 'socket.io-client';
 
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 import { useAuthStore } from '@/store/authStore';
 import toast from 'react-hot-toast';
+
+type NotifKind = 'order' | 'reservation';
+
+interface Notif {
+  id: string;
+  kind: NotifKind;
+  title: string;
+  subtitle: string;
+  time: Date;
+  read: boolean;
+}
 
 export default function DashboardLayout({
   children,
@@ -42,9 +55,66 @@ export default function DashboardLayout({
   const [isSidebarOpen,  setIsSidebarOpen]  = useState(false);
   const [isProfileOpen,  setIsProfileOpen]  = useState(false);
   const [isShopOpen,     setIsShopOpen]     = useState(() => pathname.startsWith('/dashboard/shop'));
+  const [isNotifOpen,    setIsNotifOpen]    = useState(false);
+  const [notifications,  setNotifications]  = useState<Notif[]>([]);
+
+  const notifRef = useRef<HTMLDivElement>(null);
 
   // AUTH USER
   const { user, logout } = useAuthStore();
+
+  // ── Socket.IO notification listener ──────────────────────────────────
+  useEffect(() => {
+    const socket = io('http://localhost:51000', { transports: ['websocket', 'polling'] });
+
+    socket.on('connect', () => {
+      socket.emit('join-room', 'admin-room');
+    });
+
+    socket.on('notification:newOrder', (data: { _id: string; orderId?: string; fullName: string; total: number; createdAt: string }) => {
+      const notif: Notif = {
+        id: data._id,
+        kind: 'order',
+        title: 'New Order',
+        subtitle: `${data.fullName} — $${data.total.toFixed(2)}`,
+        time: new Date(data.createdAt || Date.now()),
+        read: false,
+      };
+      setNotifications(prev => [notif, ...prev].slice(0, 50));
+      toast.success(`New order from ${data.fullName}`);
+    });
+
+    socket.on('notification:newReservation', (data: { _id: string; fullName: string; people: number; date: string; time: string; createdAt: string }) => {
+      const notif: Notif = {
+        id: data._id,
+        kind: 'reservation',
+        title: 'New Reservation',
+        subtitle: `${data.fullName} · ${data.people} guests · ${data.date} ${data.time}`,
+        time: new Date(data.createdAt || Date.now()),
+        read: false,
+      };
+      setNotifications(prev => [notif, ...prev].slice(0, 50));
+      toast.success(`New reservation from ${data.fullName}`);
+    });
+
+    return () => { socket.disconnect(); };
+  }, []);
+
+  // ── Close notif dropdown on outside click ────────────────────────────
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
+        setIsNotifOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const unreadCount = notifications.filter(n => !n.read).length;
+
+  const markAllRead = () =>
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
 
   const mainItems = [
     { label: 'DASHBOARD',    icon: LayoutDashboard, href: '/dashboard',            badge: '9+' },
@@ -73,9 +143,7 @@ export default function DashboardLayout({
 
   const handleLogout = () => {
     logout();
-
     toast.success('Successfully logged out');
-
     router.push('/login');
   };
 
@@ -114,20 +182,65 @@ export default function DashboardLayout({
         {/* RIGHT */}
         <div className="flex items-center gap-3 text-white">
 
-          {/* ACTIONS */}
-          <div className="hidden sm:flex items-center gap-2">
-
-            <button className="p-2 hover:bg-white/10 rounded-full transition">
-              <Moon size={18} />
-            </button>
-
-            <button className="p-2 hover:bg-white/10 rounded-full transition relative">
+          {/* NOTIFICATION BELL */}
+          <div className="hidden sm:block relative" ref={notifRef}>
+            <button
+              onClick={() => {
+                setIsNotifOpen(v => !v);
+                if (!isNotifOpen) markAllRead();
+              }}
+              className="p-2 hover:bg-white/10 rounded-full transition relative"
+            >
               <Bell size={18} />
-
-              <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-[9px] flex items-center justify-center rounded-full font-bold border border-[#1B3A6B]">
-                2
-              </span>
+              {unreadCount > 0 && (
+                <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-[9px] flex items-center justify-center rounded-full font-bold border border-[#1B3A6B]">
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </span>
+              )}
             </button>
+
+            {/* NOTIFICATION DROPDOWN */}
+            {isNotifOpen && (
+              <div className="absolute right-0 mt-3 w-80 bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-200">
+                {/* Header */}
+                <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100">
+                  <p className="text-sm font-bold text-slate-800">Notifications</p>
+                  {notifications.length > 0 && (
+                    <button
+                      onClick={() => setNotifications([])}
+                      className="text-[11px] text-slate-400 hover:text-red-400 transition"
+                    >
+                      Clear all
+                    </button>
+                  )}
+                </div>
+
+                {/* List */}
+                <div className="max-h-80 overflow-y-auto">
+                  {notifications.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-10 gap-2 text-slate-400">
+                      <Bell size={28} strokeWidth={1.5} />
+                      <p className="text-xs">No notifications yet</p>
+                    </div>
+                  ) : (
+                    notifications.map(n => (
+                      <div key={n.id} className="flex items-start gap-3 px-4 py-3 border-b border-slate-50 hover:bg-slate-50 transition">
+                        <div className={`mt-0.5 p-2 rounded-xl shrink-0 ${n.kind === 'order' ? 'bg-[#C05428]/10 text-[#C05428]' : 'bg-[#1B3A6B]/10 text-[#1B3A6B]'}`}>
+                          {n.kind === 'order' ? <UtensilsCrossed size={14} /> : <CalendarCheck size={14} />}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[13px] font-semibold text-slate-800">{n.title}</p>
+                          <p className="text-[12px] text-slate-500 truncate">{n.subtitle}</p>
+                          <p className="text-[10px] text-slate-400 mt-0.5">
+                            {n.time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </p>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* PROFILE */}

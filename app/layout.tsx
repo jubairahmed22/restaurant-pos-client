@@ -100,18 +100,21 @@ export const metadata: Metadata = {
     images: [OG_IMAGE],
   },
 
-  // Icons (put Rin_Logo.png in /public/)
+  // Icons — all pointing at Rin_Logo.png in /public/
   icons: {
     icon: [
-      { url: '/favicon.ico' },
       { url: '/Rin_Logo.png', type: 'image/png' },
+      { url: '/favicon.ico',  sizes: '48x48' },
     ],
-    apple: '/Rin_Logo.png',
+    apple:   [{ url: '/Rin_Logo.png', type: 'image/png' }],
     shortcut: '/Rin_Logo.png',
+    other: [
+      { rel: 'icon', url: '/Rin_Logo.png', type: 'image/png' },
+    ],
   },
 
-  // Manifest (optional — create /public/manifest.json for PWA)
-  // manifest: '/manifest.json',
+  // Web app manifest (PWA / share icon)
+  manifest: '/manifest.json',
 
   // Verification (add your Google Search Console token here)
   // verification: { google: 'YOUR_TOKEN' },
@@ -200,7 +203,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         className={`${jakartaSans.variable} font-sans antialiased bg-white text-slate-600 min-h-full flex flex-col`}
       >
         <Providers>
-          <div className="flex-grow">{children}</div>
+          <div className="grow">{children}</div>
         </Providers>
       </body>
     </html>

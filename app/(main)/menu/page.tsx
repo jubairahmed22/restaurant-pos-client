@@ -22,6 +22,7 @@ interface CartItem {
   _id: string;
   title: string;
   price: number;
+  image?: string;
   qty: number;
 }
 
@@ -31,6 +32,7 @@ interface FoodApiItem {
   title: string;
   description?: string;
   price: number;
+  image?: string;
   category: string | { _id: string };
 }
 
@@ -104,7 +106,7 @@ function MenuPageInner() {
       const exists = prev.find((x) => x._id === food._id);
       return exists
         ? prev.map((x) => x._id === food._id ? { ...x, qty: x.qty + 1 } : x)
-        : [...prev, { _id: food._id, title: food.title, price: food.price, qty: 1 }];
+        : [...prev, { _id: food._id, title: food.title, price: food.price, image: food.image, qty: 1 }];
     });
 
   const increaseQty = (id: string) =>

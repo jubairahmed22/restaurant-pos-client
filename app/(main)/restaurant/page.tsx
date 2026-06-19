@@ -2,7 +2,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Phone, Mail, MapPin } from 'lucide-react';
+import { Phone, Mail, MapPin, ExternalLink } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { ReviewService, type Review } from '@/services/review.service';
 
 // Inline Facebook SVG (lucide-react removed it in v0.363+)
 const FacebookIcon = ({ size = 18 }: { size?: number }) => (
@@ -74,6 +76,134 @@ const openingHours = [
   { day: 'Sunday',              time: 'Closed' },
 ];
 
+/* ── Review helpers + glass constant ────────────────────────────────────── */
+function getDomain(url: string) {
+  try { return new URL(url).hostname.replace(/^www\./, ''); } catch { return url; }
+}
+
+const GLASS = {
+  background: 'rgba(15, 8, 4, 0.68)',
+  backdropFilter: 'blur(18px)',
+  WebkitBackdropFilter: 'blur(18px)',
+} as const;
+
+/* ── Review card — glass, fixed width for horizontal slider ─────────────── */
+function ReviewCard({ r }: { r: Review }) {
+  return (
+    <motion.a
+      href={r.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      style={GLASS}
+      className="group shrink-0 w-64 block rounded-2xl border border-white/10 overflow-hidden hover:border-white/25 transition-all snap-center"
+    >
+      {r.image && (
+        <div className="w-full h-36 overflow-hidden bg-black/30">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={r.image}
+            alt={r.title}
+            referrerPolicy="no-referrer"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            onError={e => { (e.currentTarget.parentElement as HTMLElement).style.display = 'none'; }}
+          />
+        </div>
+      )}
+      <div className="p-3.5">
+        <div className="flex items-center gap-2 mb-2">
+          {r.favicon && (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img src={r.favicon} alt="" referrerPolicy="no-referrer" width={12} height={12} className="rounded-sm shrink-0" />
+          )}
+          <span className="text-white/45 text-[9px] font-black uppercase tracking-widest truncate">
+            {r.domain || getDomain(r.url)}
+          </span>
+          <ExternalLink size={9} className="text-white/25 shrink-0 ml-auto" />
+        </div>
+        <p className="text-white font-bold text-xs leading-snug line-clamp-2">{r.title || r.url}</p>
+        {r.description && (
+          <p className="text-white/50 text-[10px] mt-1.5 leading-relaxed line-clamp-2">{r.description}</p>
+        )}
+      </div>
+    </motion.a>
+  );
+}
+
+/* ── Horizontal review slider (pinned at bottom of left panel) ──────────── */
+function ReviewSlider() {
+  const { data: reviews = [] } = useQuery({
+    queryKey: ['reviews'],
+    queryFn: ReviewService.getAll,
+    staleTime: 2 * 60 * 1000,
+  });
+
+  if (reviews.length === 0) return null;
+
+  return (
+    <div className="pb-5 pt-3">
+      <p className="text-white/35 text-[9px] font-black uppercase tracking-widest px-5 mb-3">
+        Articles & Reviews
+      </p>
+      <div className="flex flex-row gap-3 overflow-x-auto no-scrollbar px-5 pb-1 snap-x snap-mandatory">
+        {reviews.map(r => <ReviewCard key={r._id} r={r} />)}
+      </div>
+    </div>
+  );
+}
+
+/* ── Mobile/tablet review grid (right-panel, above social links) ─────────── */
+function MobileReviewSection() {
+  const { data: reviews = [] } = useQuery({
+    queryKey: ['reviews'],
+    queryFn: ReviewService.getAll,
+    staleTime: 2 * 60 * 1000,
+  });
+
+  if (reviews.length === 0) return null;
+
+  return (
+    <div className="lg:hidden w-full bg-slate-50 rounded-3xl border border-slate-100/80 shadow-sm overflow-hidden">
+      <h4 className="text-slate-400 text-xs font-bold uppercase tracking-widest px-6 pt-6 pb-3">
+        Articles & Reviews
+      </h4>
+      <div className="grid grid-cols-2 gap-2 px-4 pb-4">
+        {reviews.map(r => (
+          <a key={r._id} href={r.url} target="_blank" rel="noopener noreferrer"
+            className="group block bg-white rounded-2xl border border-slate-100 overflow-hidden hover:shadow-sm transition-all"
+          >
+            {r.image && (
+              <div className="w-full h-24 overflow-hidden bg-slate-100">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={r.image} alt={r.title} referrerPolicy="no-referrer"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  onError={e => { (e.currentTarget.parentElement as HTMLElement).style.display = 'none'; }}
+                />
+              </div>
+            )}
+            <div className="p-2.5">
+              <div className="flex items-center gap-1.5 mb-1">
+                {r.favicon && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={r.favicon} alt="" referrerPolicy="no-referrer" width={10} height={10} className="rounded-sm shrink-0" />
+                )}
+                <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest truncate">
+                  {r.domain || getDomain(r.url)}
+                </span>
+              </div>
+              <p className="text-[#1B3A6B] font-bold text-[10px] leading-snug line-clamp-3">
+                {r.title || r.url}
+              </p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 const Page = () => {
   const [current,  setCurrent]  = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -121,8 +251,11 @@ const Page = () => {
           </motion.div>
         </AnimatePresence>
 
-        {/* Testimonial card */}
-    
+        {/* Bottom-fade gradient + slider — desktop only */}
+        <div className="hidden lg:block absolute bottom-0 left-0 right-0 h-52 bg-linear-to-t from-black/70 to-transparent pointer-events-none z-10" />
+        <div className="hidden lg:block absolute bottom-0 left-0 right-0 z-20">
+          <ReviewSlider />
+        </div>
       </div>
 
       {/* ── RIGHT: Info panel ─────────────────────────── */}
@@ -197,6 +330,9 @@ const Page = () => {
             referrerPolicy="no-referrer-when-downgrade"
           />
         </div>
+
+        {/* Reviews — mobile/tablet only */}
+        <MobileReviewSection />
 
         {/* Social Links */}
            <div className="flex flex-col gap-3 flex-shrink-0">

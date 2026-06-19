@@ -18,6 +18,9 @@ const nextConfig: NextConfig = {
       { protocol: 'http',  hostname: 'ortazz.com.au' },
       // UI avatars (used in dashboard)
       { protocol: 'https', hostname: 'ui-avatars.com' },
+      // OG images from arbitrary external review/article links
+      { protocol: 'https', hostname: '**' },
+      { protocol: 'http',  hostname: '**' },
     ],
   },
 

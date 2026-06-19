@@ -1,0 +1,25 @@
+{
+  "name": "RIN Japanese Restaurant Hobart",
+  "short_name": "RIN Restaurant",
+  "description": "Authentic Japanese cuisine in Hobart, Tasmania. Eat in or take away at 196 Macquarie Street.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1B3A6B",
+  "theme_color": "#1B3A6B",
+  "lang": "en-AU",
+  "icons": [
+    {
+      "src": "/Rin_Logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/Rin_Logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["food", "restaurants"]
+}
