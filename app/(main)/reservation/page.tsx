@@ -63,7 +63,7 @@ const GLASS = {
 } as const;
 
 /* ── Blog card — glass, fixed width for horizontal slider ───────────────── */ 
-function BlogCard({ b }: { b: Blog }) {
+function BlogCard({ b }: { b: Blog }) { sdfsdfsa
   const ytId = b.videoLink ? getYouTubeId(b.videoLink) : null;
 
   return (
