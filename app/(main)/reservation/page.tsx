@@ -62,8 +62,8 @@ const GLASS = {
   WebkitBackdropFilter: 'blur(18px)',
 } as const;
 
-/* ── Blog card — glass, fixed width for horizontal slider ───────────────── */
-function BlogCard({ b }: { b: Blog }) {
+/* ── Blog card — glass, fixed width for horizontal slider ───────────────── */ 
+function BlogCard({ b }: { b: Blog }) { sadfsafd
   const ytId = b.videoLink ? getYouTubeId(b.videoLink) : null;
 
   return (
