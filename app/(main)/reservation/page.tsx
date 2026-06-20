@@ -89,7 +89,7 @@ function BlogCard({ b }: { b: Blog }) {
             </div>
           )}
         </div>
-      )} sdsdafa
+      )}
 
       {/* YouTube embed */}
       {!b.images.length && ytId && (
