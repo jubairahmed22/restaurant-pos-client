@@ -102,7 +102,7 @@ function BlogCard({ b }: { b: Blog }) {
           />
         </div>
       )}
- adfsda
+
       {/* Non-YouTube video link (only if no image/YT) */}
       {!b.images.length && !ytId && b.videoLink && (
         <a
