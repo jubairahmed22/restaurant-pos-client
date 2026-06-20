@@ -101,7 +101,7 @@ function BlogCard({ b }: { b: Blog }) {
             allowFullScreen
           />
         </div>
-      )}
+      )} sfsadf
 
       {/* Non-YouTube video link (only if no image/YT) */}
       {!b.images.length && !ytId && b.videoLink && (
