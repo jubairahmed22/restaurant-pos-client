@@ -86,7 +86,7 @@ function BlogCard({ b }: { b: Blog }) {
           {b.images.length > 1 && (
             <div className="absolute bottom-2 right-2 bg-black/60 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">
               +{b.images.length - 1}
-            </div>
+            </div> sdfasds
           )}
         </div>
       )}
