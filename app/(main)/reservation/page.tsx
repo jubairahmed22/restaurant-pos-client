@@ -88,7 +88,7 @@ function BlogCard({ b }: { b: Blog }) {
               +{b.images.length - 1}
             </div>
           )}
-        </div>
+        </div> sadfsad
       )}
 
       {/* YouTube embed */}
