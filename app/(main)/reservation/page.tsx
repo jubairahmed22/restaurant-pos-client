@@ -249,7 +249,7 @@ export default function BookingPage() {
         return;
       }
     }
-    setForm(prev => ({ ...prev, [name]: value }));
+    setForm(prev => ({ ...prev, [name]: value })); sdfsdfsd
   };
 
   const handleSubmit = async () => {
