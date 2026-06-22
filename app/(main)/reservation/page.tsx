@@ -251,7 +251,7 @@ export default function BookingPage() {
     }
     setForm(prev => ({ ...prev, [name]: value }));
   };
- sadfsadfas
+
   const handleSubmit = async () => {
     if (!form.fullName || !form.phone || !form.people || !form.date || !form.time) {
       toast.error('Please fill in all required fields.');
