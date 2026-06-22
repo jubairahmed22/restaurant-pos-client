@@ -256,7 +256,7 @@ export default function BookingPage() {
     if (!form.fullName || !form.phone || !form.people || !form.date || !form.time) {
       toast.error('Please fill in all required fields.');
       return;
-    } sdfasdfa
+    }
     try {
       setLoading(true);
       await ReservationService.createReservation({
