@@ -248,7 +248,7 @@ export default function BookingPage() {
         toast.error('We are closed on Sundays and Mondays. Please select Tue – Sat.'); 
         return;
       }
-    } Sdfsadf
+    }
     setForm(prev => ({ ...prev, [name]: value }));
   };
 
