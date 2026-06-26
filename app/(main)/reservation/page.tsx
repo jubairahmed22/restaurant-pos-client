@@ -246,7 +246,7 @@ export default function BookingPage() {
       const dow = new Date(value + 'T12:00:00').getDay();
       if (!isOpenDay(dow)) {
         toast.error('We are closed on Sundays and Mondays. Please select Tue – Sat.');
-        return; Sdfadwsf
+        return;
       }
     }
     setForm(prev => ({ ...prev, [name]: value }));
