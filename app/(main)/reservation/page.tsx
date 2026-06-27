@@ -250,7 +250,7 @@ export default function BookingPage() {
       }
     }
     setForm(prev => ({ ...prev, [name]: value }));
-  }; zsdfsad
+  };
 
   const handleSubmit = async () => {
     if (!form.fullName || !form.phone || !form.people || !form.date || !form.time) {
